@@ -466,7 +466,6 @@ function atualizarFicha() {
 }
 
 atualizarFicha();
-carregarFicha();
 
 document.querySelectorAll(".maximo").forEach(input => {
     input.dispatchEvent(new Event("input"));
@@ -477,3 +476,5 @@ document.addEventListener("input", salvarFicha);
 document.addEventListener("click", () => {
     setTimeout(salvarFicha, 10);
 });
+
+carregarFicha();
