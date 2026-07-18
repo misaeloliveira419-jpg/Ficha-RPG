@@ -397,6 +397,67 @@ function atualizarEsforco(){
     );
 }
 
+function salvarFicha(){
+
+    const ficha = {
+        jogador: document.getElementById("jogador").value,
+        personagem: document.getElementById("personagem").value,
+
+        atributos: Array.from(document.querySelectorAll(".quadrado")).map(q => q.value),
+
+        status: Array.from(document.querySelectorAll(".status")).map(s => ({
+            atual: s.querySelector(".atual").value,
+            maximo: s.querySelector(".maximo").value
+        })),
+
+        pericias: Array.from(document.querySelectorAll(".pericia")).map(p => ({
+            atributo: p.querySelector(".atributo-pericia").textContent,
+            classe: p.querySelector(".atributo-pericia").className,
+            treinamento: p.querySelector(".treinamento").textContent,
+            modificador: p.querySelector(".modificador").value
+        }))
+    };
+
+    localStorage.setItem("FichaRPG", JSON.stringify(ficha));
+}
+
+function carregarFicha(){
+
+    const dados = localStorage.getItem("FichaRPG");
+
+    if(!dados) return;
+
+    const ficha = JSON.parse(dados);
+
+    document.getElementById("jogador").value = ficha.jogador || "";
+    document.getElementById("personagem").value = ficha.personagem || "";
+
+    document.querySelectorAll(".quadrado").forEach((q, i) => {
+        if(ficha.atributos && ficha.atributos[i] !== undefined){
+            q.value = ficha.atributos[i];
+        }
+    });
+
+    document.querySelectorAll(".status").forEach((s, i) => {
+        if(ficha.status && ficha.status[i]){
+            s.querySelector(".atual").value = ficha.status[i].atual;
+            s.querySelector(".maximo").value = ficha.status[i].maximo;
+        }
+    });
+
+    document.querySelectorAll(".pericia").forEach((p, i) => {
+        if(ficha.pericias && ficha.pericias[i]){
+            const atributo = p.querySelector(".atributo-pericia");
+
+            atributo.textContent = ficha.pericias[i].atributo;
+            atributo.className = ficha.pericias[i].classe;
+
+            p.querySelector(".treinamento").textContent = ficha.pericias[i].treinamento;
+            p.querySelector(".modificador").value = ficha.pericias[i].modificador;
+        }
+    });
+}
+
 function atualizarFicha() {
     
     atualizarVida();
@@ -405,3 +466,14 @@ function atualizarFicha() {
 }
 
 atualizarFicha();
+carregarFicha();
+
+document.querySelectorAll(".maximo").forEach(input => {
+    input.dispatchEvent(new Event("input"));
+});
+
+document.addEventListener("input", salvarFicha);
+
+document.addEventListener("click", () => {
+    setTimeout(salvarFicha, 10);
+});
