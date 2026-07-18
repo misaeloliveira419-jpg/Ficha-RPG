@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" href="styles/style.css"/>
+    <title>Ficha RPG</title>
+</head>
+<body>
+
+<div class="ficha">
+
+    <header>
+
+    <div class="linha">
+        <label for="jogador">Jogador:</label>
+        <input type="text" id="jogador" class="campo-texto">
+    </div>
+
+    <div class="linha">
+        <label for="personagem">Personagem:</label>
+        <input type="text" id="personagem" class="campo-texto">
+    </div>
+
+</header>
+
+    <main>
+
+        <section class="esquerda">
+
+            <div class="bloco atributos">
+
+                <div class="titulo-secao">
+                    <button class="btn-secao">▼</button>
+                    <h1>ATRIBUTOS</h1>
+                </div>
+
+                <div class="conteudo-secao">
+
+                    <div class="atributo vermelho">
+                        <span class="des">Destreza (DES)</span>
+                        <input class="quadrado" type="number" min="0" max="5" value="1">
+                    </div>
+
+                    <div class="atributo marrom">
+                        <span class="for">Força (FOR)</span>
+                        <input class="quadrado" type="number" min="0" max="5" value="1">
+                    </div>
+
+                    <div class="atributo cinza">
+                        <span class="int">Intelecto (INT)</span>
+                        <input class="quadrado" type="number" min="0" max="5" value="1">
+                    </div>
+
+                    <div class="atributo amarelo">
+                        <span class="pre">Presença (PRE)</span>
+                        <input class="quadrado" type="number" min="0" max="5" value="1">
+                    </div>
+
+                    <div class="atributo azul">
+                        <span class="vig">Vigor (VIG)</span>
+                        <input class="quadrado" type="number" min="0" max="5" value="1">
+                    </div>
+
+                </div>
+              
+            </div>  
+
+            <div class="bloco pontos">
+
+                <div class="status">
+                    <span>P. de Vida</span>
+
+                    <div class="barra">
+                        <div class="preenchimento vida"></div>
+
+                        <div class="texto">
+                            <input type="number" class="atual" value="10" min="0">
+                            /
+                            <input type="number" class="maximo" value="10" min="1">
+                        </div>
+                    </div>
+                </div>
+            
+
+                <div class="status">
+                    <span>P. de Sanidade</span>
+
+                    <div class="barra">
+                        <div class="preenchimento sanidade"></div>
+
+                        <div class="texto">
+                            <input type="number" class="atual" value="20" min="0">
+                            /
+                            <input type="number" class="maximo" value="20" min="1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status">
+                    <span>P. de Esforço</span>
+
+                    <div class="barra">
+                        <div class="preenchimento esforco"></div>
+
+                        <div class="texto">
+                            <input type="number" class="atual" value="15" min="0">
+                            /
+                            <input type="number" class="maximo" value="15" min="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bloco habilidades">
+
+                <div class="titulo-secao">
+                  <button class="btn-secao">▼</button>
+                    <h1>HABILIDADES</h1>
+            </div>
+
+            <div class="conteudo-secao">
+
+                <div id="lista-habilidades"></div>
+
+                <button id="adicionar-habilidade">+</button>
+
+            </div>
+
+        </section>
+
+        <section class="direita">
+
+            <div class="bloco pericias">
+
+                <div class="titulo-secao">
+                    <button class="btn-secao">▼</button>
+                    <h1>PERÍCIAS</h1>
+                </div>
+
+            <div class="conteudo-secao">
+
+                <div class="pericia"><span>Acrobacia</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>  
+                <div class="pericia"><span>Adestramento</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Atletismo</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Atualidades</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Ciências</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Condução</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Crime</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Diplomacia</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Enganação</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Fortitude</span><span class="atributo-pericia vig">(VIG)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Furtividade</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Iniciativa</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Intimidação</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Intuição</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Investigação</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Luta</span><span class="atributo-pericia for">(FOR)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Medicina</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Percepção</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Pontaria</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Reflexo</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Religião</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Sobrevivência</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Tecnologia</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+                <div class="pericia"><span>Vontade</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
+
+            </div>
+              
+            </div>
+
+            <div class="bloco inventario">
+
+                <div class="titulo-secao">
+                  <button class="btn-secao">▼</button>
+        <h1>INVENTÁRIO</h1>
+    </div>
+
+    <div class="conteudo-secao">
+
+                <div id="lista-itens"></div>
+
+                <button id="adicionar-item">+</button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/storage/emulated/0/Fichas do meu rpg/scripts/script.js"></script>
+
+</body>
+</html>

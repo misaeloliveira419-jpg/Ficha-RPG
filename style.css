@@ -1,0 +1,549 @@
+*{
+    font-family:"Times New Roman", Times, serif;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    
+    background:rgb(50,50,50);
+    display:flex;
+    justify-content:center;
+    padding:40px;
+    font-family:"Times New Roman", Times, serif;
+    color:white;
+}
+
+.ficha{
+
+    width:1000px;
+    background:black;
+    border:3px solid white;
+    overflow: hidden;
+}
+
+header{
+    padding:35px;
+}
+
+.linha{
+    display:flex;
+    align-items:flex-end;
+    gap:18px;
+    margin-bottom:18px;
+}
+
+.linha label{
+    font-size:26px;
+    font-weight:bold;
+    min-width:170px;
+}
+
+.campo-texto{
+
+    flex:1;
+    border:none;
+    border-bottom:2px solid white;
+    font-size:24px;
+    font-family:"Times New Roman", Times, serif;
+    color:white;
+    padding:3px 6px;
+    outline:none;
+    background:transparent;
+}
+
+.campo-texto:focus{
+
+    border-bottom:3px solid rgb(175,175,175);
+}
+
+main{
+
+    display:grid;
+    grid-template-columns:55% 45%;
+    align-items: stretch;
+}
+
+.esquerda{
+
+    border-right:3px solid white;
+    display:flex;
+    flex-direction:column;
+}
+
+.bloco{
+    
+    position:relative;
+    padding:25px;
+}
+
+.bloco h1{
+
+    text-align:center;
+    padding-left:40px;
+    font-size:36px;
+    margin-bottom:30px;
+    border:3px solid white;
+}
+
+.atributos{
+    
+    border-bottom:3px solid white;
+}
+
+.atributo{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:28px;
+    margin:12px 0;
+    font-weight:bold;
+}
+
+.quadrado{
+
+    width:55px;
+    height:55px;
+    border:2px solid currentColor;
+    border-radius:6px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    font-family:"Times New Roman", Times, serif;
+    background:black;
+    color:inherit;
+    outline:none;
+}
+
+.quadrado:focus{
+
+    box-shadow:0 0 8px rgba(0,0,0,.25);
+}
+
+.pontos{
+    
+    top:-10px;
+    border-bottom:3px solid white;
+}
+
+.pericias{
+
+    border-bottom:3px solid white;
+}
+
+.pericia{
+
+    display:grid;
+    grid-template-columns:1fr 60px 70px 80px;
+    gap:10px;
+    align-items:center;
+    margin:6px 0;
+    font-size:16px;
+}
+
+.atributo-pericia{
+
+    font-weight:bold;
+    cursor:pointer;
+    user-select:none;
+    width:55px;
+    text-align:center;
+    transition:.2s;
+}
+
+.atributo-pericia:hover{
+
+    transform:scale(1.1);
+}
+
+.treinamento{
+
+    height:32px;
+    border:2px solid white;
+    background:black;
+    cursor:pointer;
+    font-size:16px;
+    font-family:"Times New Roman", Times, serif;
+    color:white;
+}
+
+.treinamento:hover{
+
+    background:rgb(50,50,50);
+}
+
+.menu-treinamento{
+
+    position:fixed;
+    display:none;
+    background:black;
+    border:2px solid white;
+    box-shadow:0 4px 10px rgba(0,0,0,.25);
+    z-index:99999;
+    min-width:75px;
+    overflow:hidden;
+}
+
+.menu-opcao{
+
+    padding:8px 12px;
+    text-align:center;
+    cursor:pointer;
+    user-select:none;
+}
+
+.menu-opcao:hover{
+
+    background:rgb(100,100,100);
+}
+
+.modificador{
+
+    width:100%;
+    height:32px;
+    border:2px solid white;
+    text-align:center;
+    font-size:16px;
+    font-family:"Times New Roman", Times, serif;
+    color:white;
+    outline:none;
+    background:black;
+}
+
+#lista-itens,
+#lista-habilidades{
+
+    flex:1;
+    overflow-y:auto;
+    min-height:0;
+    padding-right:6px;
+}
+
+#lista-itens::-webkit-scrollbar{
+
+    width:8px;
+}
+
+#lista-itens::-webkit-scrollbar-thumb{
+
+    background:#999;
+    border-radius:4px;
+}
+
+.card-item{
+
+    border:2px solid white;
+}
+
+.topo-item{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px;
+    background:#f5f5f5;
+}
+
+.nome-item{
+
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    outline:none;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.botoes-item{
+
+    display:flex;
+    gap:6px;
+    flex-shrink:0;
+}
+
+.conteudo-item{
+
+    display:none;
+    border-top:2px solid white;
+    padding:12px;
+}
+
+.conteudo-item label{
+
+    display:block;
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.conteudo-item textarea{
+
+    width:100%;
+    min-height:100px;
+    resize:vertical;
+    padding:6px;
+    font-size:16px;
+}
+
+#adicionar-item{
+
+    margin-top:10px;
+    height:36px;  
+    width: 36px;
+    border:2px solid white;
+    background:black;
+    font-size:28px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+}
+
+#adicionar-item:hover{
+
+    background:white;
+    color:black;
+}
+
+.vermelho{color:#d10000;}
+.marrom{color:#9c4f00;}
+.cinza{color:#777;}
+.amarelo{color:#b5b500;}
+.azul{color:#008b8b;}
+
+.verde{color:#00aa1b;}
+.azul-claro{color:#39a8ff;}
+.dourado{color:#d6aa00;}
+
+.des{color:#d10000;}
+.for{color:#9c4f00;}
+.int{color:#777;}
+.pre{color:#b5b500;}
+.vig{color:#008b8b;}
+
+.status{
+
+    margin:20px 0;
+}
+
+.status span{
+
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+    font-size:24px;
+}
+
+.barra{
+
+    position:relative;
+    width:100%;
+    height:34px;
+    border:2px solid white;
+    background:#e6e6e6;
+    overflow:hidden;
+    border-radius:10px;
+}
+
+.preenchimento{
+
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    transition:.3s;
+}
+
+.vida{
+    background:#00aa1b;
+}
+
+.sanidade{
+    background:#39a8ff;
+}
+
+.esforco{
+    background:#d6aa00;
+}
+
+.texto{
+
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:bold;
+    z-index:2;
+}
+
+.texto input{
+
+    width:45px;
+    border:none;
+    background:transparent;
+    text-align:center;
+    font-size:20px;
+    color:white;
+    font-weight:bold;
+    outline:none;
+}
+
+.habilidades .inventario .conteudo-secao{
+
+    display:flex;
+    flex-direction:column;
+    height:100%;
+}
+
+#lista-habilidades::-webkit-scrollbar{
+
+    width:8px;
+}
+
+#lista-habilidades::-webkit-scrollbar-thumb{
+
+    background:#999;
+    border-radius:4px;
+}
+
+.card-habilidade{
+
+    border:2px solid white;
+    background:black;
+}
+
+.topo-habilidade{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#f5f5f5;
+    padding:8px;
+    gap:8px;
+}
+
+.nome-habilidade{
+
+    flex:1;
+    border:none;
+    min-width:0;
+    background:transparent;
+    outline:none;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.btn{
+
+    width:32px;
+    height:32px;
+    border:1px solid black;
+    background:white;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.btn:hover{
+
+    background:black;
+    color:white;
+}
+
+.conteudo{
+
+    display:none;
+    border-top:2px solid white;
+    padding:12px;
+}
+
+.conteudo label{
+
+    display:block;
+    font-weight:bold;
+    margin-top:8px;
+    margin-bottom:4px;
+}
+
+.conteudo input{
+
+    width:100%;
+    padding:6px;
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.conteudo textarea{
+
+    width:100%;
+    min-height:70px;
+    resize:vertical;
+    padding:6px;
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+#adicionar-habilidade{
+
+    margin-top:10px;
+    height:36px;
+    width:36px;
+    border:2px solid white;
+    background:black;
+    font-size:28px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+}
+
+#adicionar-habilidade:hover{
+
+    background:white;
+    color:black;
+}
+
+.titulo-secao{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.titulo-secao h1{
+
+    margin:0;
+    flex:1;
+    text-align:center;
+    border:3px solid white;
+}
+
+.btn-secao{
+    
+    position:absolute;
+    top:25px;
+    left:25px;
+    width:45px;
+    height:47px;
+    border:3px solid white;
+    background:black;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    color:white;
+}
+
+.btn-secao:hover{
+
+    background:white;
+    color:black;
+}
+
+.conteudo-secao.fechado{
+
+    display:none;
+}
