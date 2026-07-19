@@ -3,7 +3,7 @@
 <html lang="pt-BR">
 <head>
   <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="/storage/emulated/0/Ficha RPG Teste/styles/style.css"/>
     <title>Ficha RPG</title>
 </head>
 <body>
@@ -21,8 +21,38 @@
         <label for="personagem">Personagem:</label>
         <input type="text" id="personagem" class="campo-texto">
     </div>
+      
+    <button id="btn-menu">☰</button>
 
 </header>
+  
+    <div id="menu-lateral">
+
+        <button id="abrir-lista">
+            Todas as suas fichas
+        </button>
+
+        <button id="criar-ficha">
+            Criar ficha
+        </button>
+
+        <button id="deletar-ficha">
+            Deletar ficha
+        </button>
+
+    </div>
+  
+    <div id="tela-fichas">
+
+    <h1>SUAS FICHAS</h1>
+
+    <div id="lista-fichas"></div>
+
+    <button id="nova-ficha-lista">+</button>
+
+    <button id="voltar-ficha">← Voltar</button>
+
+</div>
 
     <main>
 
@@ -63,7 +93,7 @@
                     </div>
 
                 </div>
-              
+
             </div>  
 
             <div class="bloco pontos">
@@ -81,7 +111,7 @@
                         </div>
                     </div>
                 </div>
-            
+
 
                 <div class="status">
                     <span>P. de Sanidade</span>
@@ -166,7 +196,7 @@
                 <div class="pericia"><span>Vontade</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
 
             </div>
-              
+
             </div>
 
             <div class="bloco inventario">
@@ -190,7 +220,7 @@
 
 </div>
 
-<script src="script.js"></script>
+<script src="/storage/emulated/0/Ficha RPG Teste/scripts/script.js"></script>
 
 </body>
 </html>

@@ -25,6 +25,7 @@ body{
 
 header{
     padding:35px;
+    position:relative;
 }
 
 .linha{
@@ -547,3 +548,211 @@ main{
 
     display:none;
 }
+
+#btn-menu{
+
+    position:absolute;
+
+    top:20px;
+    right:20px;
+
+    width:55px;
+    height:55px;
+
+    border:2px solid white;
+
+    background:black;
+
+    color:white;
+
+    font-size:28px;
+
+    cursor:pointer;
+}
+
+#btn-menu:hover{
+
+    background:white;
+    color:black;
+}
+
+#menu-lateral{
+
+    position:absolute;
+
+    top:90px;
+    right:60px;
+
+    width:250px;
+
+    display:none;
+
+    flex-direction:column;
+
+    border:2px solid white;
+
+    background:black;
+
+    z-index:5000;
+}
+
+#menu-lateral button{
+
+    height:55px;
+
+    border:none;
+
+    border-bottom:1px solid white;
+
+    background:black;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:20px;
+}
+
+#menu-lateral button:hover{
+
+    background:white;
+
+    color:black;
+}
+
+#deletar-ficha{
+
+    color:#d10000;
+}
+
+#deletar-ficha:disabled{
+
+    color:#777;
+    cursor:default;
+}
+
+#deletar-ficha:disabled:hover{
+    
+    background:rgb(100,100,100)
+}
+
+#tela-fichas{
+
+    display:none;
+
+    padding:40px;
+
+    min-height:900px;
+}
+
+#tela-fichas h1{
+
+    text-align:center;
+
+    font-size:42px;
+
+    margin-bottom:40px;
+
+    border:3px solid white;
+
+    padding:10px;
+}
+
+#lista-fichas{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+}
+
+.ficha-lista{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    border:2px solid white;
+
+    padding:15px;
+
+    font-size:24px;
+
+    cursor:pointer;
+}
+
+.ficha-lista:hover{
+
+    background:white;
+
+    color:black;
+}
+
+.nome-ficha{
+
+    flex:1;
+}
+
+.excluir-ficha{
+
+    width:45px;
+
+    height:45px;
+
+    border:none;
+
+    background:transparent;
+
+    color:#d10000;
+
+    cursor:pointer;
+
+    font-size:24px;
+}
+
+.excluir-ficha:hover{
+
+    transform:scale(1.2);
+}
+
+#nova-ficha-lista{
+
+    margin-top:25px;
+
+    width:50px;
+
+    height:50px;
+
+    font-size:32px;
+
+    background:black;
+
+    color:white;
+
+    border:2px solid white;
+
+    cursor:pointer;
+}
+
+#voltar-ficha{
+
+    display:block;
+
+    margin-top:30px;
+
+    border:2px solid white;
+
+    background:black;
+
+    color:white;
+
+    padding:10px 20px;
+
+    cursor:pointer;
+
+    font-size:20px;
+}
+

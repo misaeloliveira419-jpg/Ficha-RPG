@@ -8,7 +8,7 @@ atributos.forEach(input => {
 
         if (valor > 5) input.value = 5;
         if (valor < 0) input.value = 0;
-        
+
         atualizarFicha();
 
     });
@@ -46,6 +46,11 @@ barras.forEach(status=>{
 
 const lista = document.getElementById("lista-habilidades");
 const botao = document.getElementById("adicionar-habilidade");
+
+let banco = {
+    atual: null,
+    fichas: []
+};
 
 function criarHabilidade(){
 
@@ -313,7 +318,7 @@ menu.querySelectorAll(".menu-opcao").forEach(opcao=>{
 document.addEventListener("click",()=>{
 
     menu.style.display = "none";
-    
+
 });
 
 function atualizarStatus(barra, novoMaximo){
@@ -343,7 +348,7 @@ function atualizarVida(){
     };
 
     const bonus = tabela[fortitude] ?? 0;
-    
+
     const maxVida = 10 + vigor + bonus * 2;
 
     atualizarStatus(
@@ -353,9 +358,9 @@ function atualizarVida(){
 }
 
 function atualizarSanidade(){
-    
+
     const intelecto = Number(document.querySelectorAll(".quadrado")[2].value);
-    
+
     const vontade = document.querySelectorAll(".pericia")[23]
         .querySelector(".treinamento").textContent;
 
@@ -366,7 +371,7 @@ function atualizarSanidade(){
         "+2d6": 2,
         "+3d6": 3
     }[vontade] || 0;
-    
+
     const maxSanidade = 20 + 3 * intelecto + bonusSanidade * 2;
 
     atualizarStatus(
@@ -376,86 +381,23 @@ function atualizarSanidade(){
 }
 
 function atualizarEsforco(){
-    
+
     const presenca = Number(document.querySelectorAll(".quadrado")[3].value);
 
     const maxEsforco = 15 + 3 * presenca;
-    
+
     atualizarStatus(
         document.querySelectorAll(".status")[2],
         maxEsforco
     );
 }
 
-function salvarFicha(){
-
-    const ficha = {
-        jogador: document.getElementById("jogador").value,
-        personagem: document.getElementById("personagem").value,
-
-        atributos: Array.from(document.querySelectorAll(".quadrado")).map(q => q.value),
-
-        status: Array.from(document.querySelectorAll(".status")).map(s => ({
-            atual: s.querySelector(".atual").value,
-            maximo: s.querySelector(".maximo").value
-        })),
-
-        pericias: Array.from(document.querySelectorAll(".pericia")).map(p => ({
-            atributo: p.querySelector(".atributo-pericia").textContent,
-            classe: p.querySelector(".atributo-pericia").className,
-            treinamento: p.querySelector(".treinamento").textContent,
-            modificador: p.querySelector(".modificador").value
-        }))
-    };
-
-    localStorage.setItem("FichaRPG", JSON.stringify(ficha));
-}
-
-function carregarFicha(){
-
-    const dados = localStorage.getItem("FichaRPG");
-
-    if(!dados) return;
-
-    const ficha = JSON.parse(dados);
-
-    document.getElementById("jogador").value = ficha.jogador || "";
-    document.getElementById("personagem").value = ficha.personagem || "";
-
-    document.querySelectorAll(".quadrado").forEach((q, i) => {
-        if(ficha.atributos && ficha.atributos[i] !== undefined){
-            q.value = ficha.atributos[i];
-        }
-    });
-
-    document.querySelectorAll(".status").forEach((s, i) => {
-        if(ficha.status && ficha.status[i]){
-            s.querySelector(".atual").value = ficha.status[i].atual;
-            s.querySelector(".maximo").value = ficha.status[i].maximo;
-        }
-    });
-
-    document.querySelectorAll(".pericia").forEach((p, i) => {
-        if(ficha.pericias && ficha.pericias[i]){
-            const atributo = p.querySelector(".atributo-pericia");
-
-            atributo.textContent = ficha.pericias[i].atributo;
-            atributo.className = ficha.pericias[i].classe;
-
-            p.querySelector(".treinamento").textContent = ficha.pericias[i].treinamento;
-            p.querySelector(".modificador").value = ficha.pericias[i].modificador;
-        }
-    });
-}
-
 function atualizarFicha() {
-    
+
     atualizarVida();
     atualizarSanidade();
     atualizarEsforco();
 }
-
-carregarFicha();
 
 atualizarFicha();
 
@@ -463,8 +405,407 @@ document.querySelectorAll(".maximo").forEach(input=>{
     input.dispatchEvent(new Event("input"));
 });
 
-document.addEventListener("input", salvarFicha);
+function criarFichaNova(){
 
-document.addEventListener("click", () => {
-    setTimeout(salvarFicha, 10);
+    const ficha = {
+
+        id: Date.now(),
+
+        jogador: "",
+
+        personagem: "Nova Ficha " + (banco.fichas.length + 1),
+
+        atributos:[1,1,1,1,1],
+
+        status:[
+            {atual:11,maximo:11},
+            {atual:23,maximo:23},
+            {atual:18,maximo:18}
+        ],
+
+        pericias:[],
+
+        habilidades:[],
+
+        inventario:[]
+    };
+
+    document.querySelectorAll(".pericia").forEach(p=>{
+
+        ficha.pericias.push({
+
+            atributo:p.querySelector(".atributo-pericia").textContent,
+
+            classe:p.querySelector(".atributo-pericia").className,
+
+            treinamento:p.querySelector(".treinamento").textContent,
+
+            modificador:""
+
+        });
+
+    });
+
+    banco.fichas.push(ficha);
+
+    banco.atual = ficha.id;
+
+    salvarBanco();
+
+}
+
+function salvarBanco(){
+
+    localStorage.setItem(
+        "BancoFichasRPG",
+        JSON.stringify(banco)
+    );
+
+}
+
+function carregarBanco(){
+
+    const salvo = localStorage.getItem("BancoFichasRPG");
+
+    if(salvo){
+
+        banco = JSON.parse(salvo);
+
+    }
+
+    if(banco.fichas.length===0){
+
+        criarFichaNova();
+
+    }
+
+    atualizarBotaoExcluir();
+}
+
+function fichaAtual(){
+
+    return banco.fichas.find(f=>f.id===banco.atual);
+
+}
+
+function salvarFichaAtual(){
+
+    const ficha = fichaAtual();
+
+    ficha.jogador =
+        document.getElementById("jogador").value;
+
+    ficha.personagem =
+        document.getElementById("personagem").value;
+
+    ficha.atributos =
+        [...document.querySelectorAll(".quadrado")]
+        .map(x=>Number(x.value));
+
+    ficha.status =
+        [...document.querySelectorAll(".status")]
+        .map(s=>({
+
+            atual:Number(s.querySelector(".atual").value),
+
+            maximo:Number(s.querySelector(".maximo").value)
+
+        }));
+
+    ficha.pericias =
+        [...document.querySelectorAll(".pericia")]
+        .map(p=>({
+
+            atributo:p.querySelector(".atributo-pericia").textContent,
+
+            classe:p.querySelector(".atributo-pericia").className,
+
+            treinamento:p.querySelector(".treinamento").textContent,
+
+            modificador:p.querySelector(".modificador").value
+
+        }));
+
+    salvarBanco();
+    
+    atualizarBotaoExcluir();
+
+}
+
+function carregarFichaAtual(){
+
+    const ficha = fichaAtual();
+
+    document.getElementById("jogador").value =
+        ficha.jogador;
+
+    document.getElementById("personagem").value =
+        ficha.personagem;
+
+    document.querySelectorAll(".quadrado")
+    .forEach((q,i)=>{
+
+        q.value=ficha.atributos[i];
+
+    });
+
+    document.querySelectorAll(".status")
+    .forEach((s,i)=>{
+
+        s.querySelector(".atual").value =
+            ficha.status[i].atual;
+
+        s.querySelector(".maximo").value =
+            ficha.status[i].maximo;
+
+        s.querySelector(".maximo")
+        .dispatchEvent(new Event("input"));
+
+    });
+
+    document.querySelectorAll(".pericia")
+    .forEach((p,i)=>{
+
+        const dados=ficha.pericias[i];
+
+        const atributo =
+            p.querySelector(".atributo-pericia");
+
+        atributo.textContent=dados.atributo;
+
+        atributo.className=dados.classe;
+
+        p.querySelector(".treinamento")
+        .textContent=dados.treinamento;
+
+        p.querySelector(".modificador")
+        .value=dados.modificador;
+
+    });
+
+    atualizarFicha();
+
+}
+
+carregarBanco();
+
+carregarFichaAtual();
+
+document.addEventListener("input",()=>{
+
+    salvarFichaAtual();
+
 });
+
+document.addEventListener("click",()=>{
+
+    setTimeout(salvarFichaAtual,20);
+
+});
+
+const btnMenu = document.getElementById("btn-menu");
+
+const menuLateral = document.getElementById("menu-lateral");
+
+btnMenu.onclick = (e)=>{
+
+    e.stopPropagation();
+
+    if(menuLateral.style.display==="flex"){
+
+        menuLateral.style.display="none";
+
+    }else{
+
+        menuLateral.style.display="flex";
+
+    }
+
+};
+
+document.addEventListener("click",()=>{
+
+    menuLateral.style.display="none";
+
+});
+
+menuLateral.addEventListener("click",(e)=>{
+
+    e.stopPropagation();
+
+});
+
+document
+.getElementById("criar-ficha")
+.onclick = ()=>{
+
+    salvarFichaAtual();
+
+    criarFichaNova();
+
+    carregarFichaAtual();
+
+    menuLateral.style.display = "none";
+
+};
+
+function atualizarBotaoExcluir(){
+
+    const botao =
+        document.getElementById("deletar-ficha");
+
+    botao.disabled =
+        banco.fichas.length<=1;
+
+}
+
+document
+.getElementById("deletar-ficha")
+.onclick=()=>{
+
+    if(banco.fichas.length<=1)
+        return;
+
+    if(!confirm("Deseja apagar esta ficha?"))
+        return;
+
+    const indice =
+        banco.fichas.findIndex(
+            f=>f.id===banco.atual
+        );
+
+    banco.fichas.splice(indice,1);
+
+    banco.atual =
+        banco.fichas[0].id;
+
+    salvarBanco();
+
+    carregarFichaAtual();
+
+    atualizarBotaoExcluir();
+
+};
+
+function atualizarListaFichas(){
+
+    const lista = document.getElementById("lista-fichas");
+
+    lista.innerHTML = "";
+
+    banco.fichas.forEach((ficha, indice)=>{
+
+        const div = document.createElement("div");
+
+        div.className = "ficha-lista";
+
+        div.innerHTML = `
+            <span class="nome-ficha">
+                ${ficha.personagem || "Sem nome"}
+            </span>
+
+            <button class="excluir-ficha">🗑</button>
+        `;
+        
+        div.querySelector(".nome-ficha").onclick = ()=>{
+
+            banco.atual = ficha.id;
+
+            salvarBanco();
+
+            carregarFichaAtual();
+
+            fecharListaFichas();
+
+        };
+        
+        div.querySelector(".excluir-ficha").onclick = (e)=>{
+
+            e.stopPropagation();
+
+            if(banco.fichas.length <= 1){
+                return;
+            }
+
+            if(!confirm("Deseja apagar esta ficha?")){
+                return;
+            }
+
+            banco.fichas.splice(indice,1);
+
+            if(banco.atual === ficha.id){
+
+                banco.atual = banco.fichas[0].id;
+
+            }
+
+            salvarBanco();
+
+            atualizarListaFichas();
+
+            atualizarBotaoExcluir();
+
+        };
+
+        lista.appendChild(div);
+
+    });
+
+}
+
+function abrirListaFichas(){
+
+    salvarFichaAtual();
+
+    atualizarListaFichas();
+    
+    document.querySelector("header").style.display = "none";
+
+    document.querySelector("main").style.display="none";
+
+    document.getElementById("tela-fichas")
+        .style.display="block";
+
+}
+
+function fecharListaFichas(){
+    
+    document.querySelector("header").style.display = "block";
+
+    document.querySelector("main").style.display="grid";
+
+    document.getElementById("tela-fichas")
+        .style.display="none";
+
+}
+
+document
+.getElementById("abrir-lista")
+.onclick=()=>{
+
+    menuLateral.style.display="none";
+
+    abrirListaFichas();
+
+};
+
+document
+.getElementById("voltar-ficha")
+.onclick=()=>{
+
+    fecharListaFichas();
+
+};
+
+document
+.getElementById("nova-ficha-lista")
+.onclick = ()=>{
+
+    criarFichaNova();
+
+    carregarFichaAtual();
+
+    fecharListaFichas();
+
+};
+
