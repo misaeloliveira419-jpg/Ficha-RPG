@@ -1,3 +1,32 @@
+let carregandoFicha = false;
+
+const PERICIAS_PADRAO = [
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Acrobacia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Adestramento
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Atletismo
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Atualidades
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Ciências
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Condução
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Crime
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Diplomacia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Enganação
+    { atributo: "(VIG)", classe: "atributo-pericia vig", treinamento: "0", modificador: "" }, // Fortitude
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Furtividade
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Iniciativa
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Intimidação
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Intuição
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Investigação
+    { atributo: "(FOR)", classe: "atributo-pericia for", treinamento: "0", modificador: "" }, // Luta
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Medicina
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Percepção
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Pontaria
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Reflexos
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Religião
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Sobrevivência
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Tecnologia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }  // Vontade
+];
+
 const atributos = document.querySelectorAll(".quadrado");
 
 atributos.forEach(input => {
@@ -52,8 +81,8 @@ let banco = {
     fichas: []
 };
 
-function criarHabilidade(){
-
+function criarHabilidade(dados=null){
+    
     const card = document.createElement("div");
     card.className = "card-habilidade";
 
@@ -91,6 +120,28 @@ function criarHabilidade(){
 
         </div>
     `;
+    
+    if(dados){
+
+    card.querySelector(".nome-habilidade").value =
+        dados.nome;
+
+    card.querySelectorAll("textarea")[0].value =
+        dados.descricao;
+
+    card.querySelectorAll("input")[1].value =
+        dados.custo;
+
+    card.querySelectorAll("input")[2].value =
+        dados.dano;
+
+    card.querySelectorAll("input")[3].value =
+        dados.alcance;
+
+    card.querySelectorAll("textarea")[1].value =
+        dados.efeito;
+
+    }
 
     const abrir = card.querySelector(".abrir");
     const apagar = card.querySelector(".apagar");
@@ -117,25 +168,26 @@ function criarHabilidade(){
         if(confirm("Deseja apagar esta habilidade?")){
 
             card.remove();
+            
+            salvarFichaAtual();
 
         }
 
     };
 
     lista.appendChild(card);
-
+    
+    if(!carregandoFicha){
+    salvarFichaAtual();
+    }
 }
 
 botao.onclick = criarHabilidade;
 
-criarHabilidade();
-criarHabilidade();
-criarHabilidade();
-
 const listaItens = document.getElementById("lista-itens");
 const botaoAdicionarItem = document.getElementById("adicionar-item");
 
-function criarItem(){
+function criarItem(dados=null){
 
     const card = document.createElement("div");
     card.className = "card-item";
@@ -163,6 +215,13 @@ function criarItem(){
 
         </div>
     `;
+    
+    if(dados){
+
+    card.querySelector(".nome-item").value = dados.nome;
+    card.querySelector("textarea").value = dados.descricao;
+
+    }
 
     const abrir = card.querySelector(".abrir-item");
     const apagar = card.querySelector(".apagar-item");
@@ -189,20 +248,22 @@ function criarItem(){
         if(confirm("Deseja apagar este item?")){
 
             card.remove();
+            
+            salvarFichaAtual();
 
         }
 
     };
 
     listaItens.appendChild(card);
+    
+    if(!carregandoFicha){
+    salvarFichaAtual();
+    }
 
 }
 
 botaoAdicionarItem.onclick = criarItem;
-
-criarItem();
-criarItem();
-criarItem();
 
 const botoesSecao = document.querySelectorAll(".btn-secao");
 
@@ -423,28 +484,41 @@ function criarFichaNova(){
             {atual:18,maximo:18}
         ],
 
-        pericias:[],
+        pericias: structuredClone(PERICIAS_PADRAO),
 
-        habilidades:[],
+        habilidades: [
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        efeito:""
+    },
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        efeito:""
+    },
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        efeito:""
+    }
+],
 
-        inventario:[]
+inventario:[
+    {nome:"",descricao:""},
+    {nome:"",descricao:""},
+    {nome:"",descricao:""}
+]
     };
-
-    document.querySelectorAll(".pericia").forEach(p=>{
-
-        ficha.pericias.push({
-
-            atributo:p.querySelector(".atributo-pericia").textContent,
-
-            classe:p.querySelector(".atributo-pericia").className,
-
-            treinamento:p.querySelector(".treinamento").textContent,
-
-            modificador:""
-
-        });
-
-    });
 
     banco.fichas.push(ficha);
 
@@ -523,34 +597,30 @@ function salvarFichaAtual(){
             treinamento:p.querySelector(".treinamento").textContent,
 
             modificador:p.querySelector(".modificador").value
+            
+        }));
+            
+        ficha.habilidades =
+    [...document.querySelectorAll(".card-habilidade")]
+    .map(card=>({
+
+        nome: card.querySelector(".nome-habilidade").value,
+        descricao: card.querySelectorAll("textarea")[0].value,
+        custo: card.querySelectorAll("input")[1].value,
+        dano: card.querySelectorAll("input")[2].value,
+        alcance: card.querySelectorAll("input")[3].value,
+        efeito: card.querySelectorAll("textarea")[1].value
 
         }));
 
-    ficha.habilidades =
-[...document.querySelectorAll(".card-habilidade")].map(card=>({
+        ficha.inventario =
+    [...document.querySelectorAll(".card-item")]
+    .map(card=>({
 
-    nome: card.querySelector(".nome-habilidade").value,
-
-    descricao: card.querySelectorAll("textarea")[0].value,
-
-    custo: card.querySelectorAll("input")[1].value,
-
-    dano: card.querySelectorAll("input")[2].value,
-
-    alcance: card.querySelectorAll("input")[3].value,
-
-    efeito: card.querySelectorAll("textarea")[1].value
-
-    }));
-
-    ficha.inventario =
-[...document.querySelectorAll(".card-item")].map(card=>({
-
-    nome: card.querySelector(".nome-item").value,
-
-    descricao: card.querySelector("textarea").value
-
-    }));
+        nome: card.querySelector(".nome-item").value,
+        descricao: card.querySelector("textarea").value
+            
+        }));
 
     salvarBanco();
     
@@ -559,6 +629,12 @@ function salvarFichaAtual(){
 }
 
 function carregarFichaAtual(){
+    
+    carregandoFicha = true;
+    
+    lista.innerHTML = "";
+    
+    listaItens.innerHTML = "";
 
     const ficha = fichaAtual();
 
@@ -606,25 +682,43 @@ function carregarFichaAtual(){
 
         p.querySelector(".modificador")
         .value=dados.modificador;
+        
+    });
+
+    ficha.habilidades.forEach(h=>{
+
+        criarHabilidade(h);
+
+    });
+
+    ficha.inventario.forEach(i=>{
+
+        criarItem(i);
 
     });
 
     atualizarFicha();
+    
+    carregandoFicha = false;
 
 }
 
 carregarBanco();
 
-carregarFichaAtual();
-
 document.addEventListener("input",()=>{
 
+    if(carregandoFicha) return;
+    
     salvarFichaAtual();
 
 });
 
+carregarFichaAtual();
+
 document.addEventListener("click",()=>{
 
+    if(carregandoFicha) return;
+    
     setTimeout(salvarFichaAtual,20);
 
 });
@@ -661,12 +755,10 @@ menuLateral.addEventListener("click",(e)=>{
 
 });
 
-document
-.getElementById("criar-ficha")
-.onclick = ()=>{
+document.getElementById("criar-ficha").onclick = ()=>{
 
     salvarFichaAtual();
-
+    
     criarFichaNova();
 
     carregarFichaAtual();
@@ -823,9 +915,9 @@ document
 
 };
 
-document
-.getElementById("nova-ficha-lista")
-.onclick = ()=>{
+document.getElementById("nova-ficha-lista").onclick = ()=>{
+    
+    salvarFichaAtual();
 
     criarFichaNova();
 
