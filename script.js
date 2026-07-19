@@ -526,6 +526,32 @@ function salvarFichaAtual(){
 
         }));
 
+    ficha.habilidades =
+[...document.querySelectorAll(".card-habilidade")].map(card=>({
+
+    nome: card.querySelector(".nome-habilidade").value,
+
+    descricao: card.querySelectorAll("textarea")[0].value,
+
+    custo: card.querySelectorAll("input")[1].value,
+
+    dano: card.querySelectorAll("input")[2].value,
+
+    alcance: card.querySelectorAll("input")[3].value,
+
+    efeito: card.querySelectorAll("textarea")[1].value
+
+    }));
+
+    ficha.inventario =
+[...document.querySelectorAll(".card-item")].map(card=>({
+
+    nome: card.querySelector(".nome-item").value,
+
+    descricao: card.querySelector("textarea").value
+
+    }));
+
     salvarBanco();
     
     atualizarBotaoExcluir();
