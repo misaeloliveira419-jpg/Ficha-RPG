@@ -220,16 +220,6 @@ botoesSecao.forEach(botao=>{
 
 });
 
-function atualizarCor(select){
-
-    select.classList.remove("des","for","int","pre","vig");
-
-    const valor = select.value.toLowerCase();
-
-    select.classList.add(valor);
-
-};
-
 const listaAtributos = [
     {texto:"DES", classe:"des"},
     {texto:"FOR", classe:"for"},
@@ -465,9 +455,11 @@ function atualizarFicha() {
     atualizarEsforco();
 }
 
+carregarFicha();
+
 atualizarFicha();
 
-document.querySelectorAll(".maximo").forEach(input => {
+document.querySelectorAll(".maximo").forEach(input=>{
     input.dispatchEvent(new Event("input"));
 });
 
@@ -476,5 +468,3 @@ document.addEventListener("input", salvarFicha);
 document.addEventListener("click", () => {
     setTimeout(salvarFicha, 10);
 });
-
-carregarFicha();
