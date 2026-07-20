@@ -182,7 +182,7 @@ function criarHabilidade(dados=null){
     }
 }
 
-botao.onclick = criarHabilidade;
+botao.addEventListener("click", () => criarHabilidade());
 
 const listaItens = document.getElementById("lista-itens");
 const botaoAdicionarItem = document.getElementById("adicionar-item");
@@ -263,7 +263,7 @@ function criarItem(dados=null){
 
 }
 
-botaoAdicionarItem.onclick = criarItem;
+botaoAdicionarItem.addEventListener("click", () => criarItem());
 
 const botoesSecao = document.querySelectorAll(".btn-secao");
 
