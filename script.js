@@ -368,6 +368,8 @@ menu.querySelectorAll(".menu-opcao").forEach(opcao=>{
             botaoAtual.textContent = opcao.textContent;
 
             atualizarFicha();
+
+            atualizarContadorPericias();
         }
 
         menu.style.display = "none";
@@ -927,3 +929,52 @@ document.getElementById("nova-ficha-lista").onclick = ()=>{
 
 };
 
+function atualizarContadorAtributos() {
+    const atributos = [...document.querySelectorAll(".quadrado")];
+    const soma = atributos.reduce((total, input) => total + Number(input.value), 0);
+    
+    const contadorAtributos = document.querySelector(".contador-atributos .valor-contador");
+    if (contadorAtributos) {
+        contadorAtributos.value = soma;
+    }
+}
+
+function atualizarContadorPericias() {
+    const pericias = [...document.querySelectorAll(".pericia")];
+    const tabela = {
+        "-5": -1,
+        "0": 0,
+        "+1d6": 1,
+        "+2d6": 2,
+        "+3d6": 3
+    };
+    
+    const soma = pericias.reduce((total, pericia) => {
+        const treinamento = pericia.querySelector(".treinamento").textContent;
+        return total + (tabela[treinamento] || 0);
+    }, 0);
+    
+    const contadorPericias = document.querySelector(".contador-pericias .valor-contador");
+    if (contadorPericias) {
+        contadorPericias.value = soma;
+    }
+}
+
+atributos.forEach(input => {
+    input.addEventListener("input", () => {
+        atualizarContadorAtributos();
+    });
+});
+
+document.querySelectorAll(".treinamento").forEach(botao => {
+    botao.addEventListener("click", () => {
+        setTimeout(atualizarContadorPericias, 10);
+    });
+});
+
+function atualizarContadores() {
+    atualizarContadorAtributos();
+    atualizarContadorPericias();
+}
+
+setTimeout(atualizarContadores, 50);
