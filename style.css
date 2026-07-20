@@ -93,6 +93,10 @@ main{
     border-bottom:3px solid white;
 }
 
+.contador-atributos{
+    background:transparent;
+}
+
 .atributo{
 
     display:flex;
