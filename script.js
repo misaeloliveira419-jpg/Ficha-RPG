@@ -628,6 +628,8 @@ function salvarFichaAtual(){
     
     atualizarBotaoExcluir();
 
+    atualizarContadores();
+
 }
 
 function carregarFichaAtual(){
@@ -700,6 +702,8 @@ function carregarFichaAtual(){
     });
 
     atualizarFicha();
+
+    atualizarContadores();
     
     carregandoFicha = false;
 
