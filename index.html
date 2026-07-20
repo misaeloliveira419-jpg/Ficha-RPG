@@ -63,6 +63,11 @@
                 <div class="titulo-secao">
                     <button class="btn-secao">▼</button>
                     <h1>ATRIBUTOS</h1>
+                    <div class="contador-atributos">
+                        <input type="number" class="atual-atributos" value="0" min="0" readonly>
+                        <span>/</span>
+                        <input type="number" class="maximo-atributos" value="10" min="1">
+                    </div>
                 </div>
 
                 <div class="conteudo-secao">
@@ -166,11 +171,16 @@
                 <div class="titulo-secao">
                     <button class="btn-secao">▼</button>
                     <h1>PERÍCIAS</h1>
+                    <div class="contador-pericias">
+                        <input type="number" class="atual-pericias" value="0" min="0" readonly>
+                        <span>/</span>
+                        <input type="number" class="maximo-pericias" value="12" min="1">
+                    </div>
                 </div>
 
             <div class="conteudo-secao">
 
-                <div class="pericia"><span>Acrobacia</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>  
+                <div class="pericia"><span>Acrobacia</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
                 <div class="pericia"><span>Adestramento</span><span class="atributo-pericia pre">(PRE)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
                 <div class="pericia"><span>Atletismo</span><span class="atributo-pericia des">(DES)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
                 <div class="pericia"><span>Atualidades</span><span class="atributo-pericia int">(INT)</span><button class="treinamento">0</button><input class="modificador" type="text" placeholder=""></div>
