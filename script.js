@@ -1019,3 +1019,36 @@ function atualizarContadores() {
 }
 
 setTimeout(atualizarContadores, 50);
+
+function atualizarContadorCarga() {
+    const forca = Number(document.querySelectorAll(".quadrado")[1].value);
+    const maxCarga = 5 + 2 * forca;
+    
+    const contadorCarga = document.querySelector(".contador-carga .maximo-contador");
+    if (contadorCarga) {
+        contadorCarga.value = maxCarga;
+    }
+    
+    const itens = document.querySelectorAll(".card-item").length;
+    const contadorValor = document.querySelector(".contador-carga .valor-contador");
+    if (contadorValor) {
+        contadorValor.value = itens;
+    }
+}
+
+document.querySelectorAll(".quadrado")[1].addEventListener("input", () => {
+    atualizarContadorCarga();
+});
+
+const botaoAdicionarItemOriginal = botaoAdicionarItem;
+botaoAdicionarItem.addEventListener("click", () => {
+    setTimeout(atualizarContadorCarga, 10);
+});
+
+listaItens.addEventListener("click", (e) => {
+    if (e.target.classList.contains("apagar-item")) {
+        setTimeout(atualizarContadorCarga, 50);
+    }
+});
+
+setTimeout(atualizarContadorCarga, 100);
