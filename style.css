@@ -793,3 +793,33 @@ main{
 .contador-carga span {
     color: white;
 }
+
+.contador-carga {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.contador-carga input {
+    width: 60px;
+    height: 40px;
+    border: 2px solid white;
+    background: black;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    outline: none;
+}
+
+.contador-carga input:focus {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.contador-carga span {
+    color: white;
+}
