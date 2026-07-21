@@ -757,7 +757,8 @@ main{
 }
 
 .contador-atributos,
-.contador-pericias {
+.contador-pericias,
+.contador-carga {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -768,7 +769,8 @@ main{
 }
 
 .contador-atributos input,
-.contador-pericias input {
+.contador-pericias input,
+.contador-carga input {
     width: 60px;
     height: 40px;
     border: 2px solid white;
@@ -781,11 +783,13 @@ main{
 }
 
 .contador-atributos input:focus,
-.contador-pericias input:focus {
+.contador-pericias input:focus,
+.contador-carga input:focus {
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .contador-atributos span,
-.contador-pericias span {
+.contador-pericias span,
+.contador-carga span {
     color: white;
 }
