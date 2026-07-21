@@ -519,7 +519,10 @@ inventario:[
     {nome:"",descricao:""},
     {nome:"",descricao:""},
     {nome:"",descricao:""}
-]
+],
+
+    maxAtributos: 10,
+    maxPericias: 12  
     };
 
     banco.fichas.push(ficha);
@@ -624,6 +627,12 @@ function salvarFichaAtual(){
             
         }));
 
+    const maxA = document.querySelector(".contador-atributos .maximo-contador");
+    const maxP = document.querySelector(".contador-pericias .maximo-contador");
+
+    ficha.maxAtributos = maxA ? Number(maxA.value) : (ficha.maxAtributos ?? 10);
+    ficha.maxPericias = maxP ? Number(maxP.value) : (ficha.maxPericias ?? 12);
+
     salvarBanco();
     
     atualizarBotaoExcluir();
@@ -654,6 +663,17 @@ function carregarFichaAtual(){
         q.value=ficha.atributos[i];
 
     });
+
+    const contadorAtribMax = document.querySelector(".contador-atributos .maximo-contador");
+    const contadorPericMax = document.querySelector(".contador-pericias .maximo-contador");
+
+    if (contadorAtribMax) {
+        contadorAtribMax.value = ficha.maxAtributos ?? 10;
+    }
+
+    if (contadorPericMax) {
+        contadorPericMax.value = ficha.maxPericias ?? 12;
+    }
 
     document.querySelectorAll(".status")
     .forEach((s,i)=>{
