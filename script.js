@@ -984,6 +984,22 @@ function atualizarContadorPericias() {
     }
 }
 
+function atualizarContadorCarga() {
+    const forca = Number(document.querySelectorAll(".quadrado")[1].value);
+    const maxCarga = 5 + 2 * forca;
+    
+    const contadorCarga = document.querySelector(".contador-carga .maximo-contador");
+    if (contadorCarga) {
+        contadorCarga.value = maxCarga;
+    }
+    
+    const itens = document.querySelectorAll(".card-item").length;
+    const contadorValor = document.querySelector(".contador-carga .valor-contador");
+    if (contadorValor) {
+        contadorValor.value = itens;
+    }
+}
+
 atributos.forEach(input => {
     input.addEventListener("input", () => {
         atualizarContadorAtributos();
@@ -999,6 +1015,7 @@ document.querySelectorAll(".treinamento").forEach(botao => {
 function atualizarContadores() {
     atualizarContadorAtributos();
     atualizarContadorPericias();
+    atualizarContadorCarga();
 }
 
 setTimeout(atualizarContadores, 50);
