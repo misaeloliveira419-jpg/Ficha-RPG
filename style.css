@@ -823,3 +823,49 @@ main{
 .contador-carga span {
     color: white;
 }
+
+.historia {
+    border-bottom: 3px solid white;
+    position: relative;
+}
+
+.historia .titulo-secao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.historia .titulo-secao h1 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+    border: 3px solid white;
+}
+
+.historia .conteudo-secao {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+#texto-historia {
+    width: 100%;
+    min-height: 200px;
+    resize: vertical;
+    padding: 12px;
+    font-size: 16px;
+    font-family: "Times New Roman", Times, serif;
+    border: 2px solid white;
+    background: black;
+    color: white;
+    outline: none;
+}
+
+#texto-historia:focus {
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.historia .conteudo-secao.fechado {
+    display: none;
+}
