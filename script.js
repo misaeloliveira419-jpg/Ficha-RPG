@@ -482,6 +482,8 @@ function criarFichaNova(){
 
         personagem: "Nova Ficha " + (banco.fichas.length + 1),
 
+        historia:"",
+        
         atributos:[1,1,1,1,1],
 
         status:[
@@ -581,6 +583,9 @@ function salvarFichaAtual(){
     ficha.personagem =
         document.getElementById("personagem").value;
 
+    ficha.historia =
+        document.getElementById("texto-historia").value;
+    
     ficha.atributos =
         [...document.querySelectorAll(".quadrado")]
         .map(x=>Number(x.value));
@@ -661,6 +666,9 @@ function carregarFichaAtual(){
 
     document.getElementById("personagem").value =
         ficha.personagem;
+
+    document.getElementById("texto-historia").value =
+        ficha.historia || "";
 
     document.querySelectorAll(".quadrado")
     .forEach((q,i)=>{
