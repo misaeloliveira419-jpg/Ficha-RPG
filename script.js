@@ -912,6 +912,8 @@ function abrirListaFichas(){
 
     document.querySelector("main").style.display="none";
 
+    document.querySelector(".historia").style.display="none";
+
     document.getElementById("tela-fichas")
         .style.display="block";
 
@@ -922,6 +924,8 @@ function fecharListaFichas(){
     document.querySelector("header").style.display = "block";
 
     document.querySelector("main").style.display="grid";
+
+    document.querySelector(".historia").style.display="block";
 
     document.getElementById("tela-fichas")
         .style.display="none";
@@ -1026,6 +1030,48 @@ function atualizarContadores() {
 }
 
 setTimeout(atualizarContadores, 50);
+
+function salvarHistoria() {
+    const ficha = fichaAtual();
+    if (ficha) {
+        ficha.historia = document.getElementById("texto-historia").value;
+        salvarBanco();
+    }
+}
+
+function carregarHistoria() {
+    const ficha = fichaAtual();
+    const textoHistoria = document.getElementById("texto-historia");
+    if (ficha && textoHistoria) {
+        textoHistoria.value = ficha.historia || "";
+    }
+}
+
+document.getElementById("texto-historia").addEventListener("input", () => {
+    if (carregandoFicha) return;
+    salvarHistoria();
+});
+
+const historiaBotaoSecao = document.querySelector(".historia .btn-secao");
+if (historiaBotaoSecao) {
+    const historiaConteudo = historiaBotaoSecao.closest(".bloco").querySelector(".conteudo-secao");
+    historiaBotaoSecao.onclick = () => {
+        historiaConteudo.classList.toggle("fechado");
+        historiaBotaoSecao.textContent = historiaConteudo.classList.contains("fechado") ? "▶" : "▼";
+    };
+}
+
+const originalCarregarFichaAtual = carregarFichaAtual;
+carregarFichaAtual = function() {
+    originalCarregarFichaAtual.call(this);
+    carregarHistoria();
+};
+
+const originalSalvarFichaAtual = salvarFichaAtual;
+salvarFichaAtual = function() {
+    originalSalvarFichaAtual.call(this);
+    salvarHistoria();
+};
 
 document.querySelectorAll(".quadrado")[1].addEventListener("input", () => {
     atualizarContadorCarga();
