@@ -213,6 +213,9 @@ function criarItem(dados=null){
 
             <textarea placeholder="Descrição do item"></textarea>
 
+            <label>Peso</label>
+            <input class="peso-item" type="number" placeholder="0" min="0" step="0.1">
+
         </div>
     `;
     
@@ -220,6 +223,7 @@ function criarItem(dados=null){
 
     card.querySelector(".nome-item").value = dados.nome;
     card.querySelector("textarea").value = dados.descricao;
+    card.querySelector(".peso-item").value = dados.peso || 0;
 
     }
 
@@ -516,9 +520,9 @@ function criarFichaNova(){
 ],
 
 inventario:[
-    {nome:"",descricao:""},
-    {nome:"",descricao:""},
-    {nome:"",descricao:""}
+    {nome:"",descricao:"",peso:0},
+    {nome:"",descricao:"",peso:0},
+    {nome:"",descricao:"",peso:0}
 ],
 
     maxAtributos: 10,
@@ -623,7 +627,8 @@ function salvarFichaAtual(){
     .map(card=>({
 
         nome: card.querySelector(".nome-item").value,
-        descricao: card.querySelector("textarea").value
+        descricao: card.querySelector("textarea").value,
+        peso: Number(card.querySelector(".peso-item").value) || 0
             
         }));
 
@@ -993,10 +998,12 @@ function atualizarContadorCarga() {
         contadorCarga.value = maxCarga;
     }
     
-    const itens = document.querySelectorAll(".card-item").length;
+    const totalPeso = [...document.querySelectorAll(".peso-item")]
+        .reduce((total, input) => total + (Number(input.value) || 0), 0);
+    
     const contadorValor = document.querySelector(".contador-carga .valor-contador");
     if (contadorValor) {
-        contadorValor.value = itens;
+        contadorValor.value = totalPeso.toFixed(1);
     }
 }
 
@@ -1020,22 +1027,6 @@ function atualizarContadores() {
 
 setTimeout(atualizarContadores, 50);
 
-function atualizarContadorCarga() {
-    const forca = Number(document.querySelectorAll(".quadrado")[1].value);
-    const maxCarga = 5 + 2 * forca;
-    
-    const contadorCarga = document.querySelector(".contador-carga .maximo-contador");
-    if (contadorCarga) {
-        contadorCarga.value = maxCarga;
-    }
-    
-    const itens = document.querySelectorAll(".card-item").length;
-    const contadorValor = document.querySelector(".contador-carga .valor-contador");
-    if (contadorValor) {
-        contadorValor.value = itens;
-    }
-}
-
 document.querySelectorAll(".quadrado")[1].addEventListener("input", () => {
     atualizarContadorCarga();
 });
@@ -1048,6 +1039,12 @@ botaoAdicionarItem.addEventListener("click", () => {
 listaItens.addEventListener("click", (e) => {
     if (e.target.classList.contains("apagar-item")) {
         setTimeout(atualizarContadorCarga, 50);
+    }
+});
+
+listaItens.addEventListener("input", (e) => {
+    if (e.target.classList.contains("peso-item")) {
+        atualizarContadorCarga();
     }
 });
 
