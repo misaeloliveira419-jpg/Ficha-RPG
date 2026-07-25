@@ -855,6 +855,8 @@ function atualizarListaFichas(){
         const div = document.createElement("div");
 
         div.className = "ficha-lista";
+        
+        div.style.position = "relative";
 
         div.innerHTML = `
             <span class="nome-ficha">
@@ -863,7 +865,7 @@ function atualizarListaFichas(){
 
             <button class="excluir-ficha">🗑</button>
         `;
-        
+
         div.querySelector(".nome-ficha").onclick = ()=>{
 
             banco.atual = ficha.id;
@@ -875,7 +877,7 @@ function atualizarListaFichas(){
             fecharListaFichas();
 
         };
-        
+
         div.querySelector(".excluir-ficha").onclick = (e)=>{
 
             e.stopPropagation();
@@ -905,9 +907,93 @@ function atualizarListaFichas(){
         };
 
         lista.appendChild(div);
+        
+        let segurando = false;
+let timer = null;
+let inicioX = 0;
+let inicioY = 0;
+
+div.addEventListener("pointerdown",(e)=>{
+
+    inicioX = e.clientX;
+    inicioY = e.clientY;
+
+    timer = setTimeout(()=>{
+
+    segurando = true;
+
+    fichaArrastando = div;
+
+    indiceOriginal = indice;
+
+    div.classList.add("arrastando");
+
+},300);
+
+});
+
+div.addEventListener("pointermove",(e)=>{
+
+    if(!segurando) return;
+
+    const dx = e.clientX - inicioX;
+    const dy = e.clientY - inicioY;
+
+    div.style.transform =
+        `translate(${dx}px,${dy}px) scale(1.05)`;
+
+    const centroY = e.clientY;
+
+    const fichas = [...lista.querySelectorAll(".ficha-lista")];
+
+    fichas.forEach((f,i)=>{
+
+        if(f===div) return;
+
+        const r = f.getBoundingClientRect();
+
+        if(centroY > r.top && centroY < r.bottom){
+
+            if(i!==indiceOriginal){
+
+                lista.insertBefore(
+                    div,
+                    i>indiceOriginal
+                    ? f.nextSibling
+                    : f
+                );
+
+                indiceOriginal = i;
+
+            }
+
+        }
 
     });
 
+});
+
+function pararArrastar(){
+
+    clearTimeout(timer);
+
+    if(!segurando) return;
+
+    segurando = false;
+
+    div.classList.remove("arrastando");
+
+    div.style.transform = "";
+
+    fichaArrastando = null;
+
+}
+
+div.addEventListener("pointerup",pararArrastar);
+div.addEventListener("pointercancel",pararArrastar);
+
+});
+    
 }
 
 function abrirListaFichas(){
