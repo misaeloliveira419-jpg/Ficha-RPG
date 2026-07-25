@@ -869,3 +869,16 @@ main{
 .historia .conteudo-secao.fechado {
     display: none;
 }
+
+.ficha-lista{
+    position: relative;
+    touch-action: none;
+    user-select: none;
+    transition: transform .15s;
+}
+
+.ficha-lista.arrastando{
+    opacity: .8;
+    transform: scale(1.05);
+    z-index: 999;
+}
