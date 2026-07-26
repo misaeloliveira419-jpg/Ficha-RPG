@@ -844,17 +844,22 @@ document
 
 };
 
+let fichaArrastando = null;
+let indiceOriginal = -1;
+
 function atualizarListaFichas(){
 
     const lista = document.getElementById("lista-fichas");
 
     lista.innerHTML = "";
 
-    banco.fichas.forEach((ficha, indice)=>{
+    banco.fichas.forEach((ficha)=>{
 
         const div = document.createElement("div");
 
         div.className = "ficha-lista";
+        
+        div.dataset.id = ficha.id;
         
         div.style.position = "relative";
 
@@ -890,7 +895,8 @@ function atualizarListaFichas(){
                 return;
             }
 
-            banco.fichas.splice(indice,1);
+            banco.fichas =
+                banco.fichas.filter(f=>f.id!==ficha.id);
 
             if(banco.atual === ficha.id){
 
@@ -924,7 +930,7 @@ div.addEventListener("pointerdown",(e)=>{
 
     fichaArrastando = div;
 
-    indiceOriginal = indice;
+    indiceOriginal = [...lista.children].indexOf(div);
 
     div.classList.add("arrastando");
 
@@ -939,8 +945,7 @@ div.addEventListener("pointermove",(e)=>{
     const dx = e.clientX - inicioX;
     const dy = e.clientY - inicioY;
 
-    div.style.transform =
-        `translate(${dx}px,${dy}px) scale(1.05)`;
+    div.style.transform = "";
 
     const centroY = e.clientY;
 
@@ -984,12 +989,33 @@ function pararArrastar(){
     div.classList.remove("arrastando");
 
     div.style.transform = "";
+    
+    const novaOrdem = [];
 
-    fichaArrastando = null;
+document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card => {
+
+    const id = Number(card.dataset.id);
+
+    const ficha = banco.fichas.find(f => f.id === id);
+
+    if (ficha) {
+        novaOrdem.push(ficha);
+    }
+
+});
+
+banco.fichas = novaOrdem;
+
+salvarBanco();
+
+atualizarListaFichas();
+
+fichaArrastando = null;
 
 }
 
-div.addEventListener("pointerup",pararArrastar);
+div.addEventListener("pointerup", pararArrastar);
+        
 div.addEventListener("pointercancel",pararArrastar);
 
 });
