@@ -195,6 +195,8 @@ function criarItem(dados=null){
     card.innerHTML = `
         <div class="topo-item">
 
+            <input type="checkbox" class="item-checkbox">
+
             <input class="nome-item" placeholder="Novo item">
 
             <div class="botoes-item">
