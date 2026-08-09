@@ -233,6 +233,14 @@ main{
     border-radius:4px;
 }
 
+.item-checkbox{
+    
+    transform: scale(1.5);
+    margin-inline-end: 10px;
+    accent-color: rgb(40,70,100);
+    cursor: pointer;
+}
+
 .card-item{
 
     border:2px solid white;
