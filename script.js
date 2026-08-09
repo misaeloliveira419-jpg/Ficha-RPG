@@ -635,8 +635,8 @@ function salvarFichaAtual(){
 
         nome: card.querySelector(".nome-item").value,
         descricao: card.querySelector("textarea").value,
-        peso: Number(card.querySelector(".peso-item").value) || 0
-            
+        peso: Number(card.querySelector(".peso-item").value) || 0,
+        marcado: card.querySelector(".item-checkbox").checked
         }));
 
     const maxA = document.querySelector(".contador-atributos .maximo-contador");
@@ -734,6 +734,12 @@ function carregarFichaAtual(){
 
         criarItem(i);
 
+    });
+
+    document.querySelectorAll(".item-checkbox").forEach((checkbox, index) => {
+        if (ficha.inventario[index]) {
+            checkbox.checked = ficha.inventario[index].marcado || false;
+        }
     });
 
     atualizarFicha();
@@ -1213,6 +1219,14 @@ listaItens.addEventListener("click", (e) => {
 listaItens.addEventListener("input", (e) => {
     if (e.target.classList.contains("peso-item")) {
         atualizarContadorCarga();
+    }
+});
+
+listaItens.addEventListener("change", (e) => {
+    if (e.target.classList.contains("item-checkbox")) {
+        if (!carregandoFicha) {
+            salvarFichaAtual();
+        }
     }
 });
 
