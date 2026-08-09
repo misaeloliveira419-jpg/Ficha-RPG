@@ -575,38 +575,42 @@ function fichaAtual(){
 
 }
 
-document.getElementById("exportar-ficha").onclick = () => {
+// Botão Exportar/Compartilhar Ficha
+const botaoExportar = document.getElementById("exportar-ficha");
+if (botaoExportar) {
+    botaoExportar.onclick = () => {
+        salvarFichaAtual();
 
-    salvarFichaAtual();
+        const ficha = fichaAtual();
 
-    const ficha = fichaAtual();
+        if (!ficha) {
+            alert("Nenhuma ficha encontrada.");
+            return;
+        }
 
-    if (!ficha) {
-        alert("Nenhuma ficha encontrada.");
-        return;
-    }
+        const dados = JSON.stringify(ficha, null, 2);
 
-    const dados = JSON.stringify(ficha, null, 2);
+        const arquivo = new Blob(
+            [dados],
+            { type: "application/json" }
+        );
 
-    const arquivo = new Blob(
-        [dados],
-        { type: "application/json" }
-    );
+        const url = URL.createObjectURL(arquivo);
 
-    const url = URL.createObjectURL(arquivo);
+        const link = document.createElement("a");
 
-    const link = document.createElement("a");
+        link.href = url;
 
-    link.href = url;
+        link.download =
+            (ficha.personagem || "Ficha RPG") + ".json";
 
-    link.download =
-        (ficha.personagem || "Ficha RPG") + ".json";
+        link.click();
 
-    link.click();
+        URL.revokeObjectURL(url);
+    };
+}
 
-    URL.revokeObjectURL(url);
-};
-
+// Botão Importar Ficha
 const botaoImportar =
     document.getElementById("importar-ficha");
 
@@ -614,65 +618,66 @@ const arquivoFicha =
     document.getElementById("arquivo-ficha");
 
 
-botaoImportar.onclick = () => {
+if (botaoImportar) {
+    botaoImportar.onclick = () => {
+        arquivoFicha.click();
+    };
+}
 
-    arquivoFicha.click();
+if (arquivoFicha) {
+    arquivoFicha.addEventListener("change", (evento) => {
 
-};
+        const arquivo = evento.target.files[0];
 
+        if (!arquivo) {
+            return;
+        }
 
-arquivoFicha.addEventListener("change", (evento) => {
+        const leitor = new FileReader();
 
-    const arquivo = evento.target.files[0];
+        leitor.onload = () => {
 
-    if (!arquivo) {
-        return;
-    }
+            try {
 
-    const leitor = new FileReader();
+                const fichaImportada =
+                    JSON.parse(leitor.result);
 
-    leitor.onload = () => {
+                if (!fichaImportada.personagem) {
 
-        try {
+                    alert("Esse arquivo não parece ser uma ficha válida.");
 
-            const fichaImportada =
-                JSON.parse(leitor.result);
+                    return;
 
-            if (!fichaImportada.personagem) {
+                }
 
-                alert("Esse arquivo não parece ser uma ficha válida.");
+                fichaImportada.id = Date.now();
 
-                return;
+                banco.fichas.push(fichaImportada);
+
+                banco.atual = fichaImportada.id;
+
+                salvarBanco();
+
+                carregarFichaAtual();
+
+                alert("Ficha importada com sucesso!");
+
+            } catch (erro) {
+
+                alert("Não foi possível importar essa ficha.");
+
+                console.error(erro);
 
             }
 
-            fichaImportada.id = Date.now();
+        };
 
-            banco.fichas.push(fichaImportada);
+        leitor.readAsText(arquivo);
 
-            banco.atual = fichaImportada.id;
+        arquivoFicha.value = "";
 
-            salvarBanco();
-
-            carregarFichaAtual();
-
-            alert("Ficha importada com sucesso!");
-
-        } catch (erro) {
-
-            alert("Não foi possível importar essa ficha.");
-
-            console.error(erro);
-
-        }
-
-    };
-
-    leitor.readAsText(arquivo);
-
-    arquivoFicha.value = "";
-
-});
+    });
+}
 
 function salvarFichaAtual(){
 
