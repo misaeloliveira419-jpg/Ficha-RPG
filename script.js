@@ -575,6 +575,105 @@ function fichaAtual(){
 
 }
 
+document.getElementById("exportar-ficha").onclick = () => {
+
+    salvarFichaAtual();
+
+    const ficha = fichaAtual();
+
+    if (!ficha) {
+        alert("Nenhuma ficha encontrada.");
+        return;
+    }
+
+    const dados = JSON.stringify(ficha, null, 2);
+
+    const arquivo = new Blob(
+        [dados],
+        { type: "application/json" }
+    );
+
+    const url = URL.createObjectURL(arquivo);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+        (ficha.personagem || "Ficha RPG") + ".json";
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+};
+
+const botaoImportar =
+    document.getElementById("importar-ficha");
+
+const arquivoFicha =
+    document.getElementById("arquivo-ficha");
+
+
+botaoImportar.onclick = () => {
+
+    arquivoFicha.click();
+
+};
+
+
+arquivoFicha.addEventListener("change", (evento) => {
+
+    const arquivo = evento.target.files[0];
+
+    if (!arquivo) {
+        return;
+    }
+
+    const leitor = new FileReader();
+
+    leitor.onload = () => {
+
+        try {
+
+            const fichaImportada =
+                JSON.parse(leitor.result);
+
+            if (!fichaImportada.personagem) {
+
+                alert("Esse arquivo não parece ser uma ficha válida.");
+
+                return;
+
+            }
+
+            fichaImportada.id = Date.now();
+
+            banco.fichas.push(fichaImportada);
+
+            banco.atual = fichaImportada.id;
+
+            salvarBanco();
+
+            carregarFichaAtual();
+
+            alert("Ficha importada com sucesso!");
+
+        } catch (erro) {
+
+            alert("Não foi possível importar essa ficha.");
+
+            console.error(erro);
+
+        }
+
+    };
+
+    leitor.readAsText(arquivo);
+
+    arquivoFicha.value = "";
+
+});
+
 function salvarFichaAtual(){
 
     const ficha = fichaAtual();
