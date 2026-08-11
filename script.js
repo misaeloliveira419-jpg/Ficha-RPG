@@ -575,39 +575,183 @@ function fichaAtual(){
 
 }
 
-// Botão Exportar/Compartilhar Ficha
-const botaoExportar = document.getElementById("exportar-ficha");
-if (botaoExportar) {
-    botaoExportar.onclick = () => {
-        salvarFichaAtual();
+function codificarFicha(ficha) {
 
-        const ficha = fichaAtual();
+    const json = JSON.stringify(ficha);
 
-        if (!ficha) {
-            alert("Nenhuma ficha encontrada.");
-            return;
-        }
+    const bytes = new TextEncoder().encode(json);
 
-        const dados = JSON.stringify(ficha, null, 2);
+    let binario = "";
 
-        const arquivo = new Blob(
-            [dados],
-            { type: "application/json" }
+    bytes.forEach(byte => {
+        binario += String.fromCharCode(byte);
+    });
+
+    const base64 = btoa(binario);
+
+    return encodeURIComponent(base64);
+}
+
+
+function decodificarFicha(dados) {
+
+    const base64 = decodeURIComponent(dados);
+
+    const binario = atob(base64);
+
+    const bytes = Uint8Array.from(
+        binario,
+        c => c.charCodeAt(0)
+    );
+
+    const json =
+        new TextDecoder().decode(bytes);
+
+    return JSON.parse(json);
+}
+
+function compartilharFicha() {
+
+    salvarFichaAtual();
+
+    const ficha = fichaAtual();
+
+    if (!ficha) {
+
+        alert("Nenhuma ficha selecionada.");
+
+        return;
+    }
+
+    try {
+
+        const json =
+            JSON.stringify(ficha);
+
+        const comprimido =
+            LZString.compressToEncodedURIComponent(json);
+
+        const url =
+            window.location.origin +
+            window.location.pathname +
+            "?f=" +
+            comprimido;
+
+        navigator.clipboard.writeText(url)
+            .then(() => {
+
+                alert(
+                    "Link da ficha copiado para a área de transferência!"
+                );
+
+            })
+            .catch(() => {
+
+                prompt(
+                    "Copie o link da ficha:",
+                    url
+                );
+
+            });
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert(
+            "Não foi possível criar o link da ficha."
         );
 
-        const url = URL.createObjectURL(arquivo);
+    }
 
-        const link = document.createElement("a");
+}
 
-        link.href = url;
+document.getElementById("compartilhar-ficha").onclick = () => {
 
-        link.download =
-            (ficha.personagem || "Ficha RPG") + ".json";
+    compartilharFicha();
 
-        link.click();
+};
 
-        URL.revokeObjectURL(url);
-    };
+function verificarFichaCompartilhada() {
+
+    const parametros =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const dados =
+        parametros.get("f");
+
+    if (!dados) {
+        return;
+    }
+
+    try {
+
+        const json =
+            LZString.decompressFromEncodedURIComponent(
+                dados
+            );
+
+        if (!json) {
+
+            throw new Error(
+                "Não foi possível descomprimir a ficha."
+            );
+
+        }
+
+        const ficha =
+            JSON.parse(json);
+
+        const resposta =
+            confirm(
+                "Uma ficha foi compartilhada com você!\n\n" +
+                "Personagem: " +
+                (ficha.personagem || "Sem nome") +
+                "\n\n" +
+                "Deseja importar esta ficha?"
+            );
+
+        if (!resposta) {
+
+            return;
+
+        }
+
+        ficha.id = Date.now();
+
+        banco.fichas.push(ficha);
+
+        banco.atual = ficha.id;
+
+        salvarBanco();
+
+        carregarFichaAtual();
+
+        atualizarBotaoExcluir();
+
+        alert(
+            "Ficha importada com sucesso!"
+        );
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert(
+            "Não foi possível importar a ficha.\n\n" +
+            "O link pode estar inválido ou corrompido."
+        );
+
+    }
+
 }
 
 // Botão Importar Ficha
@@ -873,6 +1017,8 @@ document.addEventListener("click",()=>{
     setTimeout(salvarFichaAtual,20);
 
 });
+
+verificarFichaCompartilhada();
 
 const btnMenu = document.getElementById("btn-menu");
 
