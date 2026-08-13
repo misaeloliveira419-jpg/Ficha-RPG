@@ -1,30 +1,32 @@
+// Atualizado: usando inputs numéricos para treinamento (1-14) em vez de menu/botões
+
 let carregandoFicha = false;
 
 const PERICIAS_PADRAO = [
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Acrobacia
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Adestramento
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Atletismo
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Atualidades
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Ciências
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Condução
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Crime
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Diplomacia
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Enganação
-    { atributo: "(VIG)", classe: "atributo-pericia vig", treinamento: "0", modificador: "" }, // Fortitude
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Furtividade
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Iniciativa
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Intimidação
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Intuição
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Investigação
-    { atributo: "(FOR)", classe: "atributo-pericia for", treinamento: "0", modificador: "" }, // Luta
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Medicina
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }, // Percepção
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Pontaria
-    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: "0", modificador: "" }, // Reflexos
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Religião
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Sobrevivência
-    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: "0", modificador: "" }, // Tecnologia
-    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: "0", modificador: "" }  // Vontade
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Acrobacia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Adestramento
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Atletismo
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Atualidades
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Ciências
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Condução
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Crime
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Diplomacia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Enganação
+    { atributo: "(VIG)", classe: "atributo-pericia vig", treinamento: 1, modificador: "" }, // Fortitude
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Furtividade
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Iniciativa
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Intimidação
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Intuição
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Investigação
+    { atributo: "(FOR)", classe: "atributo-pericia for", treinamento: 1, modificador: "" }, // Luta
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Medicina
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }, // Percepção
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Pontaria
+    { atributo: "(DES)", classe: "atributo-pericia des", treinamento: 1, modificador: "" }, // Reflexos
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Religião
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Sobrevivência
+    { atributo: "(INT)", classe: "atributo-pericia int", treinamento: 1, modificador: "" }, // Tecnologia
+    { atributo: "(PRE)", classe: "atributo-pericia pre", treinamento: 1, modificador: "" }  // Vontade
 ];
 
 const atributos = document.querySelectorAll(".quadrado");
@@ -320,75 +322,9 @@ document.querySelectorAll(".atributo-pericia").forEach(span=>{
 
 });
 
-const opcoesTreinamento = [
-    "-5",
-    "0",
-    "+1d6",
-    "+2d6",
-    "+3d6"
-];
-
-const menu = document.createElement("div");
-menu.className = "menu-treinamento";
-
-opcoesTreinamento.forEach(valor=>{
-
-    const opcao = document.createElement("div");
-
-    opcao.className = "menu-opcao";
-
-    opcao.textContent = valor;
-
-    menu.appendChild(opcao);
-
-});
-
-document.body.appendChild(menu);
-
-let botaoAtual = null;
-
-document.querySelectorAll(".treinamento").forEach(botao=>{
-
-    botao.addEventListener("click",(e)=>{
-
-        e.stopPropagation();
-
-        botaoAtual = botao;
-
-        menu.style.display = "block";
-
-        menu.style.left = e.clientX + 8 + "px";
-
-        menu.style.top = e.clientY + "px";
-
-    });
-
-});
-
-menu.querySelectorAll(".menu-opcao").forEach(opcao=>{
-
-    opcao.addEventListener("click",()=>{
-
-        if(botaoAtual){
-
-            botaoAtual.textContent = opcao.textContent;
-
-            atualizarFicha();
-
-            atualizarContadorPericias();
-        }
-
-        menu.style.display = "none";
-
-    });
-
-});
-
-document.addEventListener("click",()=>{
-
-    menu.style.display = "none";
-
-});
+// --- Removido: menu de treinamento e opcoes especiais ---
+// Agora cada .treinamento é um <input type="number"> com min=1 max=14
+// Event listeners abaixo tratam esses inputs como números
 
 function atualizarStatus(barra, novoMaximo){
     const atual = barra.querySelector(".atual");
@@ -406,17 +342,8 @@ function atualizarVida(){
 
     const vigor = Number(document.querySelectorAll(".quadrado")[4].value);
 
-    const fortitude = document.querySelectorAll(".treinamento")[9].textContent;
-
-    const tabela = {
-        "-5": -1,
-        "0": 0,
-        "+1d6": 1,
-        "+2d6": 2,
-        "+3d6": 3
-    };
-
-    const bonus = tabela[fortitude] ?? 0;
+    const treinoFortitudeInput = document.querySelectorAll(".treinamento")[9];
+    const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
 
     const maxVida = 10 + vigor + bonus * 2;
 
@@ -430,16 +357,9 @@ function atualizarSanidade(){
 
     const intelecto = Number(document.querySelectorAll(".quadrado")[2].value);
 
-    const vontade = document.querySelectorAll(".pericia")[23]
-        .querySelector(".treinamento").textContent;
-
-    const bonusSanidade = {
-        "-5": -1,
-        "0": 0,
-        "+1d6": 1,
-        "+2d6": 2,
-        "+3d6": 3
-    }[vontade] || 0;
+    const treinoVontadeInput = document.querySelectorAll(".pericia")[23]
+        .querySelector(".treinamento");
+    const bonusSanidade = treinoVontadeInput ? Number(treinoVontadeInput.value) || 0 : 0;
 
     const maxSanidade = 20 + 3 * intelecto + bonusSanidade * 2;
 
@@ -789,7 +709,8 @@ function salvarFichaAtual(){
 
             classe:p.querySelector(".atributo-pericia").className,
 
-            treinamento:p.querySelector(".treinamento").textContent,
+            // agora armazena número (treinamento)
+            treinamento:Number(p.querySelector(".treinamento").value) || 0,
 
             modificador:p.querySelector(".modificador").value
             
@@ -895,8 +816,11 @@ function carregarFichaAtual(){
 
         atributo.className=dados.classe;
 
-        p.querySelector(".treinamento")
-        .textContent=dados.treinamento;
+        // agora escreve o value do input de treinamento
+        const treinoInput = p.querySelector(".treinamento");
+        if (treinoInput) {
+            treinoInput.value = (dados.treinamento ?? 1);
+        }
 
         p.querySelector(".modificador")
         .value=dados.modificador;
@@ -919,6 +843,19 @@ function carregarFichaAtual(){
         if (ficha.inventario[index]) {
             checkbox.checked = ficha.inventario[index].marcado || false;
         }
+    });
+
+    // garantir listeners nos inputs de treinamento para recalcular
+    document.querySelectorAll(".treinamento").forEach(input => {
+        input.addEventListener("input", () => {
+            if (!carregandoFicha) {
+                setTimeout(() => {
+                    atualizarContadores();
+                    salvarFichaAtual();
+                    atualizarFicha();
+                }, 10);
+            }
+        });
     });
 
     atualizarFicha();
@@ -1208,7 +1145,7 @@ div.addEventListener("pointerup", pararArrastar);
 div.addEventListener("pointercancel",pararArrastar);
 
 });
-    
+
 }
 
 function abrirListaFichas(){
@@ -1283,17 +1220,10 @@ function atualizarContadorAtributos() {
 
 function atualizarContadorPericias() {
     const pericias = [...document.querySelectorAll(".pericia")];
-    const tabela = {
-        "-5": -1,
-        "0": 0,
-        "+1d6": 1,
-        "+2d6": 2,
-        "+3d6": 3
-    };
     
     const soma = pericias.reduce((total, pericia) => {
-        const treinamento = pericia.querySelector(".treinamento").textContent;
-        return total + (tabela[treinamento] || 0);
+        const val = Number(pericia.querySelector(".treinamento").value) || 0;
+        return total + val;
     }, 0);
     
     const contadorPericias = document.querySelector(".contador-pericias .valor-contador");
@@ -1326,9 +1256,11 @@ atributos.forEach(input => {
     });
 });
 
-document.querySelectorAll(".treinamento").forEach(botao => {
-    botao.addEventListener("click", () => {
-        setTimeout(atualizarContadorPericias, 10);
+// listeners para inputs de treinamento (se já existirem na página)
+document.querySelectorAll(".treinamento").forEach(input => {
+    input.addEventListener("input", () => {
+        setTimeout(atualizarContadores, 10);
+        setTimeout(atualizarFicha, 10);
     });
 });
 
