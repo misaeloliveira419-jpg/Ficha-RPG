@@ -339,7 +339,7 @@ function atualizarVida(){
     const treinoFortitudeInput = document.querySelectorAll(".treinamento")[9];
     const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
 
-    const maxVida = 10 + vigor + (bonus/2);
+    const maxVida = 10 + vigor + Math.floor(bonus/2);
 
     atualizarStatus(
         document.querySelectorAll(".status")[0],
@@ -355,7 +355,7 @@ function atualizarSanidade(){
         .querySelector(".treinamento");
     const bonusSanidade = treinoVontadeInput ? Number(treinoVontadeInput.value) || 0 : 0;
 
-    const maxSanidade = 20 + 3 * intelecto + bonusSanidade;
+    const maxSanidade = 20 + 2 * intelecto + Math.floor(bonusSanidade/2);
 
     atualizarStatus(
         document.querySelectorAll(".status")[1],
