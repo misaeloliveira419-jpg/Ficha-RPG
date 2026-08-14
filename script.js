@@ -1,5 +1,3 @@
-// Atualizado: usando inputs numéricos para treinamento (1-14) em vez de menu/botões
-
 let carregandoFicha = false;
 
 const PERICIAS_PADRAO = [
@@ -322,10 +320,6 @@ document.querySelectorAll(".atributo-pericia").forEach(span=>{
 
 });
 
-// --- Removido: menu de treinamento e opcoes especiais ---
-// Agora cada .treinamento é um <input type="number"> com min=1 max=14
-// Event listeners abaixo tratam esses inputs como números
-
 function atualizarStatus(barra, novoMaximo){
     const atual = barra.querySelector(".atual");
     const maximo = barra.querySelector(".maximo");
@@ -450,7 +444,7 @@ inventario:[
 ],
 
     maxAtributos: 10,
-    maxPericias: 12  
+    maxPericias: 100  
     };
 
     banco.fichas.push(ficha);
@@ -708,8 +702,7 @@ function salvarFichaAtual(){
             atributo:p.querySelector(".atributo-pericia").textContent,
 
             classe:p.querySelector(".atributo-pericia").className,
-
-            // agora armazena número (treinamento)
+            
             treinamento:Number(p.querySelector(".treinamento").value) || 0,
 
             modificador:p.querySelector(".modificador").value
@@ -844,8 +837,7 @@ function carregarFichaAtual(){
             checkbox.checked = ficha.inventario[index].marcado || false;
         }
     });
-
-    // garantir listeners nos inputs de treinamento para recalcular
+    
     document.querySelectorAll(".treinamento").forEach(input => {
         input.addEventListener("input", () => {
             if (!carregandoFicha) {
@@ -1256,7 +1248,6 @@ atributos.forEach(input => {
     });
 });
 
-// listeners para inputs de treinamento (se já existirem na página)
 document.querySelectorAll(".treinamento").forEach(input => {
     input.addEventListener("input", () => {
         setTimeout(atualizarContadores, 10);
