@@ -168,36 +168,12 @@ main{
     font-size:16px;
     font-family:"Times New Roman", Times, serif;
     color:white;
+    text-align:center;
 }
 
 .treinamento:hover{
 
     background:rgb(50,50,50);
-}
-
-.menu-treinamento{
-
-    position:fixed;
-    display:none;
-    background:black;
-    border:2px solid white;
-    box-shadow:0 4px 10px rgba(0,0,0,.25);
-    z-index:99999;
-    min-width:75px;
-    overflow:hidden;
-}
-
-.menu-opcao{
-
-    padding:8px 12px;
-    text-align:center;
-    cursor:pointer;
-    user-select:none;
-}
-
-.menu-opcao:hover{
-
-    background:rgb(100,100,100);
 }
 
 .modificador{
@@ -798,36 +774,6 @@ main{
 
 .contador-atributos span,
 .contador-pericias span,
-.contador-carga span {
-    color: white;
-}
-
-.contador-carga {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.contador-carga input {
-    width: 60px;
-    height: 40px;
-    border: 2px solid white;
-    background: black;
-    color: white;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    outline: none;
-}
-
-.contador-carga input:focus {
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-}
-
 .contador-carga span {
     color: white;
 }
