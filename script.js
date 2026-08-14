@@ -339,7 +339,7 @@ function atualizarVida(){
     const treinoFortitudeInput = document.querySelectorAll(".treinamento")[9];
     const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
 
-    const maxVida = 10 + vigor + bonus;
+    const int maxVida = 10 + vigor + (bonus/2);
 
     atualizarStatus(
         document.querySelectorAll(".status")[0],
