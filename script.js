@@ -703,7 +703,7 @@ function salvarFichaAtual(){
 
             classe:p.querySelector(".atributo-pericia").className,
             
-            treinamento:Number(p.querySelector(".treinamento").value) || 0,
+            treinamento: Math.min(14, Math.max(1, Number(p.querySelector(".treinamento").value) || 1)),
 
             modificador:p.querySelector(".modificador").value
             
@@ -812,7 +812,8 @@ function carregarFichaAtual(){
         // agora escreve o value do input de treinamento
         const treinoInput = p.querySelector(".treinamento");
         if (treinoInput) {
-            treinoInput.value = (dados.treinamento ?? 1);
+            // garante que o valor fique entre 1 e 14 ao carregar
+            treinoInput.value = Math.min(14, Math.max(1, Number(dados.treinamento ?? 1)));
         }
 
         p.querySelector(".modificador")
@@ -838,9 +839,22 @@ function carregarFichaAtual(){
         }
     });
     
+    // adiciona listener de input para os campos de treinamento que aplica clamp + salva/atualiza
     document.querySelectorAll(".treinamento").forEach(input => {
+        // define atributos min/max para inputs de treinamento
+        input.setAttribute('min', '1');
+        input.setAttribute('max', '14');
+
         input.addEventListener("input", () => {
             if (!carregandoFicha) {
+                // aplica clamp imediato
+                let v = Number(input.value);
+                if (!Number.isFinite(v) || isNaN(v)) v = 1;
+                v = Math.round(v);
+                if (v < 1) v = 1;
+                if (v > 14) v = 14;
+                input.value = v;
+
                 setTimeout(() => {
                     atualizarContadores();
                     salvarFichaAtual();
@@ -1136,7 +1150,7 @@ div.addEventListener("pointerup", pararArrastar);
         
 div.addEventListener("pointercancel",pararArrastar);
 
-});
+    });
 
 }
 
@@ -1248,10 +1262,38 @@ atributos.forEach(input => {
     });
 });
 
+// aplica comportamento de clamp para todos os inputs de treinamento
+function aplicarClampTreinamento() {
+    document.querySelectorAll(".treinamento").forEach(input => {
+        input.setAttribute('min', '1');
+        input.setAttribute('max', '14');
+
+        // remove listeners if any? Not necessary here, just add safe listener
+        input.addEventListener("input", () => {
+            let v = Number(input.value);
+            if (!Number.isFinite(v) || isNaN(v)) v = 1;
+            v = Math.round(v);
+            if (v < 1) v = 1;
+            if (v > 14) v = 14;
+            input.value = v;
+        });
+    });
+}
+
+// chama ao carregar
+aplicarClampTreinamento();
+
+// antes havia um listener duplicado em dois pontos; mantemos os existing ones but ensure clamp runs
 document.querySelectorAll(".treinamento").forEach(input => {
     input.addEventListener("input", () => {
         setTimeout(atualizarContadores, 10);
         setTimeout(atualizarFicha, 10);
+    });
+});
+
+document.querySelectorAll(".treinamento").forEach(input => {
+    input.addEventListener("input", () => {
+        setTimeout(atualizarContadores, 10);
     });
 });
 
