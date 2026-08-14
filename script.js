@@ -746,6 +746,16 @@ function salvarFichaAtual(){
 
 }
 
+// Função para aplicar clamp em um input de treinamento
+function aplicarClampTreinamento(input) {
+    let v = Number(input.value);
+    if (!Number.isFinite(v) || isNaN(v)) v = 1;
+    v = Math.round(v);
+    if (v < 1) v = 1;
+    if (v > 14) v = 14;
+    input.value = v;
+}
+
 function carregarFichaAtual(){
     
     carregandoFicha = true;
@@ -839,25 +849,29 @@ function carregarFichaAtual(){
         }
     });
     
-    // adiciona listener de input para os campos de treinamento que aplica clamp + salva/atualiza
+    // Adiciona listeners aos campos de treinamento - clamp APENAS ao sair do campo (blur)
     document.querySelectorAll(".treinamento").forEach(input => {
-        // define atributos min/max para inputs de treinamento
         input.setAttribute('min', '1');
         input.setAttribute('max', '14');
 
-        input.addEventListener("input", () => {
+        // Evento 'blur' - quando o usuário sai do campo
+        input.addEventListener("blur", () => {
             if (!carregandoFicha) {
-                // aplica clamp imediato
-                let v = Number(input.value);
-                if (!Number.isFinite(v) || isNaN(v)) v = 1;
-                v = Math.round(v);
-                if (v < 1) v = 1;
-                if (v > 14) v = 14;
-                input.value = v;
-
+                aplicarClampTreinamento(input);
+                
                 setTimeout(() => {
                     atualizarContadores();
                     salvarFichaAtual();
+                    atualizarFicha();
+                }, 10);
+            }
+        });
+
+        // Evento 'input' - permite edição livre enquanto digita
+        input.addEventListener("input", () => {
+            if (!carregandoFicha) {
+                setTimeout(() => {
+                    atualizarContadores();
                     atualizarFicha();
                 }, 10);
             }
@@ -1262,38 +1276,10 @@ atributos.forEach(input => {
     });
 });
 
-// aplica comportamento de clamp para todos os inputs de treinamento
-function aplicarClampTreinamento() {
-    document.querySelectorAll(".treinamento").forEach(input => {
-        input.setAttribute('min', '1');
-        input.setAttribute('max', '14');
-
-        // remove listeners if any? Not necessary here, just add safe listener
-        input.addEventListener("input", () => {
-            let v = Number(input.value);
-            if (!Number.isFinite(v) || isNaN(v)) v = 1;
-            v = Math.round(v);
-            if (v < 1) v = 1;
-            if (v > 14) v = 14;
-            input.value = v;
-        });
-    });
-}
-
-// chama ao carregar
-aplicarClampTreinamento();
-
-// antes havia um listener duplicado em dois pontos; mantemos os existing ones but ensure clamp runs
 document.querySelectorAll(".treinamento").forEach(input => {
     input.addEventListener("input", () => {
         setTimeout(atualizarContadores, 10);
         setTimeout(atualizarFicha, 10);
-    });
-});
-
-document.querySelectorAll(".treinamento").forEach(input => {
-    input.addEventListener("input", () => {
-        setTimeout(atualizarContadores, 10);
     });
 });
 
