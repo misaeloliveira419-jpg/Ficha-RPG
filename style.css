@@ -6,7 +6,7 @@
 }
 
 body{
-    
+
     background:rgb(50,50,50);
     display:flex;
     justify-content:center;
@@ -74,7 +74,7 @@ main{
 }
 
 .bloco{
-    
+
     position:relative;
     padding:25px;
 }
@@ -89,7 +89,7 @@ main{
 }
 
 .atributos{
-    
+
     border-bottom:3px solid white;
 }
 
@@ -124,7 +124,7 @@ main{
 }
 
 .pontos{
-    
+
     top:-10px;
     border-bottom:3px solid white;
 }
@@ -210,7 +210,7 @@ main{
 }
 
 .item-checkbox{
-    
+
     transform: scale(1.5);
     margin-inline-end: 10px;
     accent-color: rgb(40,70,100);
@@ -343,15 +343,15 @@ main{
 }
 
 .vida{
-    background:#00aa1b;
+    background: linear-gradient(rgb(0,200,75),rgb(0,100,50));
 }
 
 .sanidade{
-    background:#39a8ff;
+    background: linear-gradient(rgb(0,175,255),rgb(0,100,200));
 }
 
 .esforco{
-    background:#d6aa00;
+    background: linear-gradient(rgb(200,200,50),rgb(125,125,25));
 }
 
 .texto{
@@ -508,7 +508,7 @@ main{
 }
 
 .btn-secao{
-    
+
     position:absolute;
     top:25px;
     left:25px;
@@ -616,7 +616,7 @@ main{
 }
 
 #deletar-ficha:disabled:hover{
-    
+
     background:rgb(100,100,100)
 }
 

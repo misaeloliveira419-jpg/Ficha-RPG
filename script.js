@@ -82,7 +82,7 @@ let banco = {
 };
 
 function criarHabilidade(dados=null){
-    
+
     const card = document.createElement("div");
     card.className = "card-habilidade";
 
@@ -104,42 +104,31 @@ function criarHabilidade(dados=null){
         <div class="conteudo">
 
             <label>Descrição</label>
-            <textarea></textarea>
+            <textarea class="descricao-habilidade"></textarea>
 
             <label>Custo</label>
-            <input type="text">
+            <input class="custo-habilidade" type="text">
 
             <label>Dano</label>
-            <input type="text">
+            <input class="dano-habilidade" type="text">
 
             <label>Alcance</label>
-            <input type="text">
+            <input class="alcance-habilidade" type="text">
 
             <label>Efeito</label>
-            <textarea></textarea>
+            <textarea class="efeito-habilidade"></textarea>
 
         </div>
     `;
-    
+
     if(dados){
 
-    card.querySelector(".nome-habilidade").value =
-        dados.nome;
-
-    card.querySelectorAll("textarea")[0].value =
-        dados.descricao;
-
-    card.querySelectorAll("input")[1].value =
-        dados.custo;
-
-    card.querySelectorAll("input")[2].value =
-        dados.dano;
-
-    card.querySelectorAll("input")[3].value =
-        dados.alcance;
-
-    card.querySelectorAll("textarea")[1].value =
-        dados.efeito;
+    card.querySelector(".nome-habilidade").value = dados.nome || "";
+    card.querySelector(".descricao-habilidade").value = dados.descricao || "";
+    card.querySelector(".custo-habilidade").value = dados.custo || "";
+    card.querySelector(".dano-habilidade").value = dados.dano || "";
+    card.querySelector(".alcance-habilidade").value = dados.alcance || "";
+    card.querySelector(".efeito-habilidade").value = dados.efeito || "";
 
     }
 
@@ -168,7 +157,7 @@ function criarHabilidade(dados=null){
         if(confirm("Deseja apagar esta habilidade?")){
 
             card.remove();
-            
+
             salvarFichaAtual();
 
         }
@@ -176,7 +165,7 @@ function criarHabilidade(dados=null){
     };
 
     lista.appendChild(card);
-    
+
     if(!carregandoFicha){
     salvarFichaAtual();
     }
@@ -213,19 +202,20 @@ function criarItem(dados=null){
 
             <label>Descrição</label>
 
-            <textarea placeholder="Descrição do item"></textarea>
+            <textarea class="descricao-item" placeholder="Descrição do item"></textarea>
 
             <label>Peso</label>
             <input class="peso-item" type="number" placeholder="0" min="0" step="0.1">
 
         </div>
     `;
-    
+
     if(dados){
 
     card.querySelector(".nome-item").value = dados.nome;
-    card.querySelector("textarea").value = dados.descricao;
-    card.querySelector(".peso-item").value = dados.peso || 0;
+    card.querySelector(".descricao-item").value = dados.descricao || "";
+    card.querySelector(".peso-item").value = Number(dados.peso) || 0;
+    card.querySelector(".item-checkbox").checked = !!dados.marcado;
 
     }
 
@@ -254,7 +244,7 @@ function criarItem(dados=null){
         if(confirm("Deseja apagar este item?")){
 
             card.remove();
-            
+
             salvarFichaAtual();
 
         }
@@ -262,7 +252,7 @@ function criarItem(dados=null){
     };
 
     listaItens.appendChild(card);
-    
+
     if(!carregandoFicha){
     salvarFichaAtual();
     }
@@ -336,7 +326,8 @@ function atualizarVida(){
 
     const vigor = Number(document.querySelectorAll(".quadrado")[4].value);
 
-    const treinoFortitudeInput = document.querySelectorAll(".treinamento")[9];
+    const periciaFortitude = document.querySelectorAll(".pericia")[9];
+    const treinoFortitudeInput = periciaFortitude ? periciaFortitude.querySelector(".treinamento") : null;
     const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
 
     const maxVida = 10 + vigor + Math.floor(bonus/2);
@@ -351,8 +342,8 @@ function atualizarSanidade(){
 
     const intelecto = Number(document.querySelectorAll(".quadrado")[2].value);
 
-    const treinoVontadeInput = document.querySelectorAll(".pericia")[23]
-        .querySelector(".treinamento");
+    const periciaVontade = document.querySelectorAll(".pericia")[23];
+    const treinoVontadeInput = periciaVontade ? periciaVontade.querySelector(".treinamento") : null;
     const bonusSanidade = treinoVontadeInput ? Number(treinoVontadeInput.value) || 0 : 0;
 
     const maxSanidade = 20 + 2 * intelecto + Math.floor(bonusSanidade/2);
@@ -399,7 +390,7 @@ function criarFichaNova(){
         personagem: "Nova Ficha " + (banco.fichas.length + 1),
 
         historia:"",
-        
+
         atributos:[1,1,1,1,1],
 
         status:[
@@ -464,19 +455,116 @@ function salvarBanco(){
 
 }
 
+function normalizarFicha(ficha){
+
+    if(!ficha || typeof ficha !== "object") ficha = {};
+
+    ficha.id = Number(ficha.id) || Date.now();
+    ficha.jogador = typeof ficha.jogador === "string" ? ficha.jogador : "";
+    ficha.personagem = typeof ficha.personagem === "string" ? ficha.personagem : "";
+    ficha.historia = typeof ficha.historia === "string" ? ficha.historia : "";
+
+    const atributos = Array.isArray(ficha.atributos) ? ficha.atributos : [];
+    ficha.atributos = [0,1,2,3,4].map(i=>{
+        let v = Number(atributos[i]);
+        if(!Number.isFinite(v)) v = 1;
+        return Math.min(5, Math.max(0, Math.round(v)));
+    });
+
+    const status = Array.isArray(ficha.status) ? ficha.status : [];
+    const statusPadrao = [
+        {atual:12,maximo:12},
+        {atual:23,maximo:23},
+        {atual:18,maximo:18}
+    ];
+    ficha.status = statusPadrao.map((padrao,i)=>{
+        const s = status[i] || {};
+        let maximo = Number(s.maximo);
+        let atual = Number(s.atual);
+        if(!Number.isFinite(maximo) || maximo <= 0) maximo = padrao.maximo;
+        if(!Number.isFinite(atual)) atual = maximo;
+        return { atual: Math.max(0, atual), maximo: maximo };
+    });
+
+    const pericias = Array.isArray(ficha.pericias) ? ficha.pericias : [];
+    ficha.pericias = PERICIAS_PADRAO.map((padrao,i)=>{
+        const p = pericias[i] || {};
+        let treino = Number(p.treinamento);
+        if(!Number.isFinite(treino)) treino = 1;
+        return {
+            atributo: typeof p.atributo === "string" ? p.atributo : padrao.atributo,
+            classe: typeof p.classe === "string" ? p.classe : padrao.classe,
+            treinamento: Math.min(14, Math.max(1, Math.round(treino))),
+            modificador: typeof p.modificador === "string" ? p.modificador : ""
+        };
+    });
+
+    ficha.habilidades = (Array.isArray(ficha.habilidades) ? ficha.habilidades : [])
+        .map(h=>({
+            nome: String((h && h.nome) || ""),
+            descricao: String((h && h.descricao) || ""),
+            custo: String((h && h.custo) || ""),
+            dano: String((h && h.dano) || ""),
+            alcance: String((h && h.alcance) || ""),
+            efeito: String((h && h.efeito) || "")
+        }));
+
+    ficha.inventario = (Array.isArray(ficha.inventario) ? ficha.inventario : [])
+        .map(i=>({
+            nome: String((i && i.nome) || ""),
+            descricao: String((i && i.descricao) || ""),
+            peso: Number(i && i.peso) || 0,
+            marcado: !!(i && i.marcado)
+        }));
+
+    ficha.maxAtributos = Number(ficha.maxAtributos) || 10;
+    ficha.maxPericias = Number(ficha.maxPericias) || 12;
+
+    return ficha;
+}
+
 function carregarBanco(){
 
     const salvo = localStorage.getItem("BancoFichasRPG");
 
     if(salvo){
 
-        banco = JSON.parse(salvo);
+        try{
 
+            const dados = JSON.parse(salvo);
+
+            if(dados && typeof dados === "object" && Array.isArray(dados.fichas)){
+
+                banco = {
+                    atual: dados.atual ?? null,
+                    fichas: dados.fichas.map(normalizarFicha)
+                };
+
+            }
+
+        }catch(erro){
+
+            console.error("Banco de fichas corrompido, iniciando um novo.", erro);
+
+        }
+
+    }
+
+    if(!banco || !Array.isArray(banco.fichas)){
+        banco = { atual: null, fichas: [] };
     }
 
     if(banco.fichas.length===0){
 
         criarFichaNova();
+
+    }
+
+    if(!banco.fichas.some(f=>f.id===banco.atual)){
+
+        banco.atual = banco.fichas[0].id;
+
+        salvarBanco();
 
     }
 
@@ -616,7 +704,7 @@ function verificarFichaCompartilhada() {
         }
 
         const ficha =
-            JSON.parse(json);
+            normalizarFicha(JSON.parse(json));
 
         const resposta =
             confirm(
@@ -672,6 +760,8 @@ function salvarFichaAtual(){
 
     const ficha = fichaAtual();
 
+    if(!ficha) return;
+
     ficha.jogador =
         document.getElementById("jogador").value;
 
@@ -680,7 +770,7 @@ function salvarFichaAtual(){
 
     ficha.historia =
         document.getElementById("texto-historia").value;
-    
+
     ficha.atributos =
         [...document.querySelectorAll(".quadrado")]
         .map(x=>Number(x.value));
@@ -702,23 +792,23 @@ function salvarFichaAtual(){
             atributo:p.querySelector(".atributo-pericia").textContent,
 
             classe:p.querySelector(".atributo-pericia").className,
-            
+
             treinamento: Math.min(14, Math.max(1, Number(p.querySelector(".treinamento").value) || 1)),
 
             modificador:p.querySelector(".modificador").value
-            
+
         }));
-            
+
         ficha.habilidades =
     [...document.querySelectorAll(".card-habilidade")]
     .map(card=>({
 
         nome: card.querySelector(".nome-habilidade").value,
-        descricao: card.querySelectorAll("textarea")[0].value,
-        custo: card.querySelectorAll("input")[1].value,
-        dano: card.querySelectorAll("input")[2].value,
-        alcance: card.querySelectorAll("input")[3].value,
-        efeito: card.querySelectorAll("textarea")[1].value
+        descricao: card.querySelector(".descricao-habilidade").value,
+        custo: card.querySelector(".custo-habilidade").value,
+        dano: card.querySelector(".dano-habilidade").value,
+        alcance: card.querySelector(".alcance-habilidade").value,
+        efeito: card.querySelector(".efeito-habilidade").value
 
         }));
 
@@ -727,7 +817,7 @@ function salvarFichaAtual(){
     .map(card=>({
 
         nome: card.querySelector(".nome-item").value,
-        descricao: card.querySelector("textarea").value,
+        descricao: card.querySelector(".descricao-item").value,
         peso: Number(card.querySelector(".peso-item").value) || 0,
         marcado: card.querySelector(".item-checkbox").checked
         }));
@@ -739,7 +829,7 @@ function salvarFichaAtual(){
     ficha.maxPericias = maxP ? Number(maxP.value) : (ficha.maxPericias ?? 12);
 
     salvarBanco();
-    
+
     atualizarBotaoExcluir();
 
     atualizarContadores();
@@ -757,14 +847,19 @@ function aplicarClampTreinamento(input) {
 }
 
 function carregarFichaAtual(){
-    
+
     carregandoFicha = true;
-    
+
     lista.innerHTML = "";
-    
+
     listaItens.innerHTML = "";
 
-    const ficha = fichaAtual();
+    const ficha = normalizarFicha(fichaAtual());
+
+    if(!ficha){
+        carregandoFicha = false;
+        return;
+    }
 
     document.getElementById("jogador").value =
         ficha.jogador;
@@ -818,17 +913,15 @@ function carregarFichaAtual(){
         atributo.textContent=dados.atributo;
 
         atributo.className=dados.classe;
-
-        // agora escreve o value do input de treinamento
+        
         const treinoInput = p.querySelector(".treinamento");
         if (treinoInput) {
-            // garante que o valor fique entre 1 e 14 ao carregar
             treinoInput.value = Math.min(14, Math.max(1, Number(dados.treinamento ?? 1)));
         }
 
         p.querySelector(".modificador")
         .value=dados.modificador;
-        
+
     });
 
     ficha.habilidades.forEach(h=>{
@@ -843,68 +936,33 @@ function carregarFichaAtual(){
 
     });
 
-    document.querySelectorAll(".item-checkbox").forEach((checkbox, index) => {
-        if (ficha.inventario[index]) {
-            checkbox.checked = ficha.inventario[index].marcado || false;
-        }
-    });
-    
-    // Adiciona listeners aos campos de treinamento - clamp APENAS ao sair do campo (blur)
-    document.querySelectorAll(".treinamento").forEach(input => {
-        input.setAttribute('min', '1');
-        input.setAttribute('max', '14');
-
-        // Evento 'blur' - quando o usuário sai do campo
-        input.addEventListener("blur", () => {
-            if (!carregandoFicha) {
-                aplicarClampTreinamento(input);
-                
-                setTimeout(() => {
-                    atualizarContadores();
-                    salvarFichaAtual();
-                    atualizarFicha();
-                }, 10);
-            }
-        });
-
-        // Evento 'input' - permite edição livre enquanto digita
-        input.addEventListener("input", () => {
-            if (!carregandoFicha) {
-                setTimeout(() => {
-                    atualizarContadores();
-                    atualizarFicha();
-                }, 10);
-            }
-        });
-    });
-
     atualizarFicha();
 
     atualizarContadores();
-    
+
     carregandoFicha = false;
 
 }
 
 carregarBanco();
 
-document.addEventListener("input",()=>{
+let timerSalvamento = null;
+
+function salvarComAtraso(){
 
     if(carregandoFicha) return;
-    
-    salvarFichaAtual();
 
-});
+    clearTimeout(timerSalvamento);
+
+    timerSalvamento = setTimeout(salvarFichaAtual, 300);
+
+}
+
+document.addEventListener("input", salvarComAtraso);
 
 carregarFichaAtual();
 
-document.addEventListener("click",()=>{
-
-    if(carregandoFicha) return;
-    
-    setTimeout(salvarFichaAtual,20);
-
-});
+document.addEventListener("click", salvarComAtraso);
 
 verificarFichaCompartilhada();
 
@@ -943,7 +1001,7 @@ menuLateral.addEventListener("click",(e)=>{
 document.getElementById("criar-ficha").onclick = ()=>{
 
     salvarFichaAtual();
-    
+
     criarFichaNova();
 
     carregarFichaAtual();
@@ -1004,18 +1062,21 @@ function atualizarListaFichas(){
         const div = document.createElement("div");
 
         div.className = "ficha-lista";
-        
+
         div.dataset.id = ficha.id;
-        
+
         div.style.position = "relative";
 
-        div.innerHTML = `
-            <span class="nome-ficha">
-                ${ficha.personagem || "Sem nome"}
-            </span>
+        const nomeFicha = document.createElement("span");
+        nomeFicha.className = "nome-ficha";
+        nomeFicha.textContent = ficha.personagem || "Sem nome";
 
-            <button class="excluir-ficha">🗑</button>
-        `;
+        const botaoExcluir = document.createElement("button");
+        botaoExcluir.className = "excluir-ficha";
+        botaoExcluir.textContent = "🗑";
+
+        div.appendChild(nomeFicha);
+        div.appendChild(botaoExcluir);
 
         div.querySelector(".nome-ficha").onclick = ()=>{
 
@@ -1048,6 +1109,8 @@ function atualizarListaFichas(){
 
                 banco.atual = banco.fichas[0].id;
 
+                carregarFichaAtual();
+
             }
 
             salvarBanco();
@@ -1059,7 +1122,7 @@ function atualizarListaFichas(){
         };
 
         lista.appendChild(div);
-        
+
         let segurando = false;
 let timer = null;
 let inicioX = 0;
@@ -1069,6 +1132,8 @@ div.addEventListener("pointerdown",(e)=>{
 
     inicioX = e.clientX;
     inicioY = e.clientY;
+
+    try{ div.setPointerCapture(e.pointerId); }catch(erro){}
 
     timer = setTimeout(()=>{
 
@@ -1086,7 +1151,17 @@ div.addEventListener("pointerdown",(e)=>{
 
 div.addEventListener("pointermove",(e)=>{
 
-    if(!segurando) return;
+    if(!segurando){
+
+        // se o usuário rolar antes dos 300ms, cancela o long-press
+        if(Math.abs(e.clientX - inicioX) > 10 || Math.abs(e.clientY - inicioY) > 10){
+            clearTimeout(timer);
+        }
+
+        return;
+    }
+
+    e.preventDefault();
 
     const dx = e.clientX - inicioX;
     const dy = e.clientY - inicioY;
@@ -1135,7 +1210,7 @@ function pararArrastar(){
     div.classList.remove("arrastando");
 
     div.style.transform = "";
-    
+
     const novaOrdem = [];
 
 document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card => {
@@ -1161,7 +1236,7 @@ fichaArrastando = null;
 }
 
 div.addEventListener("pointerup", pararArrastar);
-        
+
 div.addEventListener("pointercancel",pararArrastar);
 
     });
@@ -1173,7 +1248,7 @@ function abrirListaFichas(){
     salvarFichaAtual();
 
     atualizarListaFichas();
-    
+
     document.querySelector("header").style.display = "none";
 
     document.querySelector("main").style.display="none";
@@ -1186,7 +1261,7 @@ function abrirListaFichas(){
 }
 
 function fecharListaFichas(){
-    
+
     document.querySelector("header").style.display = "block";
 
     document.querySelector("main").style.display="grid";
@@ -1217,7 +1292,7 @@ document
 };
 
 document.getElementById("nova-ficha-lista").onclick = ()=>{
-    
+
     salvarFichaAtual();
 
     criarFichaNova();
@@ -1231,7 +1306,7 @@ document.getElementById("nova-ficha-lista").onclick = ()=>{
 function atualizarContadorAtributos() {
     const atributos = [...document.querySelectorAll(".quadrado")];
     const soma = atributos.reduce((total, input) => total + Number(input.value), 0);
-    
+
     const contadorAtributos = document.querySelector(".contador-atributos .valor-contador");
     if (contadorAtributos) {
         contadorAtributos.value = soma;
@@ -1240,12 +1315,12 @@ function atualizarContadorAtributos() {
 
 function atualizarContadorPericias() {
     const pericias = [...document.querySelectorAll(".pericia")];
-    
+
     const soma = pericias.reduce((total, pericia) => {
         const val = Number(pericia.querySelector(".treinamento").value) || 0;
         return total + val;
     }, 0);
-    
+
     const contadorPericias = document.querySelector(".contador-pericias .valor-contador");
     if (contadorPericias) {
         contadorPericias.value = soma;
@@ -1255,15 +1330,14 @@ function atualizarContadorPericias() {
 function atualizarContadorCarga() {
     const forca = Number(document.querySelectorAll(".quadrado")[1].value);
     const maxCarga = 5 + 2 * forca;
-    
+
     const contadorCarga = document.querySelector(".contador-carga .maximo-contador");
     if (contadorCarga) {
         contadorCarga.value = maxCarga;
     }
-    
-    const totalPeso = [...document.querySelectorAll(".peso-item")]
-        .reduce((total, input) => total + (Number(input.value) || 0), 0);
-    
+
+    const totalPeso = [...document.querySelectorAll(".peso-item")].reduce((total, input) => total + (Number(input.value) || 0), 0);
+
     const contadorValor = document.querySelector(".contador-carga .valor-contador");
     if (contadorValor) {
         contadorValor.value = totalPeso.toFixed(1);
@@ -1277,10 +1351,24 @@ atributos.forEach(input => {
 });
 
 document.querySelectorAll(".treinamento").forEach(input => {
+
+    input.setAttribute("min", "1");
+    input.setAttribute("max", "14");
+    
     input.addEventListener("input", () => {
-        setTimeout(atualizarContadores, 10);
-        setTimeout(atualizarFicha, 10);
+        if (carregandoFicha) return;
+        atualizarContadores();
+        atualizarFicha();
     });
+    
+    input.addEventListener("blur", () => {
+        if (carregandoFicha) return;
+        aplicarClampTreinamento(input);
+        atualizarContadores();
+        atualizarFicha();
+        salvarFichaAtual();
+    });
+
 });
 
 function atualizarContadores() {
