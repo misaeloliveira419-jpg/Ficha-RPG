@@ -1074,29 +1074,41 @@ function salvarFichaAtual(){
     ficha.historia =
         document.getElementById("texto-historia").value;
     
-    const inputMetros = document.querySelector(".valor-metro");
-    const inputQuadrados = document.querySelector(".valor-quadrado");
+    const inputMetros =
+    document.querySelector(".valor-metro");
     
-    if (inputMetros && inputQuadrados) {
-        
-        let metros = Number(inputMetros.value);
-        
-        if (!Number.isFinite(metros) || metros < 1) {
-            metros = 1;
-        }
-        
-        metros = Math.floor(metros);
-        
-        const quadrados = Number((metros / 1.5).toFixed(1));
-        
-        inputMetros.value = metros;
-        inputQuadrados.value = quadrados;
-        
-        ficha.deslocamento = {
-            metros: metros,
-            quadrados: quadrados
-        };
+    if(inputMetros){
+
+    let metrosBase =
+        Number(inputMetros.dataset.valorBase);
+
+    if(!Number.isFinite(metrosBase) || metrosBase < 1){
+
+        metrosBase =
+            Number(inputMetros.value) || 1;
+
     }
+
+    metrosBase =
+        Math.max(
+            1,
+            Math.floor(metrosBase)
+        );
+
+    ficha.deslocamento = {
+
+        metros:
+            metrosBase,
+
+        quadrados:
+            Number(
+                (metrosBase / 1.5)
+                .toFixed(1)
+            )
+
+    };
+
+}
     
     ficha.atributos =
         [...document.querySelectorAll(".quadrado")]
@@ -1244,24 +1256,37 @@ function carregarFichaAtual(){
     document.getElementById("texto-historia").value =
         ficha.historia || "";
     
-    const inputMetros = document.querySelector(".valor-metro");
-    const inputQuadrados = document.querySelector(".valor-quadrado");
+    const inputMetros =
+    document.querySelector(".valor-metro");
     
-    if (inputMetros && inputQuadrados) {
-        
-        const metros = Number(ficha.deslocamento?.metros) || 9;
-        const quadrados = Number((metros / 1.5).toFixed(1));
-        
-        inputMetros.value = metros;
-        inputQuadrados.value = quadrados;
+    const inputQuadrados =
+    document.querySelector(".valor-quadrado");
+    
+    if(inputMetros && inputQuadrados){
+
+    let metrosBase =
+        Number(ficha.deslocamento?.metros);
+
+    if(!Number.isFinite(metrosBase) || metrosBase < 1){
+        metrosBase = 9;
     }
-    
-    document.querySelectorAll(".quadrado")
-    .forEach((q,i)=>{
 
-        q.value=ficha.atributos[i];
+    metrosBase =
+        Math.floor(metrosBase);
 
-    });
+    inputMetros.dataset.valorBase =
+        String(metrosBase);
+
+    inputMetros.value =
+        metrosBase;
+
+    inputQuadrados.value =
+        Number(
+            (metrosBase / 1.5)
+            .toFixed(1)
+        );
+
+}
 
     const contadorAtribMax = document.querySelector(".contador-atributos .maximo-contador");
     const contadorPericMax = document.querySelector(".contador-pericias .maximo-contador");
@@ -1794,6 +1819,95 @@ function atualizarContadorCarga() {
     if (contadorValor) {
         contadorValor.value = totalPeso.toFixed(1);
     }
+    
+    atualizarDeslocamentoPorCarga();
+}
+
+function calcularPenalidadeCarga(){
+
+    const pesoAtual =
+        Number(
+            document.querySelector(
+                ".contador-carga .valor-contador"
+            )?.value
+        ) || 0;
+
+    const cargaMaxima =
+        Number(
+            document.querySelector(
+                ".contador-carga .maximo-contador"
+            )?.value
+        ) || 0;
+
+    if(cargaMaxima <= 0){
+        return 0;
+    }
+
+    if(pesoAtual > cargaMaxima * 1.5){
+        return 6;
+    }
+
+    if(pesoAtual > cargaMaxima){
+        return 3;
+    }
+
+    return 0;
+}
+
+
+function atualizarDeslocamentoPorCarga(){
+
+    const inputMetros =
+        document.querySelector(".valor-metro");
+
+    const inputQuadrados =
+        document.querySelector(".valor-quadrado");
+
+    if(!inputMetros || !inputQuadrados){
+        return;
+    }
+    
+    if(document.activeElement === inputMetros){
+        return;
+    }
+
+    let metrosBase =
+        Number(inputMetros.dataset.valorBase);
+
+    if(!Number.isFinite(metrosBase) || metrosBase < 1){
+
+        metrosBase =
+            Number(inputMetros.value) || 1;
+
+    }
+
+    metrosBase =
+        Math.max(
+            1,
+            Math.floor(metrosBase)
+        );
+
+    const penalidade =
+        calcularPenalidadeCarga();
+
+    const metrosAtuais =
+        Math.max(
+            1,
+            metrosBase - penalidade
+        );
+
+    const quadradosAtuais =
+        Number(
+            (metrosAtuais / 1.5)
+            .toFixed(1)
+        );
+
+    inputMetros.value =
+        metrosAtuais;
+
+    inputQuadrados.value =
+        quadradosAtuais;
+
 }
 
 atributos.forEach(input => {
@@ -1989,3 +2103,48 @@ listaItens.addEventListener("change", (e) => {
         }
     }
 });
+
+const campoMetros =
+    document.querySelector(".valor-metro");
+
+if(campoMetros){
+
+    campoMetros.addEventListener("focus", () => {
+
+        const metrosBase =
+            Number(
+                campoMetros.dataset.valorBase
+            );
+
+        if(Number.isFinite(metrosBase)){
+            campoMetros.value = metrosBase;
+        }
+
+    });
+
+
+    campoMetros.addEventListener("blur", () => {
+
+        let metrosBase =
+            Number(campoMetros.value);
+
+        if(
+            !Number.isFinite(metrosBase) ||
+            metrosBase < 1
+        ){
+            metrosBase = 1;
+        }
+
+        metrosBase =
+            Math.floor(metrosBase);
+
+        campoMetros.dataset.valorBase =
+            String(metrosBase);
+
+        salvarFichaAtual();
+
+        atualizarDeslocamentoPorCarga();
+
+    });
+
+}
