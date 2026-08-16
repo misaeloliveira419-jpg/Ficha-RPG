@@ -1255,6 +1255,11 @@ function carregarFichaAtual(){
 
     document.getElementById("texto-historia").value =
         ficha.historia || "";
+
+    document.querySelectorAll(".quadrado").forEach((q, i) => {
+        q.value =
+        ficha.atributos[i] ?? 1;
+    });
     
     const inputMetros =
     document.querySelector(".valor-metro");
