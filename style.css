@@ -231,13 +231,62 @@ main{
 }
 
 .pericia{
-
     display:grid;
-    grid-template-columns:1fr 60px 70px 80px;
-    gap:10px;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        60px
+        70px
+        42px
+        70px;
+
+    column-gap:0;
+
+    width:100%;
+
     align-items:center;
+
     margin:6px 0;
+
     font-size:16px;
+}
+
+.pericia > span:first-child{
+    min-width:0;
+}
+
+.treinamento,
+.sucessos-pericia,
+.modificador{
+    width:100%;
+}
+
+.sucessos-pericia{
+
+    width: 42px;
+    height: 32px;
+    border: 2px solid white;
+    display: flex;
+    flex-direction: column;
+    background: black;
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    user-select: none;
+}
+
+.valor-bom,
+.valor-extremo{
+
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+}
+
+.valor-bom{
+    border-bottom:1px solid white;
 }
 
 .atributo-pericia{

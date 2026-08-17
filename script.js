@@ -181,7 +181,8 @@ function aplicarBonusConhecimentoEspecifico(){
             input.max = 14;
 
         }
-
+        
+        atualizarSucessosPericias();
     });
 
 }
@@ -552,6 +553,105 @@ function atualizarDeterminacao(){
 
     atualizarStatus(document.querySelectorAll(".status")[1], maxDeterminacao);
 }
+
+function criarCamposSucessoPericias(){
+
+    document
+    .querySelectorAll(".pericia")
+    .forEach(pericia => {
+
+        if(
+            pericia.querySelector(
+                ".sucessos-pericia"
+            )
+        ){
+            return;
+        }
+
+        const treinamento =
+            pericia.querySelector(".treinamento");
+
+        if(!treinamento){
+            return;
+        }
+
+        const sucessos =
+            document.createElement("div");
+
+        sucessos.className =
+            "sucessos-pericia";
+
+        sucessos.innerHTML = `
+            <div class="valor-bom">1</div>
+            <div class="valor-extremo">1</div>
+        `;
+
+        treinamento.insertAdjacentElement(
+            "afterend",
+            sucessos
+        );
+
+    });
+
+}
+
+function atualizarSucessosPericias(){
+
+    document
+    .querySelectorAll(".pericia")
+    .forEach(pericia => {
+
+        const treinamento =
+            pericia.querySelector(".treinamento");
+
+        const campoBom =
+            pericia.querySelector(".valor-bom");
+
+        const campoExtremo =
+            pericia.querySelector(".valor-extremo");
+
+        if(
+            !treinamento ||
+            !campoBom ||
+            !campoExtremo
+        ){
+            return;
+        }
+
+        let valor =
+            Number(treinamento.value);
+
+        if(!Number.isFinite(valor)){
+            valor = 1;
+        }
+
+        valor =
+            Math.max(1, valor);
+
+        const bom =
+            Math.max(
+                1,
+                Math.floor(valor / 2)
+            );
+
+        const extremo =
+            Math.max(
+                1,
+                Math.floor(valor / 5)
+            );
+
+        campoBom.textContent =
+            bom;
+
+        campoExtremo.textContent =
+            extremo;
+
+    });
+
+}
+
+criarCamposSucessoPericias();
+atualizarSucessosPericias();
 
 function atualizarFicha() {
 
@@ -1104,19 +1204,14 @@ function salvarFichaAtual(){
             Number(
                 (metrosBase / 1.5)
                 .toFixed(1)
-            )
-
+        )
     };
-
-}
+        
+    }
     
-    ficha.atributos =
-        [...document.querySelectorAll(".quadrado")]
-        .map(x=>Number(x.value));
+    ficha.atributos = [...document.querySelectorAll(".quadrado")].map(x=>Number(x.value));
 
-    ficha.status =
-        [...document.querySelectorAll(".status")]
-        .map(s=>({
+    ficha.status = [...document.querySelectorAll(".status")].map(s=>({
 
             atual:Number(s.querySelector(".atual").value),
 
@@ -1255,7 +1350,7 @@ function carregarFichaAtual(){
 
     document.getElementById("texto-historia").value =
         ficha.historia || "";
-
+    
     document.querySelectorAll(".quadrado").forEach((q, i) => {
         q.value =
         ficha.atributos[i] ?? 1;
@@ -1389,11 +1484,9 @@ function carregarFichaAtual(){
     }
     
     aplicarBonusConhecimentoEspecifico();
-
+    atualizarSucessosPericias();
     atualizarFicha();
-
     atualizarContadores();
-
     carregandoFicha = false;
 
 }
@@ -1970,9 +2063,9 @@ document
                 String(valor);
 
         }
-
+        
+        atualizarSucessosPericias();
         atualizarContadores();
-
         atualizarFicha();
 
     });
@@ -2018,10 +2111,9 @@ document
 
         }
 
+        atualizarSucessosPericias();
         atualizarContadores();
-
         atualizarFicha();
-
         salvarFichaAtual();
 
     });
