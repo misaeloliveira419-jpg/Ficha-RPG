@@ -783,6 +783,8 @@ function criarFichaNova(){
 
         personagem: "Nova Ficha " + (banco.fichas.length + 1),
 
+        foto:"",
+        
         historia:"",
 
         atributos:[1,1,1,1,1],
@@ -865,6 +867,7 @@ function normalizarFicha(ficha){
     ficha.id = Number(ficha.id) || Date.now();
     ficha.jogador = typeof ficha.jogador === "string" ? ficha.jogador : "";
     ficha.personagem = typeof ficha.personagem === "string" ? ficha.personagem : "";
+    ficha.foto = typeof ficha.foto === "string" ? ficha.foto : "";
     ficha.historia = typeof ficha.historia === "string" ? ficha.historia : "";
     
     const deslocamento = ficha.deslocamento || {};
@@ -1137,9 +1140,13 @@ function compartilharFicha() {
     }
 
     try {
-
-        const json =
-            JSON.stringify(ficha);
+        
+        const fichaCompartilhada = {
+            ...ficha,
+            foto: ""
+        };
+        
+        const json = JSON.stringify(fichaCompartilhada);
 
         const comprimido =
             LZString.compressToEncodedURIComponent(json);
@@ -1279,6 +1286,12 @@ function salvarFichaAtual(){
     ficha.personagem =
         document.getElementById("personagem").value;
 
+    const imagemPersonagem =
+    document.getElementById("imagem-personagem");
+
+    ficha.foto =
+    imagemPersonagem?.dataset.foto || "";
+    
     ficha.historia =
         document.getElementById("texto-historia").value;
     
@@ -1456,6 +1469,41 @@ function carregarFichaAtual(){
     document.getElementById("personagem").value =
         ficha.personagem;
 
+    const imagemPersonagem =
+    document.getElementById("imagem-personagem");
+
+    const textoFoto =
+    document.getElementById("texto-foto");
+
+    if(ficha.foto){
+        
+        imagemPersonagem.src =
+        ficha.foto;
+        
+        imagemPersonagem.dataset.foto =
+        ficha.foto;
+        
+        imagemPersonagem.style.display =
+        "block";
+        
+        textoFoto.style.display =
+        "none";
+        
+    }else{
+        
+        imagemPersonagem.removeAttribute("src");
+        
+        imagemPersonagem.dataset.foto =
+        "";
+        
+        imagemPersonagem.style.display =
+        "none";
+        
+        textoFoto.style.display =
+        "block";
+        
+    }
+    
     document.getElementById("texto-historia").value =
         ficha.historia || "";
     
@@ -1598,6 +1646,129 @@ function carregarFichaAtual(){
     carregandoFicha = false;
 
 }
+
+const areaFotoPersonagem =
+    document.getElementById("area-foto-personagem");
+
+const inputFotoPersonagem =
+    document.getElementById("input-foto-personagem");
+
+const imagemPersonagem =
+    document.getElementById("imagem-personagem");
+
+const textoFoto =
+    document.getElementById("texto-foto");
+
+
+areaFotoPersonagem.addEventListener("click", () => {
+
+    inputFotoPersonagem.click();
+
+});
+
+
+inputFotoPersonagem.addEventListener("change", () => {
+
+    const arquivo =
+        inputFotoPersonagem.files[0];
+
+    if(!arquivo) return;
+
+    if(!arquivo.type.startsWith("image/")){
+
+        alert("Selecione um arquivo de imagem.");
+
+        return;
+    }
+
+    const leitor =
+        new FileReader();
+
+    leitor.onload = () => {
+
+        const imagemOriginal =
+            new Image();
+
+        imagemOriginal.onload = () => {
+
+            const tamanhoMaximo = 500;
+
+            let largura =
+                imagemOriginal.width;
+
+            let altura =
+                imagemOriginal.height;
+
+            if(
+                largura > tamanhoMaximo ||
+                altura > tamanhoMaximo
+            ){
+
+                const proporcao =
+                    Math.min(
+                        tamanhoMaximo / largura,
+                        tamanhoMaximo / altura
+                    );
+
+                largura =
+                    Math.round(
+                        largura * proporcao
+                    );
+
+                altura =
+                    Math.round(
+                        altura * proporcao
+                    );
+
+            }
+
+            const canvas =
+                document.createElement("canvas");
+
+            canvas.width = largura;
+            canvas.height = altura;
+
+            const ctx =
+                canvas.getContext("2d");
+
+            ctx.drawImage(
+                imagemOriginal,
+                0,
+                0,
+                largura,
+                altura
+            );
+
+            const foto =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.82
+                );
+
+            imagemPersonagem.src =
+                foto;
+
+            imagemPersonagem.dataset.foto =
+                foto;
+
+            imagemPersonagem.style.display =
+                "block";
+
+            textoFoto.style.display =
+                "none";
+
+            salvarFichaAtual();
+
+        };
+
+        imagemOriginal.src =
+            leitor.result;
+
+    };
+
+    leitor.readAsDataURL(arquivo);
+
+});
 
 carregarBanco();
 

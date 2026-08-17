@@ -12,19 +12,37 @@
 
     <header>
 
-    <div class="linha">
-        <label for="jogador">Jogador:</label>
-        <input type="text" id="jogador" class="campo-texto">
-    </div>
+    <div class="cabecalho-principal">
 
-    <div class="linha">
-        <label for="personagem">Personagem:</label>
-        <input type="text" id="personagem" class="campo-texto">
-    </div>
+        <div class="area-foto-personagem" id="area-foto-personagem">
 
-    <button id="btn-menu">☰</button>
+            <img id="imagem-personagem" alt="Foto do personagem">
 
-</header>
+            <span id="texto-foto">+</span>
+
+            <input type="file" id="input-foto-personagem" accept="image/*" hidden>
+
+        </div>
+
+        <div class="dados-personagem">
+
+            <div class="linha">
+                <label for="jogador">Jogador:</label>
+                <input type="text" id="jogador" class="campo-texto">
+            </div>
+
+            <div class="linha">
+                <label for="personagem">Personagem:</label>
+                <input type="text" id="personagem" class="campo-texto">
+            </div>
+
+        </div>
+
+        </div>
+
+        <button id="btn-menu">☰</button>
+
+    </header>
 
     <div class="bloco historia">
 

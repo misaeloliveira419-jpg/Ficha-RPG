@@ -28,6 +28,69 @@ header{
     position:relative;
 }
 
+.cabecalho-principal{
+
+    display:flex;
+    align-items:center;
+
+    gap:35px;
+
+    padding-right:50px;
+}
+
+.area-foto-personagem{
+
+    width:150px;
+    height:150px;
+
+    flex-shrink:0;
+
+    border:3px solid white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    position:relative;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    background:black;
+}
+
+#imagem-personagem{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:none;
+}
+
+#texto-foto{
+
+    font-size:50px;
+    font-weight:bold;
+
+    color:white;
+
+    user-select:none;
+}
+
+.area-foto-personagem:hover{
+
+    border-color:rgb(175,175,175);
+}
+
+.dados-personagem{
+
+    flex:1;
+    min-width:0;
+}
+
 .linha{
     display:flex;
     align-items:flex-end;
