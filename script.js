@@ -196,20 +196,27 @@ const selectConhecimentoEspecifico =
 
 if(selectConhecimentoEspecifico){
 
-    selectConhecimentoEspecifico
-    .addEventListener("change", () => {
-
+    selectConhecimentoEspecifico.addEventListener("change", () => {
+        
         if(carregandoFicha) return;
-
+        
         aplicarBonusConhecimentoEspecifico();
+        
+        const periciaEscolhida =
+        buscarPericia(
+            selectConhecimentoEspecifico.value
+        );
+        
+        limitarPericiasAltas(
+        periciaEscolhida
+        );
 
-        atualizarContadores();
+    atualizarSucessosPericias();
+    atualizarContadores();
+    atualizarFicha();
+    salvarFichaAtual();
 
-        atualizarFicha();
-
-        salvarFichaAtual();
-
-    });
+});
 
 }
 
@@ -647,6 +654,107 @@ function atualizarSucessosPericias(){
             extremo;
 
     });
+
+}
+
+function limitarPericiasAltas(periciaAlterada = null){
+
+    const pericias =
+        [...document.querySelectorAll(".pericia[data-id]")];
+
+    const selectConhecimento =
+        document.getElementById(
+            "conhecimento-especifico-select"
+        );
+
+    const periciasAltas =
+        pericias.filter(pericia => {
+
+            const input =
+                pericia.querySelector(".treinamento");
+
+            if(!input) return false;
+
+            const valorFinal =
+                Number(input.value) || 0;
+
+            return valorFinal >= 12;
+
+        });
+
+    // Até 4 perícias com 12 ou mais é permitido
+    if(periciasAltas.length <= 4){
+        return;
+    }
+
+
+    /*
+        Primeiro tenta diminuir justamente a
+        perícia que o usuário acabou de alterar.
+    */
+
+    let periciaParaDiminuir = null;
+
+    if(
+        periciaAlterada &&
+        periciasAltas.includes(periciaAlterada)
+    ){
+        periciaParaDiminuir =
+            periciaAlterada;
+    }
+
+    /*
+        Caso a função tenha sido chamada sem
+        especificar uma perícia, diminui a última
+        perícia excedente.
+    */
+
+    if(!periciaParaDiminuir){
+
+        periciaParaDiminuir =
+            periciasAltas[
+                periciasAltas.length - 1
+            ];
+
+    }
+
+
+    const input =
+        periciaParaDiminuir
+        .querySelector(".treinamento");
+
+    if(!input) return;
+
+
+    const recebeConhecimento =
+        selectConhecimento &&
+        selectConhecimento.value ===
+        periciaParaDiminuir.dataset.id;
+
+
+    /*
+        Se recebe +2 de C. Específicos:
+
+        base 9 + bônus 2 = 11
+
+        Caso contrário:
+
+        base 11 = 11
+    */
+
+    const novoValorBase =
+        recebeConhecimento
+        ? 9
+        : 11;
+
+
+    input.dataset.valorBase =
+        String(novoValorBase);
+
+    input.value = 11;
+
+
+    atualizarSucessosPericias();
 
 }
 
@@ -2110,7 +2218,8 @@ document
             input.max = 14;
 
         }
-
+        
+        limitarPericiasAltas(pericia);
         atualizarSucessosPericias();
         atualizarContadores();
         atualizarFicha();
