@@ -3807,7 +3807,6 @@ function ajustarAlturaPainelRolagens(){
 
 }
 
-window.addEventListener(
-    "resize",
-    ajustarAlturaPainelRolagens
-);
+ajustarAlturaPainelRolagens();
+
+window.addEventListener("resize", ajustarAlturaPainelRolagens);

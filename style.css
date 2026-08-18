@@ -1091,6 +1091,7 @@ main{
 }
 
 .ficha-lista{
+    
     position: relative;
     touch-action: none;
     user-select: none;
@@ -1111,10 +1112,12 @@ main{
     width:max-content;
     min-width:max-content;
     margin:0;
+    padding-right:40px;
 }
 
+
 #painel-rolagens{
-    
+
     width:1000px;
     background:black;
     color:white;
@@ -1122,28 +1125,65 @@ main{
     flex-shrink:0;
 }
 
+
 .layout-rolagens{
-    
+
     display:grid;
-    grid-template-columns: 650px 350px;
+    grid-template-columns:54% 46%;
     height:100%;
+    min-height:0;
 }
+
 
 .coluna-rolagem{
 
     padding:30px;
     border-right:3px solid white;
+    height:100%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
 }
+
+#dados-rolados{
+
+    flex-grow:1;
+    min-height:120px;
+}
+
+
+.rolagens-salvas{
+
+    flex-grow:1;
+    display:flex;
+    flex-direction:column;
+    min-height:0;
+}
+
+
+#lista-rolagens-salvas{
+
+    flex-grow:1;
+    min-height:0;
+    overflow-y:auto;
+}
+
 
 .coluna-historico{
-
-    padding:20px;
+    
+    padding:30px;
+    height:100%;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
 }
 
-.coluna-historico h1{
-    
-    font-size:28px;
-    padding:12px 6px;
+
+#historico-rolagens{
+
+    flex-grow:1;
+    min-height:0;
+    overflow-y:auto;
 }
 
 #painel-rolagens h1{
@@ -1155,23 +1195,26 @@ main{
     margin-bottom:25px;
 }
 
+#painel-rolagens .coluna-historico h1{
+
+    font-size:24px;
+    padding:12px 4px;
+    white-space:nowrap;
+    width:100%;
+}
+
 #painel-rolagens h2{
 
     text-align:center;
-
     border:2px solid white;
-
     font-size:24px;
-
     padding:7px;
-
     margin-bottom:20px;
 }
 
 .escolha-tipo-teste{
 
     display:flex;
-
     margin-bottom:25px;
 }
 
@@ -1233,14 +1276,11 @@ main{
 .grupo-dado{
 
     display:grid;
-
     grid-template-columns:
         70px
         90px
         40px;
-
     gap:8px;
-
     margin-bottom:10px;
 }
 
@@ -1248,14 +1288,10 @@ main{
 .grupo-dado select{
 
     height:38px;
-
     border:2px solid white;
-
     background:black;
     color:white;
-
     text-align:center;
-
     font-size:17px;
 }
 
@@ -1263,12 +1299,9 @@ main{
 #adicionar-grupo-dado{
 
     border:2px solid white;
-
     background:black;
     color:white;
-
     font-size:22px;
-
     cursor:pointer;
 }
 
@@ -1276,7 +1309,6 @@ main{
 
     width:45px;
     height:40px;
-
     margin-bottom:20px;
 }
 
@@ -1303,16 +1335,11 @@ main{
 #dados-rolados{
 
     display:flex;
-
     justify-content:center;
     align-items:center;
-
     flex-wrap:wrap;
-
     gap:12px;
-
     min-height:100px;
-
     margin:20px 0;
 }
 
@@ -1320,17 +1347,12 @@ main{
 
     width:70px;
     height:70px;
-
     display:flex;
     flex-direction:column;
-
     align-items:center;
     justify-content:center;
-
     border:3px solid white;
-
     background:rgb(20,20,20);
-
     font-weight:bold;
 }
 
@@ -1346,14 +1368,12 @@ main{
 
 .dado-visual.escolhido{
 
-    box-shadow:
-        0 0 12px white;
+    box-shadow: 0 0 12px white;
 }
 
 #resultado-rolagem{
 
     text-align:center;
-
     margin:20px 0 25px;
 }
 
@@ -1367,38 +1387,44 @@ main{
 
     font-size:22px;
     font-weight:bold;
-
     margin-top:5px;
 }
 
 #salvar-teste{
 
     display:block;
-
     margin:0 auto 35px;
-
     padding:8px 18px;
-
     border:2px solid white;
-
     background:black;
     color:white;
-
     cursor:pointer;
 }
 
 .registro-historico{
 
     border-bottom:1px solid white;
-
-    padding:12px 4px;
-
+    padding:16px 4px;
     display:flex;
     flex-direction:column;
+    gap:7px;
+    font-size:19px;
+    line-height: 1.2;
+}
 
-    gap:5px;
+.registro-historico strong{
 
-    font-size:15px;
+    font-size:20px;
+}
+
+.registro-historico span{
+
+    font-size:18px;
+}
+
+.registro-historico b{
+
+    font-size:19px;
 }
 
 .rolagem-salva{
