@@ -2797,7 +2797,8 @@ function rolarTestePericia(){
     mostrarDados(
         resultados,
         20,
-        resultadoFinal
+        resultadoFinal,
+        valorPericia
     );
 
 
@@ -2910,7 +2911,8 @@ function calcularNivelSucesso(
 function mostrarDados(
     resultados,
     lados,
-    escolhido = null
+    escolhido = null,
+    valorPericia = null
 ){
 
     const area =
@@ -2927,6 +2929,20 @@ function mostrarDados(
 
         dado.className =
             "dado-visual";
+        
+        if(valorPericia !== null){
+
+            const nivel =
+                calcularNivelSucesso(
+                    valor,
+                    valorPericia
+                );
+
+            dado.classList.add(
+                "nivel-" +
+                nivel.toLowerCase()
+            );
+        }
 
         if(
             escolhido !== null &&
@@ -2936,8 +2952,8 @@ function mostrarDados(
             dado.classList.add(
                 "escolhido"
             );
-
         }
+
 
         dado.innerHTML = `
             <strong>${valor}</strong>
@@ -2955,19 +2971,48 @@ function mostrarResultado(
     texto
 ){
 
-    document
-    .getElementById(
-        "numero-resultado"
-    )
-    .textContent =
+    const areaResultado =
+        document.getElementById(
+            "resultado-rolagem"
+        );
+
+    const numeroResultado =
+        document.getElementById(
+            "numero-resultado"
+        );
+
+    const nivelSucesso =
+        document.getElementById(
+            "nivel-sucesso"
+        );
+
+
+    /*
+        Remove a cor da rolagem anterior.
+    */
+
+    areaResultado.classList.remove(
+        "nivel-desastre",
+        "nivel-fracasso",
+        "nivel-normal",
+        "nivel-bom",
+        "nivel-extremo"
+    );
+
+    if(texto){
+
+        areaResultado.classList.add(
+            "nivel-" +
+            texto.toLowerCase()
+        );
+
+    }
+
+
+    numeroResultado.textContent =
         numero;
 
-
-    document
-    .getElementById(
-        "nivel-sucesso"
-    )
-    .textContent =
+    nivelSucesso.textContent =
         texto || "";
 
 }
@@ -3270,7 +3315,7 @@ function mostrarDadosSoma(dados){
             document.createElement("div");
 
         dado.className =
-            "dado-visual";
+            "dado-visual dado-d" + info.lados;
 
         dado.innerHTML = `
             <strong>${info.valor}</strong>

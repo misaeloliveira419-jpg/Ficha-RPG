@@ -1462,3 +1462,116 @@ main{
 
     cursor:pointer;
 }
+
+/* ========================================
+   CORES DOS RESULTADOS DE PERÍCIA
+======================================== */
+
+
+/* DESASTRE */
+
+.dado-visual.nivel-desastre{
+    color:#d10000;
+    border-color:#d10000;
+}
+
+#resultado-rolagem.nivel-desastre{
+    color:#d10000;
+}
+
+
+/* FRACASSO */
+
+.dado-visual.nivel-fracasso{
+    color:white;
+    border-color:white;
+}
+
+#resultado-rolagem.nivel-fracasso{
+    color:white;
+}
+
+
+/* NORMAL */
+
+.dado-visual.nivel-normal{
+    color:#39a8ff;
+    border-color:#39a8ff;
+}
+
+#resultado-rolagem.nivel-normal{
+    color:#39a8ff;
+}
+
+
+/* BOM */
+
+.dado-visual.nivel-bom{
+    color:#d6aa00;
+    border-color:#d6aa00;
+}
+
+#resultado-rolagem.nivel-bom{
+    color:#d6aa00;
+}
+
+
+/* EXTREMO */
+
+.dado-visual.nivel-extremo{
+    color:#00aa1b;
+    border-color:#00aa1b;
+}
+
+#resultado-rolagem.nivel-extremo{
+    color:#00aa1b;
+}
+
+.dado-visual.dado-d4{
+    color:#d6aa00;
+    border-color:#d6aa00;
+}
+
+.dado-visual.dado-d6{
+    color:#ff5fa2;
+    border-color:#ff5fa2;
+}
+
+.dado-visual.dado-d8{
+    color:#9b59ff;
+    border-color:#9b59ff;
+}
+
+.dado-visual.dado-d10{
+    color:#00aa1b;
+    border-color:#00aa1b;
+}
+
+.dado-visual.dado-d12{
+    color:#ff8c00;
+    border-color:#ff8c00;
+}
+
+.dado-visual.dado-d20{
+    color:#d10000;
+    border-color:#d10000;
+}
+
+.dado-visual.dado-d30{
+    color:#39a8ff;
+    border-color:#39a8ff;
+}
+
+.dado-visual.dado-d100{
+    color:white;
+    border-color:white;
+}
+
+.dado-visual small{
+    color:white;
+}
+
+.dado-visual.escolhido{
+    box-shadow:
+        0 0 12px currentColor;
+}
