@@ -5,11 +5,15 @@
     box-sizing:border-box;
 }
 
+html{
+
+    overflow-x:auto;
+
+}
+
 body{
 
     background:rgb(50,50,50);
-    display:flex;
-    justify-content:center;
     padding:40px;
     font-family:"Times New Roman", Times, serif;
     color:white;
@@ -1097,4 +1101,338 @@ main{
     opacity: .8;
     transform: scale(1.05);
     z-index: 999;
+}
+
+.area-site{
+
+    display:flex;
+    align-items:flex-start;
+    gap:25px;
+    width:max-content;
+    min-width:max-content;
+    margin:0;
+}
+
+#painel-rolagens{
+    
+    width:1000px;
+    background:black;
+    color:white;
+    border:3px solid white;
+    flex-shrink:0;
+}
+
+.layout-rolagens{
+    
+    display:grid;
+    grid-template-columns: 650px 350px;
+    height:100%;
+}
+
+.coluna-rolagem{
+
+    padding:30px;
+    border-right:3px solid white;
+}
+
+.coluna-historico{
+
+    padding:20px;
+}
+
+.coluna-historico h1{
+    
+    font-size:28px;
+    padding:12px 6px;
+}
+
+#painel-rolagens h1{
+
+    text-align:center;
+    border:3px solid white;
+    font-size:34px;
+    padding:12px;
+    margin-bottom:25px;
+}
+
+#painel-rolagens h2{
+
+    text-align:center;
+
+    border:2px solid white;
+
+    font-size:24px;
+
+    padding:7px;
+
+    margin-bottom:20px;
+}
+
+.escolha-tipo-teste{
+
+    display:flex;
+
+    margin-bottom:25px;
+}
+
+.tipo-teste{
+
+    flex:1;
+    height:45px;
+    background:black;
+    color:white;
+    border:2px solid white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.tipo-teste.ativo{
+
+    background:white;
+    color:black;
+}
+
+#area-teste-pericia label{
+
+    display:block;
+
+    font-size:20px;
+    font-weight:bold;
+
+    margin-bottom:8px;
+}
+
+#pericia-rolagem{
+
+    width:100%;
+    height:45px;
+    background:black;
+    color:white;
+    border:2px solid white;
+    padding:7px 12px;
+    font-size:19px;
+    outline:none;
+}
+
+#info-pericia-rolagem{
+
+    min-height:35px;
+
+    margin-top:10px;
+
+    text-align:center;
+
+    font-size:17px;
+}
+
+#area-teste-soma{
+
+    display:none;
+}
+
+.grupo-dado{
+
+    display:grid;
+
+    grid-template-columns:
+        70px
+        90px
+        40px;
+
+    gap:8px;
+
+    margin-bottom:10px;
+}
+
+.grupo-dado input,
+.grupo-dado select{
+
+    height:38px;
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+
+    text-align:center;
+
+    font-size:17px;
+}
+
+.remover-grupo-dado,
+#adicionar-grupo-dado{
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+
+    font-size:22px;
+
+    cursor:pointer;
+}
+
+#adicionar-grupo-dado{
+
+    width:45px;
+    height:40px;
+
+    margin-bottom:20px;
+}
+
+#botao-rolar{
+
+    display:block;
+    width:220px;
+    height:55px;
+    margin:35px auto;
+    background:black;
+    color:white;
+    border:3px solid white;
+    font-size:24px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#botao-rolar:hover{
+
+    background:white;
+    color:black;
+}
+
+#dados-rolados{
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:12px;
+
+    min-height:100px;
+
+    margin:20px 0;
+}
+
+.dado-visual{
+
+    width:70px;
+    height:70px;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    border:3px solid white;
+
+    background:rgb(20,20,20);
+
+    font-weight:bold;
+}
+
+.dado-visual strong{
+
+    font-size:28px;
+}
+
+.dado-visual small{
+
+    font-size:13px;
+}
+
+.dado-visual.escolhido{
+
+    box-shadow:
+        0 0 12px white;
+}
+
+#resultado-rolagem{
+
+    text-align:center;
+
+    margin:20px 0 25px;
+}
+
+#numero-resultado{
+
+    font-size:60px;
+    font-weight:bold;
+}
+
+#nivel-sucesso{
+
+    font-size:22px;
+    font-weight:bold;
+
+    margin-top:5px;
+}
+
+#salvar-teste{
+
+    display:block;
+
+    margin:0 auto 35px;
+
+    padding:8px 18px;
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+
+    cursor:pointer;
+}
+
+.registro-historico{
+
+    border-bottom:1px solid white;
+
+    padding:12px 4px;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:5px;
+
+    font-size:15px;
+}
+
+.rolagem-salva{
+
+    border:2px solid white;
+
+    padding:10px;
+
+    margin-bottom:10px;
+
+    display:grid;
+
+    grid-template-columns:
+        1fr auto auto;
+
+    gap:8px;
+
+    align-items:center;
+}
+
+.rolagem-salva div{
+
+    display:flex;
+    flex-direction:column;
+}
+
+.rolagem-salva button{
+
+    background:black;
+    color:white;
+
+    border:1px solid white;
+
+    padding:5px 8px;
+
+    cursor:pointer;
 }

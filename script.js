@@ -840,9 +840,13 @@ inventario:[
 ],
 
     maxAtributos: 10,
-    maxPericias: 100  
-    };
+    maxPericias: 100,
 
+    historicoRolagens: [],
+    rolagensSalvas: []
+        
+    };
+    
     banco.fichas.push(ficha);
 
     banco.atual = ficha.id;
@@ -1033,6 +1037,21 @@ function normalizarFicha(ficha){
 
     ficha.maxAtributos = Number(ficha.maxAtributos) || 10;
     ficha.maxPericias = Number(ficha.maxPericias) || 100;
+    
+    ficha.historicoRolagens =
+    Array.isArray(
+        ficha.historicoRolagens
+    )
+    ? ficha.historicoRolagens
+    : [];
+
+
+ficha.rolagensSalvas =
+    Array.isArray(
+        ficha.rolagensSalvas
+    )
+    ? ficha.rolagensSalvas
+    : [];
 
     return ficha;
 }
@@ -1643,6 +1662,10 @@ function carregarFichaAtual(){
     atualizarSucessosPericias();
     atualizarFicha();
     atualizarContadores();
+    preencherPericiasRolagem();
+    mostrarHistoricoRolagens();
+    mostrarRolagensSalvas();
+    setTimeout(ajustarAlturaPainelRolagens, 50);
     carregandoFicha = false;
 
 }
@@ -2081,8 +2104,9 @@ function abrirListaFichas(){
 
     document.querySelector(".historia").style.display="none";
 
-    document.getElementById("tela-fichas")
-        .style.display="block";
+    document.getElementById("tela-fichas").style.display="block";
+    
+    document.getElementById("painel-rolagens").style.display="none";
 
 }
 
@@ -2094,8 +2118,9 @@ function fecharListaFichas(){
 
     document.querySelector(".historia").style.display="block";
 
-    document.getElementById("tela-fichas")
-        .style.display="none";
+    document.getElementById("tela-fichas").style.display="none";
+    
+    document.getElementById("painel-rolagens").style.display ="block";
 
 }
 
@@ -2525,3 +2550,1264 @@ if(campoMetros){
     });
 
 }
+
+function rolarDado(lados){
+
+    return Math.floor(
+        Math.random() * lados
+    ) + 1;
+
+}
+
+const INDICES_ATRIBUTOS = {
+
+    DES: 0,
+    FOR: 1,
+    INT: 2,
+    PRE: 3,
+    VIG: 4
+
+};
+
+function preencherPericiasRolagem(){
+
+    const lista =
+        document.getElementById(
+            "lista-pericias-rolagem"
+        );
+
+    if(!lista) return;
+
+    lista.innerHTML = "";
+
+    document
+    .querySelectorAll(".pericia[data-id]")
+    .forEach(pericia => {
+
+        const nome =
+            pericia
+            .querySelector("span")
+            ?.textContent
+            .trim();
+
+        if(!nome) return;
+
+        const option =
+            document.createElement("option");
+
+        option.value = nome;
+
+        lista.appendChild(option);
+
+    });
+
+}
+
+preencherPericiasRolagem();
+
+function obterPericiaRolagem(){
+
+    const campo =
+        document.getElementById(
+            "pericia-rolagem"
+        );
+
+    if(!campo) return null;
+
+    const nomeProcurado =
+        campo.value
+        .trim()
+        .toLowerCase();
+
+    return [
+        ...document.querySelectorAll(
+            ".pericia[data-id]"
+        )
+    ].find(pericia => {
+
+        const nome =
+            pericia
+            .querySelector("span")
+            ?.textContent
+            .trim()
+            .toLowerCase();
+
+        return nome === nomeProcurado;
+
+    }) || null;
+
+}
+
+function obterDadosPericiaRolagem(pericia){
+
+    if(!pericia) return null;
+
+    const atributoTexto =
+        pericia
+        .querySelector(".atributo-pericia")
+        ?.textContent
+        .replace("(", "")
+        .replace(")", "")
+        .trim()
+        .toUpperCase();
+
+    const indice =
+        INDICES_ATRIBUTOS[
+            atributoTexto
+        ];
+
+    if(indice === undefined){
+        return null;
+    }
+
+    const atributos =
+        document.querySelectorAll(
+            ".quadrado"
+        );
+
+    const valorAtributo =
+        Number(
+            atributos[indice]?.value
+        ) || 0;
+
+    const valorPericia =
+        Number(
+            pericia
+            .querySelector(".treinamento")
+            ?.value
+        ) || 1;
+
+    const nome =
+        pericia
+        .querySelector("span")
+        ?.textContent
+        .trim();
+
+    return {
+
+        id: pericia.dataset.id,
+
+        nome,
+
+        atributo:
+            atributoTexto,
+
+        valorAtributo,
+
+        valorPericia
+
+    };
+
+}
+
+function rolarTestePericia(){
+
+    const pericia =
+        obterPericiaRolagem();
+
+    if(!pericia){
+
+        alert(
+            "Escolha uma perícia."
+        );
+
+        return;
+    }
+
+    const dadosPericia =
+        obterDadosPericiaRolagem(
+            pericia
+        );
+
+    if(!dadosPericia) return;
+
+
+    const {
+        nome,
+        atributo,
+        valorAtributo,
+        valorPericia
+    } = dadosPericia;
+
+
+    let quantidadeDados;
+
+    let desvantagem = false;
+
+
+    if(valorAtributo === 0){
+
+        quantidadeDados = 2;
+
+        desvantagem = true;
+
+    }else{
+
+        quantidadeDados =
+            valorAtributo;
+
+    }
+
+
+    const resultados = [];
+
+    for(
+        let i = 0;
+        i < quantidadeDados;
+        i++
+    ){
+
+        resultados.push(
+            rolarDado(20)
+        );
+
+    }
+
+
+    let resultadoFinal;
+
+
+    if(desvantagem){
+
+        // ATRIBUTO 0:
+        // pega o PIOR.
+        // Como menor é melhor,
+        // o pior é o MAIOR.
+
+        resultadoFinal =
+            Math.max(
+                ...resultados
+            );
+
+    }else{
+
+        // atributo normal:
+        // pega o MELHOR.
+        // Como menor é melhor,
+        // pega o MENOR.
+
+        resultadoFinal =
+            Math.min(
+                ...resultados
+            );
+
+    }
+
+
+    mostrarDados(
+        resultados,
+        20,
+        resultadoFinal
+    );
+
+
+    const sucesso =
+        calcularNivelSucesso(
+            resultadoFinal,
+            valorPericia
+        );
+
+
+    mostrarResultado(
+        resultadoFinal,
+        sucesso
+    );
+
+
+    registrarHistorico({
+
+        tipo: "pericia",
+
+        nome,
+
+        atributo,
+
+        valorAtributo,
+
+        valorPericia,
+
+        resultados,
+
+        resultado:
+            resultadoFinal,
+
+        sucesso,
+
+        desvantagem
+
+    });
+
+
+    ultimaRolagem = {
+
+        tipo: "pericia",
+
+        periciaId:
+            dadosPericia.id,
+
+        nome,
+
+        atributo,
+
+        valorPericia
+
+    };
+
+}
+
+function calcularNivelSucesso(
+    resultado,
+    pericia
+){
+
+    const bom =
+        Math.max(
+            1,
+            Math.floor(
+                pericia / 2
+            )
+        );
+
+    const extremo =
+        Math.max(
+            1,
+            Math.floor(
+                pericia / 5
+            )
+        );
+
+
+    /*
+        Estou considerando 20
+        como Desastre.
+
+        Se sua regra de Desastre
+        for diferente, só precisamos
+        alterar esta condição.
+    */
+
+    if(resultado === 20){
+        return "Desastre";
+    }
+
+
+    if(resultado <= extremo){
+        return "Extremo";
+    }
+
+    if(resultado <= bom){
+        return "Bom";
+    }
+
+    if(resultado <= pericia){
+        return "Normal";
+    }
+
+    return "Fracasso";
+
+}
+
+function mostrarDados(
+    resultados,
+    lados,
+    escolhido = null
+){
+
+    const area =
+        document.getElementById(
+            "dados-rolados"
+        );
+
+    area.innerHTML = "";
+
+    resultados.forEach(valor => {
+
+        const dado =
+            document.createElement("div");
+
+        dado.className =
+            "dado-visual";
+
+        if(
+            escolhido !== null &&
+            valor === escolhido
+        ){
+
+            dado.classList.add(
+                "escolhido"
+            );
+
+        }
+
+        dado.innerHTML = `
+            <strong>${valor}</strong>
+            <small>d${lados}</small>
+        `;
+
+        area.appendChild(dado);
+
+    });
+
+}
+
+function mostrarResultado(
+    numero,
+    texto
+){
+
+    document
+    .getElementById(
+        "numero-resultado"
+    )
+    .textContent =
+        numero;
+
+
+    document
+    .getElementById(
+        "nivel-sucesso"
+    )
+    .textContent =
+        texto || "";
+
+}
+
+let tipoTesteAtual =
+    "pericia";
+
+
+document
+.querySelectorAll(".tipo-teste")
+.forEach(botao => {
+
+    botao.addEventListener(
+        "click",
+        () => {
+
+            tipoTesteAtual =
+                botao.dataset.tipo;
+
+            document
+            .querySelectorAll(
+                ".tipo-teste"
+            )
+            .forEach(b => {
+
+                b.classList.remove(
+                    "ativo"
+                );
+
+            });
+
+            botao.classList.add(
+                "ativo"
+            );
+
+
+            document
+            .getElementById(
+                "area-teste-pericia"
+            )
+            .style.display =
+                tipoTesteAtual ===
+                "pericia"
+                ? "block"
+                : "none";
+
+
+            document
+            .getElementById(
+                "area-teste-soma"
+            )
+            .style.display =
+                tipoTesteAtual ===
+                "soma"
+                ? "block"
+                : "none";
+
+        }
+    );
+
+});
+
+function criarGrupoDado(
+    quantidade = 1,
+    lados = 6
+){
+
+    const area =
+        document.getElementById(
+            "grupos-dados"
+        );
+
+    const grupo =
+        document.createElement("div");
+
+    grupo.className =
+        "grupo-dado";
+
+    grupo.innerHTML = `
+
+        <input
+            class="quantidade-dado"
+            type="number"
+            min="1"
+            value="${quantidade}"
+        >
+
+        <select class="tipo-dado">
+
+            <option value="4">d4</option>
+            <option value="6">d6</option>
+            <option value="8">d8</option>
+            <option value="10">d10</option>
+            <option value="12">d12</option>
+            <option value="20">d20</option>
+            <option value="30">d30</option>
+            <option value="100">d100</option>
+
+        </select>
+
+        <button
+            class="remover-grupo-dado"
+        >
+            ×
+        </button>
+    `;
+
+    grupo
+    .querySelector(".tipo-dado")
+    .value =
+        String(lados);
+
+
+    grupo
+    .querySelector(
+        ".remover-grupo-dado"
+    )
+    .onclick = () => {
+
+        grupo.remove();
+
+    };
+
+
+    area.appendChild(grupo);
+
+}
+
+criarGrupoDado();
+
+document
+.getElementById(
+    "adicionar-grupo-dado"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        criarGrupoDado();
+
+    }
+);
+
+function rolarTesteSoma(){
+
+    const grupos =
+        [
+            ...document.querySelectorAll(
+                ".grupo-dado"
+            )
+        ];
+
+    if(grupos.length === 0){
+
+        alert(
+            "Adicione pelo menos um dado."
+        );
+
+        return;
+
+    }
+
+
+    const todosResultados = [];
+
+    const configuracao = [];
+
+    let soma = 0;
+
+
+    grupos.forEach(grupo => {
+
+        let quantidade =
+            Number(
+                grupo.querySelector(
+                    ".quantidade-dado"
+                ).value
+            );
+
+        const lados =
+            Number(
+                grupo.querySelector(
+                    ".tipo-dado"
+                ).value
+            );
+
+
+        quantidade =
+            Math.max(
+                1,
+                Math.floor(
+                    quantidade || 1
+                )
+            );
+
+
+        const resultados = [];
+
+
+        for(
+            let i = 0;
+            i < quantidade;
+            i++
+        ){
+
+            const valor =
+                rolarDado(lados);
+
+            resultados.push(valor);
+
+            todosResultados.push({
+                valor,
+                lados
+            });
+
+            soma += valor;
+
+        }
+
+
+        configuracao.push({
+
+            quantidade,
+            lados,
+            resultados
+
+        });
+
+    });
+
+
+    mostrarDadosSoma(
+        todosResultados
+    );
+
+
+    mostrarResultado(
+        soma,
+        ""
+    );
+
+
+    const expressao =
+        configuracao
+        .map(g =>
+            `${g.quantidade}d${g.lados}`
+        )
+        .join(" + ");
+
+
+    registrarHistorico({
+
+        tipo: "soma",
+
+        expressao,
+
+        grupos:
+            configuracao,
+
+        resultado:
+            soma
+
+    });
+
+
+    ultimaRolagem = {
+
+        tipo: "soma",
+
+        expressao,
+
+        grupos:
+            configuracao.map(g => ({
+
+                quantidade:
+                    g.quantidade,
+
+                lados:
+                    g.lados
+
+            }))
+
+    };
+
+}
+
+function mostrarDadosSoma(dados){
+
+    const area =
+        document.getElementById(
+            "dados-rolados"
+        );
+
+    area.innerHTML = "";
+
+
+    dados.forEach(info => {
+
+        const dado =
+            document.createElement("div");
+
+        dado.className =
+            "dado-visual";
+
+        dado.innerHTML = `
+            <strong>${info.valor}</strong>
+            <small>d${info.lados}</small>
+        `;
+
+        area.appendChild(dado);
+
+    });
+
+}
+
+document
+.getElementById(
+    "botao-rolar"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        if(
+            tipoTesteAtual ===
+            "pericia"
+        ){
+
+            rolarTestePericia();
+
+        }else{
+
+            rolarTesteSoma();
+
+        }
+
+    }
+);
+
+function registrarHistorico(
+    registro
+){
+
+    const ficha =
+        fichaAtual();
+
+    if(!ficha) return;
+
+
+    if(
+        !Array.isArray(
+            ficha.historicoRolagens
+        )
+    ){
+
+        ficha.historicoRolagens = [];
+
+    }
+
+
+    ficha.historicoRolagens
+    .unshift({
+
+        ...registro,
+
+        data: Date.now()
+
+    });
+
+
+    ficha.historicoRolagens =
+        ficha.historicoRolagens
+        .slice(0, 10);
+
+
+    salvarBanco();
+
+    mostrarHistoricoRolagens();
+
+}
+
+function mostrarHistoricoRolagens(){
+
+    const area =
+        document.getElementById(
+            "historico-rolagens"
+        );
+
+    const ficha =
+        fichaAtual();
+
+    if(!area || !ficha) return;
+
+
+    area.innerHTML = "";
+
+
+    const historico =
+        ficha.historicoRolagens || [];
+
+
+    historico.forEach(r => {
+
+        const div =
+            document.createElement("div");
+
+        div.className =
+            "registro-historico";
+
+
+        if(r.tipo === "pericia"){
+
+            div.innerHTML = `
+                <strong>${r.nome}</strong>
+
+                <span>
+                    ${r.resultados.join(", ")}
+                </span>
+
+                <b>
+                    ${r.resultado}
+                    — ${r.sucesso}
+                </b>
+            `;
+
+        }else{
+
+            div.innerHTML = `
+                <strong>
+                    ${r.expressao}
+                </strong>
+
+                <b>
+                    = ${r.resultado}
+                </b>
+            `;
+
+        }
+
+
+        area.appendChild(div);
+
+    });
+
+}
+
+let ultimaRolagem = null;
+
+document
+.getElementById(
+    "salvar-teste"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        if(!ultimaRolagem){
+
+            alert(
+                "Faça uma rolagem primeiro."
+            );
+
+            return;
+
+        }
+
+
+        const ficha =
+            fichaAtual();
+
+        if(!ficha) return;
+
+
+        if(
+            !Array.isArray(
+                ficha.rolagensSalvas
+            )
+        ){
+
+            ficha.rolagensSalvas = [];
+
+        }
+
+
+        const salva = {
+            ...ultimaRolagem
+        };
+
+
+        if(
+            salva.tipo ===
+            "soma"
+        ){
+
+            const nome =
+                prompt(
+                    "Nome do teste:"
+                );
+
+            if(!nome) return;
+
+            salva.nome = nome;
+
+        }
+
+
+        ficha.rolagensSalvas.push(
+            salva
+        );
+
+
+        salvarBanco();
+
+        mostrarRolagensSalvas();
+
+    }
+);
+
+function mostrarRolagensSalvas(){
+
+    const area =
+        document.getElementById(
+            "lista-rolagens-salvas"
+        );
+
+    const ficha =
+        fichaAtual();
+
+    if(!area || !ficha) return;
+
+
+    area.innerHTML = "";
+
+
+    const salvas =
+        ficha.rolagensSalvas || [];
+
+
+    salvas.forEach(
+        (rolagem, indice) => {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+            card.className =
+                "rolagem-salva";
+
+
+            if(
+                rolagem.tipo ===
+                "pericia"
+            ){
+
+                card.innerHTML = `
+
+                    <div>
+                        <strong>
+                            ${rolagem.nome}
+                        </strong>
+
+                        <span>
+                            ${rolagem.valorPericia}
+                            (${rolagem.atributo})
+                        </span>
+                    </div>
+
+                    <button class="usar-rolagem">
+                        Rolar
+                    </button>
+
+                    <button class="apagar-rolagem">
+                        ×
+                    </button>
+                `;
+
+            }else{
+
+                card.innerHTML = `
+
+                    <div>
+                        <strong>
+                            ${rolagem.nome}
+                        </strong>
+
+                        <span>
+                            ${rolagem.expressao}
+                        </span>
+                    </div>
+
+                    <button class="usar-rolagem">
+                        Rolar
+                    </button>
+
+                    <button class="apagar-rolagem">
+                        ×
+                    </button>
+                `;
+
+            }
+
+            card.querySelector(".usar-rolagem").onclick = () => {
+                usarRolagemSalva(rolagem);
+            };
+            
+            card
+            .querySelector(
+                ".apagar-rolagem"
+            )
+            .onclick = () => {
+
+                ficha
+                .rolagensSalvas
+                .splice(indice, 1);
+
+                salvarBanco();
+
+                mostrarRolagensSalvas();
+
+            };
+
+
+            area.appendChild(card);
+
+        }
+    );
+
+}
+
+function usarRolagemSalva(
+    rolagem
+){
+
+    if(!rolagem){
+        return;
+    }
+
+
+    /*
+        TESTE DE PERÍCIA
+    */
+
+    if(
+        rolagem.tipo ===
+        "pericia"
+    ){
+
+        let pericia = null;
+
+
+        if(rolagem.periciaId){
+
+            pericia =
+                document.querySelector(
+                    `.pericia[data-id="${rolagem.periciaId}"]`
+                );
+
+        }
+
+
+        /*
+            Compatibilidade caso uma
+            rolagem antiga não tenha ID.
+        */
+
+        if(!pericia){
+
+            pericia =
+                [
+                    ...document.querySelectorAll(
+                        ".pericia[data-id]"
+                    )
+                ]
+                .find(p => {
+
+                    const nome =
+                        p
+                        .querySelector("span")
+                        ?.textContent
+                        .trim();
+
+                    return nome ===
+                        rolagem.nome;
+
+                });
+
+        }
+
+
+        if(!pericia){
+
+            alert(
+                "Essa perícia não existe mais na ficha."
+            );
+
+            return;
+        }
+
+
+        const nome =
+            pericia
+            .querySelector("span")
+            ?.textContent
+            .trim();
+
+
+        document
+        .getElementById(
+            "pericia-rolagem"
+        )
+        .value =
+            nome;
+
+
+        const botaoPericia =
+            document.querySelector(
+                '.tipo-teste[data-tipo="pericia"]'
+            );
+
+
+        if(botaoPericia){
+
+            botaoPericia.click();
+
+        }
+
+
+        rolarTestePericia();
+
+        return;
+
+    }
+
+
+    /*
+        TESTE DE SOMA
+    */
+
+    if(
+        rolagem.tipo ===
+        "soma"
+    ){
+
+        const botaoSoma =
+            document.querySelector(
+                '.tipo-teste[data-tipo="soma"]'
+            );
+
+
+        if(botaoSoma){
+
+            botaoSoma.click();
+
+        }
+
+
+        const area =
+            document.getElementById(
+                "grupos-dados"
+            );
+
+
+        area.innerHTML = "";
+
+
+        if(
+            Array.isArray(
+                rolagem.grupos
+            )
+        ){
+
+            rolagem.grupos
+            .forEach(grupo => {
+
+                criarGrupoDado(
+                    grupo.quantidade,
+                    grupo.lados
+                );
+
+            });
+
+        }
+
+
+        rolarTesteSoma();
+
+    }
+
+}
+
+function ajustarAlturaPainelRolagens(){
+
+    const painel =
+        document.getElementById(
+            "painel-rolagens"
+        );
+
+    const ficha =
+        document.querySelector(
+            ".ficha"
+        );
+
+    const pericias =
+        document.querySelector(
+            ".pericias"
+        );
+
+    if(
+        !painel ||
+        !ficha ||
+        !pericias
+    ){
+        return;
+    }
+
+
+    const topoFicha =
+        ficha
+        .getBoundingClientRect()
+        .top;
+
+
+    const fimPericias =
+        pericias
+        .getBoundingClientRect()
+        .bottom;
+
+
+    const altura =
+        fimPericias -
+        topoFicha;
+
+
+    painel.style.height =
+        altura + "px";
+
+}
+
+window.addEventListener(
+    "resize",
+    ajustarAlturaPainelRolagens
+);
