@@ -317,28 +317,42 @@
 
             </div>
 
-
-            <!-- TESTE DE PERÍCIA -->
-
             <div id="area-teste-pericia">
 
                 <label>Perícia</label>
-
-                <input
+                <div class="linha-pericia-rolagem">
+                  <input
                     id="pericia-rolagem"
                     list="lista-pericias-rolagem"
                     placeholder="Pesquisar perícia..."
                     autocomplete="off"
-                >
+                  >
+                  
+                  <div class="dados-temporarios-pericia">
+                    <input
+                      id="quantidade-dados-pericia"
+                      type="number"
+                      min="1"
+                      step="1"
+                      value="1"
+                    >
+                    
+                    <span>d20</span>
+                    
+                  </div>
+                  
+                  <input
+                    id="valor-pericia-rolagem"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value="1"
+                    title="Valor temporário da perícia"
+                  >
+                </div>
+              
+              <datalist id="lista-pericias-rolagem"></datalist>
 
-                <datalist id="lista-pericias-rolagem"></datalist>
-
-                <div id="info-pericia-rolagem"></div>
-
-            </div>
-
-
-            <!-- TESTE DE SOMA -->
 
             <div id="area-teste-soma">
 

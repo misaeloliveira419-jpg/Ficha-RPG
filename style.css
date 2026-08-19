@@ -1255,6 +1255,95 @@ main{
     padding:7px 12px;
     font-size:19px;
     outline:none;
+    min-width:0;
+}
+
+.linha-pericia-rolagem{
+
+    display:grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        105px
+        75px;
+
+    gap:10px;
+
+    align-items:center;
+}
+
+
+.dados-temporarios-pericia{
+
+    height:45px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+}
+
+
+#quantidade-dados-pericia{
+
+    width:55px;
+    height:100%;
+
+    border:none;
+
+    background:transparent;
+    color:white;
+
+    text-align:right;
+
+    font-size:19px;
+    font-weight:bold;
+
+    outline:none;
+}
+
+
+.dados-temporarios-pericia span{
+
+    margin-left:3px;
+    margin-right:7px;
+
+    font-size:17px;
+    font-weight:bold;
+
+    user-select:none;
+}
+
+
+#valor-pericia-rolagem{
+
+    width:100%;
+    height:45px;
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+
+    text-align:center;
+
+    font-size:19px;
+    font-weight:bold;
+
+    outline:none;
+}
+
+
+.dados-temporarios-pericia:focus-within,
+#valor-pericia-rolagem:focus{
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,.6);
 }
 
 #info-pericia-rolagem{

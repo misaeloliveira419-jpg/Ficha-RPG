@@ -2700,6 +2700,90 @@ function obterDadosPericiaRolagem(pericia){
 
 }
 
+function atualizarConfiguracaoPericiaRolagem(){
+
+    const pericia =
+        obterPericiaRolagem();
+
+    const campoQuantidade =
+        document.getElementById(
+            "quantidade-dados-pericia"
+        );
+
+    const campoValor =
+        document.getElementById(
+            "valor-pericia-rolagem"
+        );
+
+
+    if(
+        !pericia ||
+        !campoQuantidade ||
+        !campoValor
+    ){
+
+        return;
+    }
+
+
+    const dados =
+        obterDadosPericiaRolagem(
+            pericia
+        );
+
+    if(!dados){
+        return;
+    }
+
+
+    /*
+        Quantidade padrão de dados.
+
+        Atributo 0 continua começando
+        com 2d20.
+    */
+
+    const quantidadePadrao =
+        dados.valorAtributo === 0
+        ? 2
+        : Math.max(
+            1,
+            dados.valorAtributo
+        );
+
+
+    campoQuantidade.value =
+        quantidadePadrao;
+
+
+    campoValor.value =
+        dados.valorPericia;
+
+
+    /*
+        Guarda qual perícia colocou
+        esses valores nos campos.
+    */
+
+    campoQuantidade.dataset.periciaId =
+        pericia.dataset.id;
+
+    campoValor.dataset.periciaId =
+        pericia.dataset.id;
+}
+
+const campoPericiaRolagem =
+    document.getElementById(
+        "pericia-rolagem"
+    );
+
+
+campoPericiaRolagem
+.addEventListener(
+    "change",
+    atualizarConfiguracaoPericiaRolagem
+);
+
 function rolarTestePericia(){
 
     const pericia =
@@ -2728,25 +2812,81 @@ function rolarTestePericia(){
         valorAtributo,
         valorPericia
     } = dadosPericia;
+    
+    const campoQuantidade =
+    document.getElementById(
+        "quantidade-dados-pericia"
+    );
+    
+    const campoValorPericia =
+    document.getElementById(
+        "valor-pericia-rolagem"
+    );
+    
+    /*
+    QUANTIDADE TEMPORÁRIA DE DADOS
+*/
+    
+    let quantidadeDados =
+    Number(
+        campoQuantidade.value
+    );
 
+    
+    if(
+    !Number.isFinite(
+        quantidadeDados
+    ) ||
+    quantidadeDados < 1
+    ){
 
-    let quantidadeDados;
-
-    let desvantagem = false;
-
-
-    if(valorAtributo === 0){
-
-        quantidadeDados = 2;
-
-        desvantagem = true;
-
-    }else{
-
-        quantidadeDados =
-            valorAtributo;
-
+    quantidadeDados =
+        valorAtributo === 0
+        ? 2
+        : Math.max(
+            1,
+            valorAtributo
+        );
     }
+
+    
+    quantidadeDados =
+    Math.floor(
+        quantidadeDados
+    );
+
+
+/*
+    VALOR TEMPORÁRIO DA PERÍCIA
+*/
+    
+    let valorPericiaTeste =
+    Number(
+        campoValorPericia.value
+    );
+
+    
+    if(
+    !Number.isFinite(
+        valorPericiaTeste
+    )
+    ){
+
+    valorPericiaTeste =
+        valorPericia;
+    }
+
+
+/*
+    O atributo continua determinando
+    somente se existe desvantagem.
+
+    Alterar o número de dados NÃO
+    altera o atributo da ficha.
+*/
+    
+    const desvantagem =
+    valorAtributo === 0;
 
 
     const resultados = [];
@@ -2798,15 +2938,15 @@ function rolarTestePericia(){
         resultados,
         20,
         resultadoFinal,
-        valorPericia
+        valorPericiaTeste
     );
 
 
     const sucesso =
-        calcularNivelSucesso(
-            resultadoFinal,
-            valorPericia
-        );
+    calcularNivelSucesso(
+        resultadoFinal,
+        valorPericiaTeste
+    );
 
 
     mostrarResultado(
@@ -2825,7 +2965,8 @@ function rolarTestePericia(){
 
         valorAtributo,
 
-        valorPericia,
+        valorPericia:
+        valorPericiaTeste,
 
         resultados,
 
@@ -2850,7 +2991,8 @@ function rolarTestePericia(){
 
         atributo,
 
-        valorPericia
+        valorPericia:
+        valorPericiaTeste
 
     };
 
