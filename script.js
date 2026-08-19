@@ -681,18 +681,11 @@ function limitarPericiasAltas(periciaAlterada = null){
             return valorFinal >= 12;
 
         });
-
-    // Até 4 perícias com 12 ou mais é permitido
+    
     if(periciasAltas.length <= 4){
         return;
     }
-
-
-    /*
-        Primeiro tenta diminuir justamente a
-        perícia que o usuário acabou de alterar.
-    */
-
+    
     let periciaParaDiminuir = null;
 
     if(
@@ -703,12 +696,7 @@ function limitarPericiasAltas(periciaAlterada = null){
             periciaAlterada;
     }
 
-    /*
-        Caso a função tenha sido chamada sem
-        especificar uma perícia, diminui a última
-        perícia excedente.
-    */
-
+    
     if(!periciaParaDiminuir){
 
         periciaParaDiminuir =
@@ -730,18 +718,7 @@ function limitarPericiasAltas(periciaAlterada = null){
         selectConhecimento &&
         selectConhecimento.value ===
         periciaParaDiminuir.dataset.id;
-
-
-    /*
-        Se recebe +2 de C. Específicos:
-
-        base 9 + bônus 2 = 11
-
-        Caso contrário:
-
-        base 11 = 11
-    */
-
+    
     const novoValorBase =
         recebeConhecimento
         ? 9
@@ -2001,8 +1978,7 @@ div.addEventListener("pointerdown",(e)=>{
 div.addEventListener("pointermove",(e)=>{
 
     if(!segurando){
-
-        // se o usuário rolar antes dos 300ms, cancela o long-press
+        
         if(Math.abs(e.clientX - inicioX) > 10 || Math.abs(e.clientY - inicioY) > 10){
             clearTimeout(timer);
         }
@@ -2734,15 +2710,7 @@ function atualizarConfiguracaoPericiaRolagem(){
     if(!dados){
         return;
     }
-
-
-    /*
-        Quantidade padrão de dados.
-
-        Atributo 0 continua começando
-        com 2d20.
-    */
-
+    
     const quantidadePadrao =
         dados.valorAtributo === 0
         ? 2
@@ -2759,12 +2727,6 @@ function atualizarConfiguracaoPericiaRolagem(){
     campoValor.value =
         dados.valorPericia;
 
-
-    /*
-        Guarda qual perícia colocou
-        esses valores nos campos.
-    */
-
     campoQuantidade.dataset.periciaId =
         pericia.dataset.id;
 
@@ -2778,11 +2740,34 @@ const campoPericiaRolagem =
     );
 
 
-campoPericiaRolagem
-.addEventListener(
-    "change",
-    atualizarConfiguracaoPericiaRolagem
-);
+if(campoPericiaRolagem){
+
+    function verificarPericiaDigitada(){
+
+        const pericia =
+            obterPericiaRolagem();
+
+        if(!pericia){
+            return;
+        }
+
+        atualizarConfiguracaoPericiaRolagem();
+
+    }
+
+
+    campoPericiaRolagem.addEventListener(
+        "input",
+        verificarPericiaDigitada
+    );
+
+
+    campoPericiaRolagem.addEventListener(
+        "change",
+        verificarPericiaDigitada
+    );
+
+}
 
 function rolarTestePericia(){
 
@@ -2823,10 +2808,6 @@ function rolarTestePericia(){
         "valor-pericia-rolagem"
     );
     
-    /*
-    QUANTIDADE TEMPORÁRIA DE DADOS
-*/
-    
     let quantidadeDados =
     Number(
         campoQuantidade.value
@@ -2854,11 +2835,6 @@ function rolarTestePericia(){
     Math.floor(
         quantidadeDados
     );
-
-
-/*
-    VALOR TEMPORÁRIO DA PERÍCIA
-*/
     
     let valorPericiaTeste =
     Number(
@@ -2875,15 +2851,6 @@ function rolarTestePericia(){
     valorPericiaTeste =
         valorPericia;
     }
-
-
-/*
-    O atributo continua determinando
-    somente se existe desvantagem.
-
-    Alterar o número de dados NÃO
-    altera o atributo da ficha.
-*/
     
     const desvantagem =
     valorAtributo === 0;
@@ -2909,22 +2876,12 @@ function rolarTestePericia(){
 
     if(desvantagem){
 
-        // ATRIBUTO 0:
-        // pega o PIOR.
-        // Como menor é melhor,
-        // o pior é o MAIOR.
-
         resultadoFinal =
             Math.max(
                 ...resultados
             );
 
     }else{
-
-        // atributo normal:
-        // pega o MELHOR.
-        // Como menor é melhor,
-        // pega o MENOR.
 
         resultadoFinal =
             Math.min(
@@ -2990,6 +2947,8 @@ function rolarTestePericia(){
         nome,
 
         atributo,
+        
+        quantidadeDados,
 
         valorPericia:
         valorPericiaTeste
@@ -3018,17 +2977,7 @@ function calcularNivelSucesso(
                 pericia / 5
             )
         );
-
-
-    /*
-        Estou considerando 20
-        como Desastre.
-
-        Se sua regra de Desastre
-        for diferente, só precisamos
-        alterar esta condição.
-    */
-
+    
     if(resultado === 20){
         return "Desastre";
     }
@@ -3127,11 +3076,6 @@ function mostrarResultado(
         document.getElementById(
             "nivel-sucesso"
         );
-
-
-    /*
-        Remove a cor da rolagem anterior.
-    */
 
     areaResultado.classList.remove(
         "nivel-desastre",
@@ -3793,11 +3737,6 @@ function usarRolagemSalva(
         return;
     }
 
-
-    /*
-        TESTE DE PERÍCIA
-    */
-
     if(
         rolagem.tipo ===
         "pericia"
@@ -3815,12 +3754,7 @@ function usarRolagemSalva(
 
         }
 
-
-        /*
-            Compatibilidade caso uma
-            rolagem antiga não tenha ID.
-        */
-
+        
         if(!pericia){
 
             pericia =
@@ -3877,22 +3811,32 @@ function usarRolagemSalva(
 
 
         if(botaoPericia){
-
+            
             botaoPericia.click();
-
+            
+        }
+        
+        atualizarConfiguracaoPericiaRolagem();
+        
+        const campoQuantidade = document.getElementById("quantidade-dados-pericia");
+        
+        const campoValor = document.getElementById("valor-pericia-rolagem");
+        
+        if(campoQuantidade && Number.isFinite(Number(rolagem.quantidadeDados))){
+            
+            campoQuantidade.value = Math.max(1, Math.floor(Number(rolagem.quantidadeDados)));
+            
+        }
+        
+        if(campoValor && Number.isFinite(Number(rolagem.valorPericia))){
+            
+            campoValor.value = rolagem.valorPericia;
         }
 
-
         rolarTestePericia();
-
+        
         return;
-
     }
-
-
-    /*
-        TESTE DE SOMA
-    */
 
     if(
         rolagem.tipo ===
@@ -3997,3 +3941,23 @@ function ajustarAlturaPainelRolagens(){
 ajustarAlturaPainelRolagens();
 
 window.addEventListener("resize", ajustarAlturaPainelRolagens);
+
+console.log(
+    "area-teste-soma:",
+    document.getElementById("area-teste-soma")
+);
+
+console.log(
+    "grupos-dados:",
+    document.getElementById("grupos-dados")
+);
+
+console.log(
+    "adicionar-grupo-dado:",
+    document.getElementById("adicionar-grupo-dado")
+);
+
+console.log(
+    "botao-rolar:",
+    document.getElementById("botao-rolar")
+);
