@@ -1637,7 +1637,6 @@ function carregarFichaAtual(){
     
     aplicarBonusConhecimentoEspecifico();
     atualizarSucessosPericias();
-    atualizarFicha();
     atualizarContadores();
     preencherPericiasRolagem();
     mostrarHistoricoRolagens();
