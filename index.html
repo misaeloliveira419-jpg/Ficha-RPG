@@ -2,7 +2,7 @@
 
 <html lang="pt-BR">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.4, maximum-scale=1.0; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.4, maximum-scale=1.0" meta charset="UTF-8">
   <link rel="stylesheet" href="style.css"/>
     <title>Ficha RPG</title>
 </head>
@@ -354,14 +354,20 @@
               <datalist id="lista-pericias-rolagem"></datalist>
             </div>
 
+
             <div id="area-teste-soma">
-
-                <div id="grupos-dados"></div>
-
-                <button id="adicionar-grupo-dado">
-                    +
-                </button>
-
+              <div id="grupos-dados"></div>
+                  <div class="bonus-soma">
+                    <span>+</span>
+                    <input
+                      id="bonus-soma"
+                      type="number"
+                      min="1"
+                      step="1"
+                      placeholder="Bônus"
+                    >
+                  </div>
+              <button id="adicionar-grupo-dado">+</button>
             </div>
 
 

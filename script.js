@@ -3241,6 +3241,85 @@ document
     }
 );
 
+const campoBonusSoma =
+    document.getElementById(
+        "bonus-soma"
+    );
+
+
+if(campoBonusSoma){
+
+    campoBonusSoma.addEventListener(
+        "input",
+        () => {
+
+            /*
+                Vazio é permitido.
+            */
+
+            if(
+                campoBonusSoma.value === ""
+            ){
+                return;
+            }
+
+
+            const valor =
+                Number(
+                    campoBonusSoma.value
+                );
+
+
+            /*
+                Zero e negativos
+                não são permitidos.
+
+                Se forem digitados,
+                limpa o campo.
+            */
+
+            if(
+                !Number.isFinite(valor) ||
+                valor <= 0
+            ){
+
+                campoBonusSoma.value = "";
+
+            }
+
+        }
+    );
+
+
+    campoBonusSoma.addEventListener(
+        "blur",
+        () => {
+
+            if(
+                campoBonusSoma.value === ""
+            ){
+                return;
+            }
+
+
+            const valor =
+                Math.floor(
+                    Number(
+                        campoBonusSoma.value
+                    )
+                );
+
+
+            campoBonusSoma.value =
+                valor > 0
+                ? valor
+                : "";
+
+        }
+    );
+
+}
+
 function rolarTesteSoma(){
 
     const grupos =
@@ -3266,8 +3345,47 @@ function rolarTesteSoma(){
     const configuracao = [];
 
     let soma = 0;
+    
+    let bonus = 0;
 
+    const campoBonus =
+    document.getElementById(
+        "bonus-soma"
+    );
 
+    if(
+    campoBonus &&
+    campoBonus.value !== ""
+    ){
+        
+        const valorBonus =
+        Number(
+            campoBonus.value
+        );
+        
+        if(
+        Number.isFinite(
+            valorBonus
+        ) &&
+        valorBonus > 0
+        ){
+            
+            bonus =
+            Math.floor(
+                valorBonus
+            );
+            
+            campoBonus.value =
+            bonus;
+            
+        }else{
+            
+            campoBonus.value = "";
+            
+        }
+        
+    }
+    
     grupos.forEach(grupo => {
 
         let quantidade =
@@ -3327,6 +3445,8 @@ function rolarTesteSoma(){
         });
 
     });
+    
+    soma += bonus;
 
 
     mostrarDadosSoma(
@@ -3340,12 +3460,18 @@ function rolarTesteSoma(){
     );
 
 
-    const expressao =
-        configuracao
-        .map(g =>
-            `${g.quantidade}d${g.lados}`
-        )
-        .join(" + ");
+    let expressao =
+    configuracao
+    .map(g =>
+        `${g.quantidade}d${g.lados}`
+    )
+    .join(" + ");
+
+    if(bonus > 0){
+
+    expressao +=
+        ` + ${bonus}`;
+    }
 
 
     registrarHistorico({
@@ -3353,6 +3479,8 @@ function rolarTesteSoma(){
         tipo: "soma",
 
         expressao,
+        
+        bonus,
 
         grupos:
             configuracao,
@@ -3368,6 +3496,8 @@ function rolarTesteSoma(){
         tipo: "soma",
 
         expressao,
+        
+        bonus,
 
         grupos:
             configuracao.map(g => ({
@@ -3881,8 +4011,35 @@ function usarRolagemSalva(
             });
 
         }
+        
+        const campoBonus =
+    document.getElementById(
+        "bonus-soma"
+    );
 
 
+if(campoBonus){
+
+    const bonusSalvo =
+        Number(
+            rolagem.bonus
+        );
+
+
+    campoBonus.value =
+        Number.isFinite(
+            bonusSalvo
+        ) &&
+        bonusSalvo > 0
+
+        ? Math.floor(
+            bonusSalvo
+        )
+
+        : "";
+
+}
+        
         rolarTesteSoma();
 
     }

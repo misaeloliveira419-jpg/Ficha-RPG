@@ -1401,6 +1401,51 @@ main{
     margin-bottom:20px;
 }
 
+.bonus-soma{
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    margin-bottom:12px;
+}
+
+
+.bonus-soma span{
+
+    font-size:26px;
+    font-weight:bold;
+
+    color:white;
+}
+
+
+#bonus-soma{
+
+    width:100px;
+    height:38px;
+
+    border:2px solid white;
+
+    background:black;
+    color:white;
+
+    text-align:center;
+
+    font-size:17px;
+    font-weight:bold;
+
+    outline:none;
+}
+
+
+#bonus-soma:focus{
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,.6);
+}
+
 #botao-rolar{
 
     display:block;
