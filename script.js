@@ -770,6 +770,8 @@ function criarFichaNova(){
             metros:9,
             quadrados:6
         },
+        
+        sorte:0,
 
         status:[
         {atual:12,maximo:12},
@@ -876,6 +878,21 @@ function normalizarFicha(ficha){
         if(!Number.isFinite(v)) v = 1;
         return Math.min(5, Math.max(0, Math.round(v)));
     });
+    
+    let sorte =
+    Number(
+        ficha.sorte
+    );
+
+if(
+    !Number.isFinite(sorte) ||
+    sorte < 0
+){
+    sorte = 0;
+}
+
+ficha.sorte =
+    Math.floor(sorte);
 
     const status = Array.isArray(ficha.status) ? ficha.status : [];
     const statusPadrao = [
@@ -1328,6 +1345,23 @@ function salvarFichaAtual(){
     
     ficha.atributos = [...document.querySelectorAll(".quadrado")].map(x=>Number(x.value));
 
+    const inputSorte =
+    document.getElementById(
+        "quadrado-sorte"
+    );
+
+if(inputSorte){
+
+    ficha.sorte =
+        Math.max(
+            0,
+            Math.floor(
+                Number(inputSorte.value) || 0
+            )
+        );
+
+}
+    
     ficha.status = [...document.querySelectorAll(".status")].map(s=>({
 
             atual:Number(s.querySelector(".atual").value),
@@ -1459,60 +1493,43 @@ function carregarFichaAtual(){
         return;
     }
 
-    document.getElementById("jogador").value =
-        ficha.jogador;
+    document.getElementById("jogador").value = ficha.jogador;
 
-    document.getElementById("personagem").value =
-        ficha.personagem;
+    document.getElementById("personagem").value = ficha.personagem;
 
-    const imagemPersonagem =
-    document.getElementById("imagem-personagem");
+    const imagemPersonagem = document.getElementById("imagem-personagem");
 
-    const textoFoto =
-    document.getElementById("texto-foto");
+    const textoFoto = document.getElementById("texto-foto");
 
     if(ficha.foto){
-        
-        imagemPersonagem.src =
-        ficha.foto;
-        
-        imagemPersonagem.dataset.foto =
-        ficha.foto;
-        
-        imagemPersonagem.style.display =
-        "block";
-        
-        textoFoto.style.display =
-        "none";
-        
-    }else{
-        
+        imagemPersonagem.src = ficha.foto;
+        imagemPersonagem.dataset.foto = ficha.foto;
+        imagemPersonagem.style.display = "block";
+        textoFoto.style.display = "none";
+    }
+    else{
         imagemPersonagem.removeAttribute("src");
-        
-        imagemPersonagem.dataset.foto =
-        "";
-        
-        imagemPersonagem.style.display =
-        "none";
-        
-        textoFoto.style.display =
-        "block";
-        
+        imagemPersonagem.dataset.foto = "";
+        imagemPersonagem.style.display = "none";
+        textoFoto.style.display = "block";
     }
     
-    document.getElementById("texto-historia").value =
-        ficha.historia || "";
+    document.getElementById("texto-historia").value = ficha.historia || "";
     
     document.querySelectorAll(".quadrado").forEach((q, i) => {
-        q.value =
-        ficha.atributos[i] ?? 1;
+        q.value = ficha.atributos[i] ?? 1;
     });
     
-    const inputMetros =
-    document.querySelector(".valor-metro");
+    const inputSorte = document.getElementById("quadrado-sorte");
     
-    const inputQuadrados =
-    document.querySelector(".valor-quadrado");
+    if(inputSorte){
+        inputSorte.value =
+        ficha.sorte ?? 0;
+    }
+    
+    const inputMetros = document.querySelector(".valor-metro");
+    
+    const inputQuadrados = document.querySelector(".valor-quadrado");
     
     if(inputMetros && inputQuadrados){
 

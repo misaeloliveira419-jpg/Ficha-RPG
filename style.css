@@ -274,7 +274,7 @@ main{
     color: rgb(200,135,35);
 }
 
-.campo-unidade:focus-within {
+.campo-unidade:focus-within{
     box-shadow: 0 0 10px rgba(225, 150, 50, 0.7);
     border-color: rgb(200,135,35);
 }
@@ -290,6 +290,26 @@ main{
     position: relative;
     left: 20px;
     color: rgb(200,135,35);
+}
+
+#quadrado-sorte{
+
+    width:55px;
+    height:55px;
+    border:2px solid currentColor;
+    border-radius:6px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    font-family:"Times New Roman", Times, serif;
+    background:black;
+    color:inherit;
+    outline:none;
+}
+
+#quadrado-sorte:focus{
+
+    box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 
 .pericias{
@@ -562,10 +582,9 @@ main{
 .cinza{color:#777;}
 .amarelo{color:#b5b500;}
 .azul{color:#008b8b;}
+.sorte, #sor{color:rgb(90,0,225)}
 
 .verde{color:#00aa1b;}
-.azul-claro{color:#39a8ff;}
-.dourado{color:#d6aa00;}
 
 .des{color:#d10000;}
 .for{color:#9c4f00;}
