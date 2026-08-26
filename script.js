@@ -1137,7 +1137,10 @@ function compartilharFicha() {
 
     try {
         
-        const fichaCompartilhada = ficha;
+        const fichaCompartilhada = {
+...ficha,
+foto: ""
+};
         
         const json = JSON.stringify(fichaCompartilhada);
 
