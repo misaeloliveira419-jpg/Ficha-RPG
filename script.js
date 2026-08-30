@@ -1,27 +1,27 @@
 let carregandoFicha = false;
 
 const PERICIAS_PADRAO = [
-    { id:"acro", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"acro", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
     { id:"ades", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
     { id:"art", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
-    { id:"atle", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"atle", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
     { id:"atual", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
     { id:"cien", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
-    { id:"cond", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
-    { id:"crim", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"cond", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
+    { id:"crim", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
     { id:"diplo", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
     { id:"engan", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
-    { id:"forti", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
-    { id:"furtiv", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
-    { id:"inici", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"forti", atributo:"(VIG)", classe:"atributo-pericia vig", treinamento:1, modificador:"" },
+    { id:"furtiv", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
+    { id:"inici", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
     { id:"intim", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
     { id:"intui", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
     { id:"invest", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
-    { id:"lut", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"lut", atributo:"(FOR)", classe:"atributo-pericia for", treinamento:1, modificador:"" },
     { id:"med", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
     { id:"percep", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
-    { id:"pont", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
-    { id:"refl", atributo:"(FIS)", classe:"atributo-pericia fis", treinamento:1, modificador:"" },
+    { id:"pont", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
+    { id:"refl", atributo:"(DES)", classe:"atributo-pericia des", treinamento:1, modificador:"" },
     { id:"relig", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
     { id:"sedu", atributo:"(PRE)", classe:"atributo-pericia pre", treinamento:1, modificador:"" },
     { id:"sobrev", atributo:"(INT)", classe:"atributo-pericia int", treinamento:1, modificador:"" },
@@ -132,54 +132,105 @@ function obterBaseTreinamento(input){
 
 
 function aplicarBonusConhecimentoEspecifico(){
-    const select = document.getElementById("conhecimento-especifico-select");
+
+    const select =
+        document.getElementById(
+            "conhecimento-especifico-select"
+        );
+
     if(!select) return;
-    const escolhida = select.value;
-    document.querySelectorAll(".pericia[data-id]").forEach(pericia => {
-        const input = pericia.querySelector(".treinamento");
+
+    const escolhida =
+        select.value;
+
+    document
+    .querySelectorAll(".pericia[data-id]")
+    .forEach(pericia => {
+
+        const input =
+            pericia.querySelector(".treinamento");
+
         if(!input) return;
-        const base = obterBaseTreinamento(input);
-        input.dataset.valorBase = String(base);
+
+        const base =
+            obterBaseTreinamento(input);
+
+        input.dataset.valorBase =
+            String(base);
+
         if(pericia.dataset.id === escolhida){
-            input.value = base + BONUS_CONHECIMENTO_ESPECIFICO;
+
+            input.value =
+                base +
+                BONUS_CONHECIMENTO_ESPECIFICO;
+
             input.max = 16;
-        }
-        else{
+
+        }else{
+
             input.value = base;
+
             input.max = 14;
+
         }
+        
         atualizarSucessosPericias();
     });
+
 }
 
 preencherSelectConhecimentoEspecifico();
 
-const selectConhecimentoEspecifico = document.getElementById("conhecimento-especifico-select");
+const selectConhecimentoEspecifico =
+    document.getElementById(
+        "conhecimento-especifico-select"
+    );
 
 if(selectConhecimentoEspecifico){
+
     selectConhecimentoEspecifico.addEventListener("change", () => {
+        
         if(carregandoFicha) return;
+        
         aplicarBonusConhecimentoEspecifico();
-        const periciaEscolhida = buscarPericia(selectConhecimentoEspecifico.value);
-        limitarPericiasAltas(periciaEscolhida);
-        atualizarSucessosPericias();
-        atualizarContadores();
-        atualizarFicha();
-        salvarFichaAtual();
+        
+        const periciaEscolhida =
+        buscarPericia(
+            selectConhecimentoEspecifico.value
+        );
+        
+        limitarPericiasAltas(
+        periciaEscolhida
+        );
+
+    atualizarSucessosPericias();
+    atualizarContadores();
+    atualizarFicha();
+    salvarFichaAtual();
+
 });
+
 }
 
 const atributos = document.querySelectorAll(".quadrado");
 
 atributos.forEach(input => {
+
     input.addEventListener("input", () => {
+
         let valor = Number(input.value);
-        if (valor > 3) input.value = 3;
+
+        if (valor > 5) input.value = 5;
         if (valor < 0) input.value = 0;
+
         atualizarFicha();
+
     });
+
 });
+
 const barras = document.querySelectorAll(".status");
+
 barras.forEach(status=>{
 
     const atual = status.querySelector(".atual");
@@ -432,9 +483,11 @@ botoesSecao.forEach(botao=>{
 });
 
 const listaAtributos = [
-    {texto:"FIS", classe:"fis"},
+    {texto:"DES", classe:"des"},
+    {texto:"FOR", classe:"for"},
     {texto:"INT", classe:"int"},
-    {texto:"PRE", classe:"pre"}
+    {texto:"PRE", classe:"pre"},
+    {texto:"VIG", classe:"vig"}
 ];
 
 document.querySelectorAll(".atributo-pericia").forEach(span=>{
@@ -447,7 +500,7 @@ document.querySelectorAll(".atributo-pericia").forEach(span=>{
 
         indice = (indice + 1) % listaAtributos.length;
 
-        span.classList.remove("fis","int","pre");
+        span.classList.remove("des","for","int","pre","vig");
 
         span.classList.add(listaAtributos[indice].classe);
 
@@ -470,24 +523,33 @@ function atualizarStatus(barra, novoMaximo){
 }
 
 function atualizarVida(){
-    const fisico = Number(document.querySelectorAll(".quadrado")[0].value);
+
+    const vigor = Number(document.querySelectorAll(".quadrado")[4].value);
+
     const periciaFortitude = buscarPericia("forti");
     const treinoFortitudeInput = periciaFortitude ? periciaFortitude.querySelector(".treinamento") : null;
     const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
-    const maxVida = 10 + fisico + Math.floor(bonus/2);
-    atualizarStatus(document.querySelectorAll(".status")[0], maxVida);
+
+    const maxVida = 10 + vigor + Math.floor(bonus/2);
+
+    atualizarStatus(
+        document.querySelectorAll(".status")[0],
+        maxVida
+    );
 }
 
 function atualizarDeterminacao(){
-    const ficha = fichaAtual();
-    if(ficha && ficha.tipo === "criatura"){
-        return;
-    }
-    const presenca = Number(document.querySelectorAll(".quadrado")[2].value);
+
+    const presenca = Number(document.querySelectorAll(".quadrado")[3].value);
+
     const periciaVontade = buscarPericia("vont");
-    const treinoVontadeInput = periciaVontade? periciaVontade.querySelector(".treinamento"): null;
+
+    const treinoVontadeInput = periciaVontade? periciaVontade.querySelector(".treinamento") : null;
+
     const vontade = treinoVontadeInput ? Number(treinoVontadeInput.value) || 0 : 0;
-    const maxDeterminacao = 20 + (2 * presenca) + Math.floor(vontade / 2);
+
+    const maxDeterminacao = 30 +(3 * presenca) + Math.floor(vontade / 2);
+
     atualizarStatus(document.querySelectorAll(".status")[1], maxDeterminacao);
 }
 
@@ -589,17 +651,24 @@ function atualizarSucessosPericias(){
 
 function limitarPericiasAltas(periciaAlterada = null){
 
-    const pericias = [...document.querySelectorAll(".pericia[data-id]")];
+    const pericias =
+        [...document.querySelectorAll(".pericia[data-id]")];
 
-    const selectConhecimento = document.getElementById("conhecimento-especifico-select");
+    const selectConhecimento =
+        document.getElementById(
+            "conhecimento-especifico-select"
+        );
 
-    const periciasAltas = pericias.filter(pericia => {
+    const periciasAltas =
+        pericias.filter(pericia => {
 
-            const input = pericia.querySelector(".treinamento");
+            const input =
+                pericia.querySelector(".treinamento");
 
             if(!input) return false;
 
-            const valorFinal = Number(input.value) || 0;
+            const valorFinal =
+                Number(input.value) || 0;
 
             return valorFinal >= 12;
 
@@ -674,207 +743,309 @@ document.querySelectorAll(".maximo").forEach(input=>{
 });
 
 function criarFichaNova(){
+
     const ficha = {
+
         id: Date.now(),
-        tipo: "jogador",
-        dono: window.papelUsuario === "jogador"?(auth.currentUser?.uid || null): null,
-        modificadoEm: Date.now(),
+
         jogador: "",
+
         personagem: "Nova Ficha " + (banco.fichas.length + 1),
+
         foto:"",
+        
         historia:"",
-        atributos:[1,1,1],
+
+        atributos:[1,1,1,1,1],
+        
         deslocamento:{
             metros:9,
             quadrados:6
         },
+        
         sorte:0,
+
         status:[
         {atual:12,maximo:12},
-        {atual:22,maximo:22}
+        {atual:33,maximo:33}
 ],
-        pericias: structuredClone(PERICIAS_PADRAO),
-        conhecimentoEspecifico: "",
-        habilidades: [{
-            nome:"",
-            descricao:"",
-            custo:"",
-            dano:"",
-            alcance:"",
-            resistencia:"",
-            efeito:""
-        }, {
-            nome:"",
-            descricao:"",
-            custo:"",
-            dano:"",
-            alcance:"",
-            resistencia:"",
-            efeito:""
-        }, {
-            nome:"",
-            descricao:"",
-            custo:"",
-            dano:"",
-            alcance:"",
-            resistencia:"",
-            efeito:""
-        }],
-        inventario:[
-        {nome:"",descricao:"",peso:0},
-        {nome:"",descricao:"",peso:0},
-        {nome:"",descricao:"",peso:0}
-        ],
-        maxAtributos: 5,
-        maxPericias: 100,
-        historicoRolagens: [],
-        rolagensSalvas: []
-    };
-    banco.fichas.push(ficha);
-    banco.atual = ficha.id;
-    salvarBanco();
-    if(window.papelUsuario === "mestre" && window.mestreUsandoFirestoreDireto && typeof window.agendarSalvamentoMestreFirestore === "function"){
-        window.agendarSalvamentoMestreFirestore(ficha);
-    }
-    if(typeof window.agendarSalvamentoFirestore === "function"){
-        window.agendarSalvamentoFirestore(ficha);
-    }
-}
 
-function obterChaveBanco(){
-    const uid = window.usuarioAtual?.uid || window.auth?.currentUser?.uid;
-    if(!uid){
-        return null;
+        pericias: structuredClone(PERICIAS_PADRAO),
+        
+        conhecimentoEspecifico: "",
+        
+        habilidades: [
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        resistencia:"",
+        efeito:""
+    },
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        resistencia:"",
+        efeito:""
+    },
+    {
+        nome:"",
+        descricao:"",
+        custo:"",
+        dano:"",
+        alcance:"",
+        resistencia:"",
+        efeito:""
     }
-    return "BancoFichasRPG_" + uid;
+],
+
+inventario:[
+    {nome:"",descricao:"",peso:0},
+    {nome:"",descricao:"",peso:0},
+    {nome:"",descricao:"",peso:0}
+],
+
+    maxAtributos: 10,
+    maxPericias: 100,
+
+    historicoRolagens: [],
+    rolagensSalvas: []
+        
+    };
+    
+    banco.fichas.push(ficha);
+
+    banco.atual = ficha.id;
+
+    salvarBanco();
+
 }
 
 function salvarBanco(){
-    if(window.mestreUsandoFirestoreDireto || window.jogadorUsandoFirestoreDireto){
-        return;
-    }
-    const chave = obterChaveBanco();
-    if(!chave){
-        return;
-    }
-    localStorage.setItem(chave, JSON.stringify(banco)
+
+    localStorage.setItem(
+        "BancoFichasRPG",
+        JSON.stringify(banco)
     );
+
+}
+
+function normalizarFicha(ficha){
+
+    if(!ficha || typeof ficha !== "object") ficha = {};
+
+    ficha.id = Number(ficha.id) || Date.now();
+    ficha.jogador = typeof ficha.jogador === "string" ? ficha.jogador : "";
+    ficha.personagem = typeof ficha.personagem === "string" ? ficha.personagem : "";
+    ficha.foto = typeof ficha.foto === "string" ? ficha.foto : "";
+    ficha.historia = typeof ficha.historia === "string" ? ficha.historia : "";
+    
+    const deslocamento = ficha.deslocamento || {};
+    
+    let metros = Number(deslocamento.metros);
+    
+    if (!Number.isFinite(metros) || metros < 1) {
+        metros = 9;
+    }
+    
+    metros = Math.floor(metros);
+    
+    let quadrados = metros / 1.5;
+    
+    quadrados = Number(quadrados.toFixed(1));
+    
+    ficha.deslocamento = {
+        metros: metros,
+        quadrados: quadrados
+    };
+    
+    const atributos = Array.isArray(ficha.atributos) ? ficha.atributos : [];
+    ficha.atributos = [0,1,2,3,4].map(i=>{
+        let v = Number(atributos[i]);
+        if(!Number.isFinite(v)) v = 1;
+        return Math.min(5, Math.max(0, Math.round(v)));
+    });
+    
+    let sorte =
+    Number(
+        ficha.sorte
+    );
+
+if(
+    !Number.isFinite(sorte) ||
+    sorte < 0
+){
+    sorte = 0;
+}
+
+ficha.sorte =
+    Math.floor(sorte);
+
+    const status = Array.isArray(ficha.status) ? ficha.status : [];
+    const statusPadrao = [
+    {atual:12,maximo:12},
+    {atual:33,maximo:33}
+    ];
+    ficha.status = statusPadrao.map((padrao,i)=>{
+        const s = status[i] || {};
+        let maximo = Number(s.maximo);
+        let atual = Number(s.atual);
+        if(!Number.isFinite(maximo) || maximo <= 0) maximo = padrao.maximo;
+        if(!Number.isFinite(atual)) atual = maximo;
+        return { atual: Math.max(0, atual), maximo: maximo };
+    });
+
+    const pericias =
+    Array.isArray(ficha.pericias)
+    ? ficha.pericias
+    : [];
+    
+    const mapaPericias = new Map();
+    
+    pericias.forEach((p, i) => {
+        
+        if (!p || typeof p !== "object") {
+            return;
+        }
+        
+        const id =
+        typeof p.id === "string" && p.id
+        ? p.id
+        : PERICIAS_IDS_LEGADO[i];
+        
+        if (id) {
+            mapaPericias.set(id, p);
+        }
+        
+    });
+    
+    ficha.pericias = PERICIAS_PADRAO.map(padrao => {
+        
+        const p =
+        mapaPericias.get(padrao.id) || {};
+        
+        let treino = Number(p.treinamento);
+        
+        if (!Number.isFinite(treino)) {
+            treino = 1;
+        }
+        
+        return {
+            
+            id: padrao.id,
+            
+            atributo:
+            typeof p.atributo === "string"
+            ? p.atributo
+            : padrao.atributo,
+            
+            classe:
+            typeof p.classe === "string"
+            ? p.classe
+            : padrao.classe,
+            
+            treinamento:
+            Math.min(
+                14,
+                Math.max(
+                    1,
+                    Math.round(treino)
+                )
+            ),
+            
+            modificador:
+            typeof p.modificador === "string"
+            ? p.modificador
+            : ""
+            
+        };
+        
+    });
+    
+    let conhecimentoEspecifico =
+    typeof ficha.conhecimentoEspecifico === "string"
+    ? ficha.conhecimentoEspecifico
+    : "";
+    
+    if(
+    conhecimentoEspecifico &&
+    !PERICIAS_PADRAO.some(
+        p => p.id === conhecimentoEspecifico
+    )
+    ){
+        conhecimentoEspecifico = "";
+    }
+    
+    ficha.conhecimentoEspecifico =
+    conhecimentoEspecifico;
+
+    ficha.habilidades =
+    (Array.isArray(ficha.habilidades)
+    ? ficha.habilidades
+    : [])
+    .map(h=>({
+
+        nome:
+            String((h && h.nome) || ""),
+
+        descricao:
+            String((h && h.descricao) || ""),
+
+        custo:
+            String((h && h.custo) || ""),
+
+        dano:
+            String((h && h.dano) || ""),
+
+        alcance:
+            String((h && h.alcance) || ""),
+
+        resistencia:
+            String((h && h.resistencia) || ""),
+
+        efeito:
+            String((h && h.efeito) || "")
+
+    }));
+
+    ficha.inventario = (Array.isArray(ficha.inventario) ? ficha.inventario : [])
+        .map(i=>({
+            nome: String((i && i.nome) || ""),
+            descricao: String((i && i.descricao) || ""),
+            peso: Number(i && i.peso) || 0,
+            marcado: !!(i && i.marcado)
+        }));
+
+    ficha.maxAtributos = Number(ficha.maxAtributos) || 10;
+    ficha.maxPericias = Number(ficha.maxPericias) || 100;
+    
+    ficha.historicoRolagens =
+    Array.isArray(
+        ficha.historicoRolagens
+    )
+    ? ficha.historicoRolagens
+    : [];
+
+
+ficha.rolagensSalvas =
+    Array.isArray(
+        ficha.rolagensSalvas
+    )
+    ? ficha.rolagensSalvas
+    : [];
+
+    return ficha;
 }
 
 function carregarBanco(){
 
-    const chave = obterChaveBanco();
-    if(!chave){
-        return;
-    }
-    banco = {
-        atual:null,
-        fichas:[]
-    };
-    let salvo =
-    localStorage.getItem(chave);
-    if(window.papelUsuario === "mestre"){
-    const bancoAntigo = localStorage.getItem("BancoFichasRPG");
-        const chaveMigracao = "BancoFichasRPG_MIGRADO_" + window.usuarioAtual.uid;
-        const jaMigrou = localStorage.getItem(chaveMigracao) === "1";
-        if(bancoAntigo && !jaMigrou){
-            try{
-                const dadosAntigos = JSON.parse(bancoAntigo);
-                const dadosNovos = salvo ? JSON.parse(salvo):{
-                    atual:null,
-                    fichas:[]
-                };
-                const fichas = new Map();
-            /*
-             * Primeiro recuperamos todas
-             * as fichas do banco antigo.
-             */
-            if(
-                Array.isArray(
-                    dadosAntigos.fichas
-                )
-            ){
+    const salvo = localStorage.getItem("BancoFichasRPG");
 
-                dadosAntigos.fichas
-                .forEach(ficha => {
-
-                    fichas.set(
-                        String(ficha.id),
-                        ficha
-                    );
-
-                });
-
-            }
-
-
-            /*
-             * Depois mantemos também qualquer
-             * ficha já existente no novo banco.
-             */
-            if(
-                Array.isArray(
-                    dadosNovos.fichas
-                )
-            ){
-
-                dadosNovos.fichas
-                .forEach(ficha => {
-
-                    fichas.set(
-                        String(ficha.id),
-                        ficha
-                    );
-
-                });
-
-            }
-
-
-            const bancoCombinado = {
-
-                atual:
-                    dadosAntigos.atual ??
-                    dadosNovos.atual ??
-                    null,
-
-                fichas:
-                    [...fichas.values()]
-
-            };
-
-
-            salvo =
-                JSON.stringify(
-                    bancoCombinado
-                );
-
-
-            localStorage.setItem(
-                chave,
-                salvo
-            );
-
-
-            localStorage.setItem(
-                chaveMigracao,
-                "1"
-            );
-
-
-        }catch(erro){
-
-            alert(
-                "Não foi possível recuperar " +
-                "as fichas antigas: " +
-                erro.message
-            );
-
-        }
-
-    }
-
-}
     if(salvo){
 
         try{
@@ -901,157 +1072,22 @@ function carregarBanco(){
     if(!banco || !Array.isArray(banco.fichas)){
         banco = { atual: null, fichas: [] };
     }
-    if(banco.fichas.length === 0 && window.papelUsuario !== "jogador"){
+
+    if(banco.fichas.length===0){
+
         criarFichaNova();
+
     }
-    if(banco.fichas.length > 0 && !banco.fichas.some(f=>f.id===banco.atual)){
+
+    if(!banco.fichas.some(f=>f.id===banco.atual)){
+
         banco.atual = banco.fichas[0].id;
+
         salvarBanco();
+
     }
+
     atualizarBotaoExcluir();
-}
-
-const TIPOS_FICHA = new Set(["jogador", "npc", "criatura"]);
-
-function normalizarTipoFicha(tipo){
-    return TIPOS_FICHA.has(tipo) ? tipo: "jogador";
-}
-
-function normalizarFicha(ficha){
-
-    if(!ficha || typeof ficha !== "object") ficha = {};
-
-    ficha.id = Number(ficha.id) || Date.now();
-    ficha.tipo = normalizarTipoFicha(ficha.tipo);
-    if(ficha.tipo === "jogador"){
-        ficha.dono = typeof ficha.dono === "string" && ficha.dono.trim()? ficha.dono.trim(): null;
-    }
-    else{
-    delete ficha.dono;
-}
-    let modificadoEm = Number(ficha.modificadoEm);
-    if(!Number.isFinite(modificadoEm) || modificadoEm < 0){
-        modificadoEm = 0;
-    }
-    ficha.modificadoEm = Math.floor(modificadoEm);
-    ficha.jogador = typeof ficha.jogador === "string" ? ficha.jogador : "";
-    ficha.personagem = typeof ficha.personagem === "string" ? ficha.personagem : "";
-    ficha.foto = typeof ficha.foto === "string" ? ficha.foto : "";
-    ficha.historia = typeof ficha.historia === "string" ? ficha.historia : "";
-    
-    const deslocamento = ficha.deslocamento || {};
-    
-    let metros = Number(deslocamento.metros);
-    
-    if (!Number.isFinite(metros) || metros < 1) {
-        metros = 9;
-    }
-    
-    metros = Math.floor(metros);
-    
-    let quadrados = metros / 1.5;
-    
-    quadrados = Number(quadrados.toFixed(1));
-    
-    ficha.deslocamento = {
-        metros: metros,
-        quadrados: quadrados
-    };
-    
-    const atributos = Array.isArray(ficha.atributos) ? ficha.atributos : [];
-    ficha.atributos = [0,1,2].map(i=>{
-        let v = Number(atributos[i]);
-        if(!Number.isFinite(v)) v = 1;
-        return Math.min(5, Math.max(0, Math.round(v)));
-    });
-    
-    if(ficha.tipo === "jogador" && window.papelUsuario === "mestre"){
-        let sorte = Number(ficha.sorte);
-        if(!Number.isFinite(sorte) || sorte < 0){
-            sorte = 0;
-        }
-        ficha.sorte = Math.floor(sorte);
-    }
-    else{
-        delete ficha.sorte;
-    }
-    
-    const status = Array.isArray(ficha.status) ? ficha.status: [];
-    const statusPadrao = ficha.tipo === "criatura" ? [{
-        atual:12,
-        maximo:12
-    }]:[{
-        atual:12,
-        maximo:12
-    },{atual:22,
-        maximo:22
-    }];
-    ficha.status = statusPadrao.map((padrao, i) => {
-        const s = status[i] || {};
-        let maximo = Number(s.maximo);
-        let atual = Number(s.atual);
-        if(!Number.isFinite(maximo) || maximo <= 0){
-            maximo = padrao.maximo;
-            }
-        if(!Number.isFinite(atual)){
-            atual = maximo;
-            }
-            return{
-                atual: Math.max(0, atual),
-                maximo: maximo
-            };
-        }
-    );
-    const pericias = Array.isArray(ficha.pericias) ? ficha.pericias: [];
-    const mapaPericias = new Map();
-    pericias.forEach((p, i) => {
-        if(!p || typeof p !== "object"){
-            return;
-        }
-        const id = typeof p.id === "string" && p.id ? p.id: PERICIAS_IDS_LEGADO[i];
-        if(id){
-            mapaPericias.set(id, p);
-        }
-    });
-    ficha.pericias = PERICIAS_PADRAO.map(padrao => {
-        const p = mapaPericias.get(padrao.id) || {};
-        let treino = Number(p.treinamento);
-        if(!Number.isFinite(treino)){
-            treino = 1;
-        }
-        return{
-            id: padrao.id,
-            atributo: typeof p.atributo === "string" ? p.atributo: padrao.atributo,
-            classe: typeof p.classe === "string" ? p.classe: padrao.classe,
-            treinamento: Math.min(14, Math.max(1, Math.round(treino))),
-            modificador: typeof p.modificador === "string" ? p.modificador: ""
-        };
-    });
-    let conhecimentoEspecifico = typeof ficha.conhecimentoEspecifico === "string" ? ficha.conhecimentoEspecifico: "";
-    if(conhecimentoEspecifico && !PERICIAS_PADRAO.some(p => p.id === conhecimentoEspecifico)){
-        conhecimentoEspecifico = "";
-    }
-    ficha.conhecimentoEspecifico = conhecimentoEspecifico;
-    ficha.habilidades = (Array.isArray(ficha.habilidades) ? ficha.habilidades: []).map(h=>({
-        nome: String((h && h.nome) || ""),
-        descricao: String((h && h.descricao) || ""),
-        custo: String((h && h.custo) || ""),
-        dano: String((h && h.dano) || ""),
-        alcance: String((h && h.alcance) || ""),
-        resistencia: String((h && h.resistencia) || ""),
-        efeito: String((h && h.efeito) || "")
-    }));
-    ficha.inventario = (Array.isArray(ficha.inventario) ? ficha.inventario: []).map(i=>({
-            nome: String((i && i.nome) || ""),
-            descricao: String((i && i.descricao) || ""),
-            peso: Number(i && i.peso) || 0,
-            marcado: !!(i && i.marcado)
-        }));
-    ficha.maxAtributos = Number(ficha.maxAtributos) || 5;
-    ficha.maxPericias = Number(ficha.maxPericias) || 100;
-    ficha.historicoRolagens = Array.isArray(ficha.historicoRolagens) ? ficha.historicoRolagens: [];
-    ficha.rolagensSalvas = Array.isArray(ficha.rolagensSalvas) ? ficha.rolagensSalvas: [];
-    return ficha;
 }
 
 function fichaAtual(){
@@ -1110,102 +1146,43 @@ function compartilharFicha() {
 
     try {
         
-        const fichaCompartilhada = {
-            ...ficha,
-            foto: ""
-        };
-        
+        const fichaCompartilhada = ficha;
         const json = JSON.stringify(fichaCompartilhada);
-
-        const comprimido =
-            LZString.compressToEncodedURIComponent(json);
-
-        const url =
-            window.location.origin +
-            window.location.pathname +
-            "?f=" +
-            comprimido;
-
-        navigator.clipboard.writeText(url)
-            .then(() => {
-
-                alert(
-                    "Link da ficha copiado para a área de transferência!"
-                );
-
-            })
+        const comprimido = LZString.compressToEncodedURIComponent(json);
+        const url = window.location.origin + window.location.pathname + "?f=" + comprimido;
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Link da ficha copiado para a área de transferência!");
+        })
             .catch(() => {
-
-                prompt(
-                    "Copie o link da ficha:",
-                    url
-                );
-
+                prompt("Copie o link da ficha:", url);
             });
-
-    } catch (erro) {
-
-        console.error(erro);
-
-        alert(
-            "Não foi possível criar o link da ficha."
-        );
-
     }
-
+    catch (erro) {
+        console.error(erro);
+        alert("Não foi possível criar o link da ficha.");
+    }
 }
-
 document.getElementById("compartilhar-ficha").onclick = () => {
-
     compartilharFicha();
-
 };
 
 function verificarFichaCompartilhada() {
 
-    const parametros =
-        new URLSearchParams(
-            window.location.search
-        );
-
-    const dados =
-        parametros.get("f");
-
+    const parametros = new URLSearchParams(window.location.search);
+    const dados = parametros.get("f");
+    
     if (!dados) {
         return;
     }
-
     try {
-
-        const json =
-            LZString.decompressFromEncodedURIComponent(
-                dados
-            );
-
+        const json = LZString.decompressFromEncodedURIComponent(dados);
         if (!json) {
-
-            throw new Error(
-                "Não foi possível descomprimir a ficha."
-            );
-
+            throw new Error("Não foi possível descomprimir a ficha.");
         }
-
-        const ficha =
-            normalizarFicha(JSON.parse(json));
-
-        const resposta =
-            confirm(
-                "Uma ficha foi compartilhada com você!\n\n" +
-                "Personagem: " +
-                (ficha.personagem || "Sem nome") +
-                "\n\n" +
-                "Deseja importar esta ficha?"
-            );
-
+        const ficha = normalizarFicha(JSON.parse(json));
+        const resposta = confirm("Uma ficha foi compartilhada com você!\n\n" + "Personagem: " + (ficha.personagem || "Sem nome") + "\n\n" + "Deseja importar esta ficha?");
         if (!resposta) {
-
             return;
-
         }
         ficha.id = Date.now();
         banco.fichas.push(ficha);
@@ -1216,107 +1193,49 @@ function verificarFichaCompartilhada() {
         alert("Ficha importada com sucesso!");
         window.history.replaceState({}, document.title, window.location.pathname);
     }
-    catch (erro){
+    catch (erro) {
         console.error(erro);
         alert("Não foi possível importar a ficha.\n\n" + "O link pode estar inválido ou corrompido.");
     }
 }
 
-function criarAssinaturaConteudoLocal(ficha){
-    const copia = JSON.parse(JSON.stringify(ficha));
-    delete copia.modificadoEm;
-    return JSON.stringify(copia);
-}
-
-function atualizarControleTipoFicha(){
-    const controle = document.getElementById("controle-tipo-ficha");
-    if(!controle){
-        return;
-    }
-    controle.style.display = window.papelUsuario === "mestre" ? "block": "none";
-}
-
-window.addEventListener("usuario-autenticado", atualizarControleTipoFicha);
-if(window.papelUsuario){
-    atualizarControleTipoFicha();
-}
-
-const seletorTipoFicha = document.getElementById("tipo-ficha");
-if(seletorTipoFicha){
-    seletorTipoFicha.addEventListener("change",() => {
-        if(window.papelUsuario !== "mestre"){
-            return;
-        }
-        salvarFichaAtual();
-        const ficha = fichaAtual();
-        if(!ficha){
-            return;
-        }
-        const tipoAntigo = ficha.tipo;
-        const novoTipo = normalizarTipoFicha(seletorTipoFicha.value);
-        if(novoTipo === tipoAntigo){
-            return;
-        }
-        const nomes ={
-            jogador: "Jogador",
-            npc: "NPC",
-            criatura: "Criatura"
-        };
-        const confirmar = confirm("Alterar esta ficha de " + nomes[tipoAntigo] + " para " + nomes[novoTipo] + "?\n\n" + "Campos que não pertencem " + "ao novo tipo serão removidos.");
-        if(!confirmar){
-            seletorTipoFicha.value = tipoAntigo;
-            return;
-        }
-        ficha.tipo = novoTipo;
-        normalizarFicha(ficha);
-        salvarBanco();
-        if(window.papelUsuario === "mestre" && window.mestreUsandoFirestoreDireto && typeof window.salvarFichaMestreNoFirestore === "function"){
-            window.salvarFichaMestreNoFirestore(ficha).catch(erro => {
-                alert("Erro ao alterar o tipo " + "da ficha:\n\n" + erro.message);
-            });
-        }
-        carregarFichaAtual();
-        if(typeof window.atualizarInterfaceDonoFicha === "function"){
-            window.atualizarInterfaceDonoFicha();
-        }
-    });
-}
-
 function salvarFichaAtual(){
     const ficha = fichaAtual();
     if(!ficha) return;
-    const assinaturaAntes = criarAssinaturaConteudoLocal(ficha);
     ficha.jogador = document.getElementById("jogador").value;
     ficha.personagem = document.getElementById("personagem").value;
     const imagemPersonagem = document.getElementById("imagem-personagem");
     ficha.foto = imagemPersonagem?.dataset.foto || "";
     ficha.historia = document.getElementById("texto-historia").value;
     const inputMetros = document.querySelector(".valor-metro");
+    
     if(inputMetros){
         let metrosBase = Number(inputMetros.dataset.valorBase);
         if(!Number.isFinite(metrosBase) || metrosBase < 1){
             metrosBase = Number(inputMetros.value) || 1;
         }
-    metrosBase = Math.max(1, Math.floor(metrosBase));
+        
+        metrosBase = Math.max(1, Math.floor(metrosBase));
         ficha.deslocamento = {
             metros: metrosBase,
             quadrados: Number((metrosBase / 1.5).toFixed(1))
         };
+        
     }
+    
     ficha.atributos = [...document.querySelectorAll(".quadrado")].map(x=>Number(x.value));
+
     const inputSorte = document.getElementById("quadrado-sorte");
-    if(ficha.tipo === "jogador" && window.papelUsuario === "mestre" && inputSorte){
-        ficha.sorte = Math.max(0, Math.floor(Number(inputSorte.value) || 0));
-    }
-    else{
-        delete ficha.sorte;
-    }
-    const statusTela = [...document.querySelectorAll(".status")];
-    const quantidadeStatus = ficha.tipo === "criatura" ? 1: 2;
-    ficha.status = statusTela.slice(0, quantidadeStatus).map(status => ({
-        atual: Number(status.querySelector(".atual").value),
-        maximo: Number(status.querySelector(".maximo").value)
+
+if(inputSorte){
+    ficha.sorte = Math.max(0, Math.floor(Number(inputSorte.value) || 0));
+}
+    
+    ficha.status = [...document.querySelectorAll(".status")].map(s=>({
+        atual:Number(s.querySelector(".atual").value),
+        maximo:Number(s.querySelector(".maximo").value)
     }));
+
     ficha.pericias = [...document.querySelectorAll(".pericia")].map(p => {
         const treinamentoInput = p.querySelector(".treinamento");
         const treinamentoBase = obterBaseTreinamento(treinamentoInput);
@@ -1328,7 +1247,9 @@ function salvarFichaAtual(){
             modificador: p.querySelector(".modificador").value
         };
     });
+    
     const selectConhecimento = document.getElementById("conhecimento-especifico-select");
+    
     ficha.conhecimentoEspecifico = selectConhecimento ? selectConhecimento.value: "";
     ficha.habilidades = [...document.querySelectorAll(".card-habilidade")].map(card=>({
         nome: card.querySelector(".nome-habilidade").value,
@@ -1345,21 +1266,14 @@ function salvarFichaAtual(){
         peso: Number(card.querySelector(".peso-item").value) || 0,
         marcado: card.querySelector(".item-checkbox").checked
         }));
+
     const maxA = document.querySelector(".contador-atributos .maximo-contador");
     const maxP = document.querySelector(".contador-pericias .maximo-contador");
-    ficha.maxAtributos = maxA ? Number(maxA.value) : (ficha.maxAtributos ?? 5);
+
+    ficha.maxAtributos = maxA ? Number(maxA.value) : (ficha.maxAtributos ?? 10);
     ficha.maxPericias = maxP ? Number(maxP.value) : (ficha.maxPericias ?? 100);
-    const assinaturaDepois = criarAssinaturaConteudoLocal(ficha);
-    if(assinaturaAntes !== assinaturaDepois){
-        ficha.modificadoEm = Date.now();
-    }
+
     salvarBanco();
-    if(window.papelUsuario === "mestre" && typeof window.agendarSalvamentoMestreFirestore === "function"){
-        window.agendarSalvamentoMestreFirestore(ficha);
-    }
-    if(typeof window.agendarSalvamentoFirestore === "function"){
-        window.agendarSalvamentoFirestore(ficha);
-    }
     atualizarBotaoExcluir();
     atualizarContadores();
 }
@@ -1373,40 +1287,29 @@ function aplicarClampTreinamento(input) {
     input.value = v;
 }
 
-function aplicarInterfaceTipoFicha(tipo){
-    tipo = normalizarTipoFicha(tipo);
-    const areaSorte = document.getElementById("area-sorte");
-    const statusDeterminacao = document.getElementById("status-determinacao");
-    const seletorTipo = document.getElementById("tipo-ficha");
-    if(seletorTipo){
-        seletorTipo.value = tipo;
-    }
-    if(areaSorte){
-        const podeVerSorte = tipo === "jogador" && window.papelUsuario === "mestre";
-        areaSorte.style.display = podeVerSorte ? "" : "none";
-    }
-    if(statusDeterminacao){
-        statusDeterminacao.style.display = tipo === "criatura" ? "none": "";
-    }
-}
-
 function carregarFichaAtual(){
+
     carregandoFicha = true;
+
     lista.innerHTML = "";
+
     listaItens.innerHTML = "";
+
     const ficha = normalizarFicha(fichaAtual());
+
     if(!ficha){
         carregandoFicha = false;
         return;
     }
-    aplicarInterfaceTipoFicha(ficha.tipo);
-    if(typeof window.atualizarInterfaceDonoFicha === "function"){
-        window.atualizarInterfaceDonoFicha();
-    }
+
     document.getElementById("jogador").value = ficha.jogador;
+
     document.getElementById("personagem").value = ficha.personagem;
+
     const imagemPersonagem = document.getElementById("imagem-personagem");
+
     const textoFoto = document.getElementById("texto-foto");
+
     if(ficha.foto){
         imagemPersonagem.src = ficha.foto;
         imagemPersonagem.dataset.foto = ficha.foto;
@@ -1419,45 +1322,75 @@ function carregarFichaAtual(){
         imagemPersonagem.style.display = "none";
         textoFoto.style.display = "block";
     }
+    
     document.getElementById("texto-historia").value = ficha.historia || "";
+    
     document.querySelectorAll(".quadrado").forEach((q, i) => {
         q.value = ficha.atributos[i] ?? 1;
     });
+    
     const inputSorte = document.getElementById("quadrado-sorte");
+    
     if(inputSorte){
         inputSorte.value =
         ficha.sorte ?? 0;
     }
+    
     const inputMetros = document.querySelector(".valor-metro");
+    
     const inputQuadrados = document.querySelector(".valor-quadrado");
+    
     if(inputMetros && inputQuadrados){
-        let metrosBase = Number(ficha.deslocamento?.metros);
-        if(!Number.isFinite(metrosBase) || metrosBase < 1){
-            metrosBase = 9;
-        }
-        metrosBase = Math.floor(metrosBase);
-        inputMetros.dataset.valorBase = String(metrosBase);
-        inputMetros.value = metrosBase;
-        inputQuadrados.value = Number((metrosBase / 1.5).toFixed(1));
+
+    let metrosBase =
+        Number(ficha.deslocamento?.metros);
+
+    if(!Number.isFinite(metrosBase) || metrosBase < 1){
+        metrosBase = 9;
     }
+
+    metrosBase =
+        Math.floor(metrosBase);
+
+    inputMetros.dataset.valorBase =
+        String(metrosBase);
+
+    inputMetros.value =
+        metrosBase;
+
+    inputQuadrados.value =
+        Number(
+            (metrosBase / 1.5)
+            .toFixed(1)
+        );
+
+}
+
     const contadorAtribMax = document.querySelector(".contador-atributos .maximo-contador");
     const contadorPericMax = document.querySelector(".contador-pericias .maximo-contador");
+
     if (contadorAtribMax) {
-        contadorAtribMax.value = ficha.maxAtributos ?? 5;
+        contadorAtribMax.value = ficha.maxAtributos ?? 10;
     }
+
     if (contadorPericMax) {
         contadorPericMax.value = ficha.maxPericias ?? 100;
     }
-    document.querySelectorAll(".status").forEach((s, i) => {
-        const dadosStatus = ficha.status[i];
-        if(!dadosStatus){
-            return;
-        }
-        s.querySelector(".atual").value = dadosStatus.atual;
-        s.querySelector(".maximo").value = dadosStatus.maximo;
-        s.querySelector(".maximo").dispatchEvent(new Event("input")
-        );
+
+    document.querySelectorAll(".status")
+    .forEach((s,i)=>{
+
+        s.querySelector(".atual").value =
+            ficha.status[i].atual;
+
+        s.querySelector(".maximo").value =
+            ficha.status[i].maximo;
+
+        s.querySelector(".maximo")
+        .dispatchEvent(new Event("input"));
+
     });
+    
     document.querySelectorAll(".pericia")
     .forEach(p => {
         
@@ -1472,11 +1405,14 @@ function carregarFichaAtual(){
             return;
         }
         
-        const atributo = p.querySelector(".atributo-pericia");
+        const atributo =
+        p.querySelector(".atributo-pericia");
         
-        atributo.textContent = dados.atributo;
+        atributo.textContent =
+        dados.atributo;
         
-        atributo.className = dados.classe;
+        atributo.className =
+        dados.classe;
         
         const treinoInput =
         p.querySelector(".treinamento");
@@ -1536,251 +1472,173 @@ function carregarFichaAtual(){
 
 }
 
-const areaFotoPersonagem = document.getElementById("area-foto-personagem");
+const areaFotoPersonagem =
+    document.getElementById("area-foto-personagem");
 
-const inputFotoPersonagem = document.getElementById("input-foto-personagem");
+const inputFotoPersonagem =
+    document.getElementById("input-foto-personagem");
 
-const imagemPersonagem = document.getElementById("imagem-personagem");
+const imagemPersonagem =
+    document.getElementById("imagem-personagem");
 
-const textoFoto = document.getElementById("texto-foto");
+const textoFoto =
+    document.getElementById("texto-foto");
 
 
 areaFotoPersonagem.addEventListener("click", () => {
+
     inputFotoPersonagem.click();
+
 });
 
 
-inputFotoPersonagem.addEventListener("change", async () => {
-    const arquivo = inputFotoPersonagem.files[0];
-    if(!arquivo){
-        return;
-    }
+inputFotoPersonagem.addEventListener("change", () => {
+
+    const arquivo =
+        inputFotoPersonagem.files[0];
+
+    if(!arquivo) return;
+
     if(!arquivo.type.startsWith("image/")){
+
         alert("Selecione um arquivo de imagem.");
+
         return;
     }
 
+    const leitor =
+        new FileReader();
 
-        const ficha =
-            fichaAtual();
+    leitor.onload = () => {
 
+        const imagemOriginal =
+            new Image();
 
-        if(!ficha){
+        imagemOriginal.onload = () => {
 
-            alert(
-                "Nenhuma ficha selecionada."
-            );
+            const tamanhoMaximo = 500;
 
-            return;
+            let largura =
+                imagemOriginal.width;
 
-        }
-
-
-        const fotoAnterior =
-            imagemPersonagem
-                ?.dataset
-                .foto
-            || "";
-
-
-        try{
+            let altura =
+                imagemOriginal.height;
 
             if(
-                typeof window
-                    .prepararFotoParaFirestore
-                !== "function"
+                largura > tamanhoMaximo ||
+                altura > tamanhoMaximo
             ){
 
-                throw new Error(
-                    "Sistema de fotos não carregado."
-                );
+                const proporcao =
+                    Math.min(
+                        tamanhoMaximo / largura,
+                        tamanhoMaximo / altura
+                    );
+
+                largura =
+                    Math.round(
+                        largura * proporcao
+                    );
+
+                altura =
+                    Math.round(
+                        altura * proporcao
+                    );
 
             }
 
+            const canvas =
+                document.createElement("canvas");
+
+            canvas.width = largura;
+            canvas.height = altura;
+
+            const ctx =
+                canvas.getContext("2d");
+
+            ctx.drawImage(
+                imagemOriginal,
+                0,
+                0,
+                largura,
+                altura
+            );
 
             const foto =
-                await window
-                    .prepararFotoParaFirestore(
-                        arquivo
-                    );
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.82
+                );
 
-
-            /*
-             * Mostra imediatamente.
-             */
             imagemPersonagem.src =
                 foto;
 
-
-            imagemPersonagem
-                .dataset
-                .foto =
+            imagemPersonagem.dataset.foto =
                 foto;
 
-
-            imagemPersonagem
-                .style
-                .display =
+            imagemPersonagem.style.display =
                 "block";
 
-
-            textoFoto
-                .style
-                .display =
+            textoFoto.style.display =
                 "none";
 
-
-            ficha.foto =
-                foto;
-
-
-            /*
-             * Agora ela realmente vai
-             * para o Firestore.
-             */
-            await window
-                .salvarFotoFichaFirestore(
-                    ficha,
-                    foto
-                );
-
-
-            /*
-             * Salva os outros dados
-             * normais da ficha.
-             *
-             * O salvador principal ainda
-             * remove foto antes de mandar
-             * o documento principal,
-             * o que continua correto.
-             */
             salvarFichaAtual();
 
+        };
 
-        }catch(erro){
+        imagemOriginal.src =
+            leitor.result;
 
-            /*
-             * Se falhar, voltamos para
-             * a foto anterior.
-             */
-            if(fotoAnterior){
-
-                imagemPersonagem.src =
-                    fotoAnterior;
-
-                imagemPersonagem
-                    .dataset
-                    .foto =
-                    fotoAnterior;
-
-                imagemPersonagem
-                    .style
-                    .display =
-                    "block";
-
-                textoFoto
-                    .style
-                    .display =
-                    "none";
-
-            }else{
-
-                imagemPersonagem
-                    .removeAttribute(
-                        "src"
-                    );
-
-                imagemPersonagem
-                    .dataset
-                    .foto =
-                    "";
-
-                imagemPersonagem
-                    .style
-                    .display =
-                    "none";
-
-                textoFoto
-                    .style
-                    .display =
-                    "block";
-
-            }
-
-
-            alert(
-                "Não foi possível salvar a foto.\n\n" +
-                erro.message
-            );
-
-        }finally{
-
-            /*
-             * Permite escolher a mesma
-             * imagem novamente.
-             */
-            inputFotoPersonagem.value =
-                "";
-
-        }
-
-    }
-);
-
-let uidBancoCarregado = null;
-
-function iniciarBancoUsuario(){
-    const usuario = window.usuarioAtual;
-    if(!usuario){
-        return;
-    }
-    if(uidBancoCarregado === usuario.uid){
-        return;
-    }
-    uidBancoCarregado = usuario.uid;
-    banco = {
-        atual:null,
-        fichas:[]
     };
-    if(window.papelUsuario === "mestre"){
-        window.mestreAguardandoFirestore = true;
-        window.dispatchEvent(new Event("mestre-precisa-carregar-fichas"));
-        return;
-    }
-    if(window.papelUsuario === "jogador"){
-        window.jogadorAguardandoFirestore = true;
-        window.dispatchEvent(new Event("jogador-precisa-carregar-fichas"));
-        return;
-    }
-}
-window.addEventListener("usuario-autenticado", iniciarBancoUsuario);
-if(window.usuarioAtual && window.papelUsuario){
-    iniciarBancoUsuario();
-}
+
+    leitor.readAsDataURL(arquivo);
+
+});
+
+carregarBanco();
 
 let timerSalvamento = null;
 
 function salvarComAtraso(){
+
     if(carregandoFicha) return;
+
     clearTimeout(timerSalvamento);
+
     timerSalvamento = setTimeout(salvarFichaAtual, 300);
+
 }
 
 document.addEventListener("input", salvarComAtraso);
+
+carregarFichaAtual();
+
 document.addEventListener("click", salvarComAtraso);
+
+verificarFichaCompartilhada();
+
 const btnMenu = document.getElementById("btn-menu");
+
 const menuLateral = document.getElementById("menu-lateral");
+
 btnMenu.onclick = (e)=>{
+
     e.stopPropagation();
+
     if(menuLateral.style.display==="flex"){
+
         menuLateral.style.display="none";
-    }
-    else{
+
+    }else{
+
         menuLateral.style.display="flex";
+
     }
+
 };
 
 document.addEventListener("click",()=>{
+
     menuLateral.style.display="none";
 
 });
@@ -1804,41 +1662,41 @@ document.getElementById("criar-ficha").onclick = ()=>{
 };
 
 function atualizarBotaoExcluir(){
-    const botao = document.getElementById("deletar-ficha");
-    if(!botao){
-        return;
-    }
-    if(window.papelUsuario === "jogador"){
-        botao.disabled = true;
-        botao.style.display = "none";
-        return;
-    }
-    botao.style.display = "";
-    botao.disabled = banco.fichas.length <= 1;
+
+    const botao =
+        document.getElementById("deletar-ficha");
+
+    botao.disabled =
+        banco.fichas.length<=1;
+
 }
 
-document.getElementById("deletar-ficha").onclick = async () =>{
+document
+.getElementById("deletar-ficha")
+.onclick=()=>{
+
     if(banco.fichas.length<=1)
         return;
+
     if(!confirm("Deseja apagar esta ficha?"))
         return;
-    const indice = banco.fichas.findIndex(f=>f.id===banco.atual);
-    const idFichaApagada = banco.fichas[indice]?.id;
-    const fichaApagada = banco.fichas[indice];
-    if(window.papelUsuario === "mestre" && window.mestreUsandoFirestoreDireto){
-        const apagou = await window.apagarFichaMestreFirestore(fichaApagada);
-        if(!apagou){
-            return;
-        }
-    }
+
+    const indice =
+        banco.fichas.findIndex(
+            f=>f.id===banco.atual
+        );
+
     banco.fichas.splice(indice,1);
-    banco.atual = banco.fichas[0].id;
+
+    banco.atual =
+        banco.fichas[0].id;
+
     salvarBanco();
-    if(idFichaApagada != null && typeof window.apagarFichaNoFirestore === "function"){
-        window.apagarFichaNoFirestore(idFichaApagada);
-    }
+
     carregarFichaAtual();
+
     atualizarBotaoExcluir();
+
 };
 
 let fichaArrastando = null;
@@ -1863,118 +1721,168 @@ function atualizarListaFichas(){
         const nomeFicha = document.createElement("span");
         nomeFicha.className = "nome-ficha";
         nomeFicha.textContent = ficha.personagem || "Sem nome";
+
         const botaoExcluir = document.createElement("button");
         botaoExcluir.className = "excluir-ficha";
         botaoExcluir.textContent = "🗑";
-        if(window.papelUsuario === "jogador"){
-            botaoExcluir.style.display = "none";
-        }
+
         div.appendChild(nomeFicha);
         div.appendChild(botaoExcluir);
+
         div.querySelector(".nome-ficha").onclick = ()=>{
+
             banco.atual = ficha.id;
+
             salvarBanco();
+
             carregarFichaAtual();
+
             fecharListaFichas();
+
         };
-        div.querySelector(".excluir-ficha").onclick = async (e)=>{
+
+        div.querySelector(".excluir-ficha").onclick = (e)=>{
+
             e.stopPropagation();
+
             if(banco.fichas.length <= 1){
                 return;
             }
+
             if(!confirm("Deseja apagar esta ficha?")){
                 return;
             }
-            const idFichaApagada = ficha.id;
-            if(window.papelUsuario === "mestre" && window.mestreUsandoFirestoreDireto){
-                const apagou = await window.apagarFichaMestreFirestore(ficha);
-                if(!apagou){
-                    return;
-                }
-            }
-            banco.fichas = banco.fichas.filter(f=>f.id!==ficha.id);
+
+            banco.fichas =
+                banco.fichas.filter(f=>f.id!==ficha.id);
+
             if(banco.atual === ficha.id){
+
                 banco.atual = banco.fichas[0].id;
+
                 carregarFichaAtual();
+
             }
+
             salvarBanco();
-            if(typeof window.apagarFichaNoFirestore === "function"){
-                window.apagarFichaNoFirestore(idFichaApagada);
-            }
+
             atualizarListaFichas();
+
             atualizarBotaoExcluir();
+
         };
+
         lista.appendChild(div);
+
         let segurando = false;
-        let timer = null;
-        let inicioX = 0;
-        let inicioY = 0;
-        div.addEventListener("pointerdown",(e)=>{
-            inicioX = e.clientX;
-            inicioY = e.clientY;
-            
-            try{
-                div.setPointerCapture(e.pointerId);
+let timer = null;
+let inicioX = 0;
+let inicioY = 0;
+
+div.addEventListener("pointerdown",(e)=>{
+
+    inicioX = e.clientX;
+    inicioY = e.clientY;
+
+    try{ div.setPointerCapture(e.pointerId); }catch(erro){}
+
+    timer = setTimeout(()=>{
+
+    segurando = true;
+
+    fichaArrastando = div;
+
+    indiceOriginal = [...lista.children].indexOf(div);
+
+    div.classList.add("arrastando");
+
+},300);
+
+});
+
+div.addEventListener("pointermove",(e)=>{
+
+    if(!segurando){
+        
+        if(Math.abs(e.clientX - inicioX) > 10 || Math.abs(e.clientY - inicioY) > 10){
+            clearTimeout(timer);
+        }
+
+        return;
+    }
+
+    e.preventDefault();
+
+    const dx = e.clientX - inicioX;
+    const dy = e.clientY - inicioY;
+
+    div.style.transform = "";
+
+    const centroY = e.clientY;
+
+    const fichas = [...lista.querySelectorAll(".ficha-lista")];
+
+    fichas.forEach((f,i)=>{
+
+        if(f===div) return;
+
+        const r = f.getBoundingClientRect();
+
+        if(centroY > r.top && centroY < r.bottom){
+
+            if(i!==indiceOriginal){
+
+                lista.insertBefore(
+                    div,
+                    i>indiceOriginal
+                    ? f.nextSibling
+                    : f
+                );
+
+                indiceOriginal = i;
+
             }
-            catch(erro){}
-            timer = setTimeout(()=>{
-                segurando = true;
-                fichaArrastando = div;
-                indiceOriginal = [...lista.children].indexOf(div);
-                div.classList.add("arrastando");
-            },300);
-        });
-        div.addEventListener("pointermove",(e)=>{
-            if(!segurando){
-                if(Math.abs(e.clientX - inicioX) > 10 || Math.abs(e.clientY - inicioY) > 10){
-                    clearTimeout(timer);
-                }
-                return;
-            }
-            e.preventDefault();
-            const dx = e.clientX - inicioX;
-            const dy = e.clientY - inicioY;
-            div.style.transform = "";
-            const centroY = e.clientY;
-            const fichas = [...lista.querySelectorAll(".ficha-lista")];
-            fichas.forEach((f,i)=>{
-                if(f===div) return;
-                const r = f.getBoundingClientRect();
-                if(centroY > r.top && centroY < r.bottom){
-                    if(i!==indiceOriginal){
-                        lista.insertBefore(div, i>indiceOriginal ? f.nextSibling: f);
-                        indiceOriginal = i;
-                    }
-                }
-            });
-        });
+
+        }
+
+    });
+
+});
 
 function pararArrastar(){
+
     clearTimeout(timer);
+
     if(!segurando) return;
+
     segurando = false;
+
     div.classList.remove("arrastando");
+
     div.style.transform = "";
+
     const novaOrdem = [];
-    document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card => {
-        const id = Number(card.dataset.id);
-        const ficha = banco.fichas.find(f => f.id === id);
-        if (ficha) {
-            novaOrdem.push(ficha);
-        }
-    });
-    banco.fichas = novaOrdem;
-    banco.fichas.forEach((ficha, indice) => {
-        ficha.ordem = indice;
-    });
-    salvarBanco();
-    if(window.papelUsuario === "mestre" && window.mestreUsandoFirestoreDireto && typeof window.salvarOrdemFichasMestre === "function"){
-        window.salvarOrdemFichasMestre().catch(erro => {
-            alert("Erro ao salvar a ordem " + "das fichas:\n\n" + erro.message);
-        });
+
+document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card => {
+
+    const id = Number(card.dataset.id);
+
+    const ficha = banco.fichas.find(f => f.id === id);
+
+    if (ficha) {
+        novaOrdem.push(ficha);
     }
-    atualizarListaFichas();
-    fichaArrastando = null;
+
+});
+
+banco.fichas = novaOrdem;
+
+salvarBanco();
+
+atualizarListaFichas();
+
+fichaArrastando = null;
+
 }
 
 div.addEventListener("pointerup", pararArrastar);
@@ -2017,20 +1925,34 @@ function fecharListaFichas(){
 
 }
 
-document.getElementById("abrir-lista").onclick=()=>{
+document
+.getElementById("abrir-lista")
+.onclick=()=>{
+
     menuLateral.style.display="none";
+
     abrirListaFichas();
+
 };
 
-document.getElementById("voltar-ficha").onclick=()=>{
+document
+.getElementById("voltar-ficha")
+.onclick=()=>{
+
     fecharListaFichas();
+
 };
 
 document.getElementById("nova-ficha-lista").onclick = ()=>{
+
     salvarFichaAtual();
+
     criarFichaNova();
+
     carregarFichaAtual();
+
     fecharListaFichas();
+
 };
 
 function atualizarContadorAtributos() {
@@ -2081,13 +2003,13 @@ function atualizarContadorPericias(){
 }
 
 function atualizarContadorCarga() {
-    const fisico = Number(document.querySelectorAll(".quadrado")[0].value);
+    const forca = Number(document.querySelectorAll(".quadrado")[1].value);
     
     const periciaAtletismo = buscarPericia("atle");
     const treinoAtletismoInput = periciaAtletismo ? periciaAtletismo.querySelector(".treinamento") : null;
     const bonusCarga = treinoAtletismoInput ? Number(treinoAtletismoInput.value) || 0 : 0;
     
-    const maxCarga = 5 + 2 * fisico + Math.floor(bonusCarga/4);
+    const maxCarga = 5 + 2 * forca + Math.floor(bonusCarga/4);
 
     const contadorCarga = document.querySelector(".contador-carga .maximo-contador");
     if (contadorCarga) {
@@ -2134,6 +2056,7 @@ function calcularPenalidadeCarga(){
 
     return 0;
 }
+
 
 function atualizarDeslocamentoPorCarga(){
 
@@ -2196,9 +2119,13 @@ atributos.forEach(input => {
     });
 });
 
-document.querySelectorAll(".treinamento").forEach(input => {
+document
+.querySelectorAll(".treinamento")
+.forEach(input => {
+
     input.setAttribute("min", "1");
     input.setAttribute("max", "14");
+
 
     input.addEventListener("focus", () => {
 
@@ -2349,7 +2276,7 @@ salvarFichaAtual = function() {
     salvarHistoria();
 };
 
-document.querySelectorAll(".quadrado")[0].addEventListener("input", () => {
+document.querySelectorAll(".quadrado")[1].addEventListener("input", () => {
     atualizarContadorCarga();
 });
 
@@ -2434,9 +2361,13 @@ function rolarDado(lados){
 }
 
 const INDICES_ATRIBUTOS = {
-    FIS: 0,
-    INT: 1,
-    PRE: 2
+
+    DES: 0,
+    FOR: 1,
+    INT: 2,
+    PRE: 3,
+    VIG: 4
+
 };
 
 function preencherPericiasRolagem(){
@@ -2512,9 +2443,18 @@ function obterDadosPericiaRolagem(pericia){
 
     if(!pericia) return null;
 
-    const atributoTexto = pericia.querySelector(".atributo-pericia")?.textContent.replace("(", "").replace(")", "").trim().toUpperCase();
+    const atributoTexto =
+        pericia
+        .querySelector(".atributo-pericia")
+        ?.textContent
+        .replace("(", "")
+        .replace(")", "")
+        .trim()
+        .toUpperCase();
 
-    const indice = INDICES_ATRIBUTOS[ atributoTexto
+    const indice =
+        INDICES_ATRIBUTOS[
+            atributoTexto
         ];
 
     if(indice === undefined){
@@ -2545,9 +2485,20 @@ function obterDadosPericiaRolagem(pericia){
         .trim();
 
     return {
-        id: pericia.dataset.id, nome,
-        atributo: atributoTexto, valorAtributo, valorPericia
+
+        id: pericia.dataset.id,
+
+        nome,
+
+        atributo:
+            atributoTexto,
+
+        valorAtributo,
+
+        valorPericia
+
     };
+
 }
 
 function atualizarConfiguracaoPericiaRolagem(){
@@ -2695,7 +2646,13 @@ function rolarTestePericia(){
     quantidadeDados < 1
     ){
 
-    quantidadeDados = valorAtributo === 0 ? 2: Math.max(1, valorAtributo);
+    quantidadeDados =
+        valorAtributo === 0
+        ? 2
+        : Math.max(
+            1,
+            valorAtributo
+        );
     }
 
     
@@ -2720,8 +2677,12 @@ function rolarTestePericia(){
         valorPericia;
     }
     
-    const desvantagem = valorAtributo === 0;
+    const desvantagem =
+    valorAtributo === 0;
+
+
     const resultados = [];
+
     for(
         let i = 0;
         i < quantidadeDados;
@@ -2782,17 +2743,41 @@ function rolarTestePericia(){
 
         nome,
 
-        atributo, valorAtributo,
-        valorPericia: valorPericiaTeste, resultados,
-        resultado: resultadoFinal, sucesso, desvantagem
-    });
-    ultimaRolagem = {
-        tipo: "pericia",
-        periciaId: dadosPericia.id,
-        nome,
         atributo,
+
+        valorAtributo,
+
+        valorPericia:
+        valorPericiaTeste,
+
+        resultados,
+
+        resultado:
+            resultadoFinal,
+
+        sucesso,
+
+        desvantagem
+
+    });
+
+
+    ultimaRolagem = {
+
+        tipo: "pericia",
+
+        periciaId:
+            dadosPericia.id,
+
+        nome,
+
+        atributo,
+        
         quantidadeDados,
-        valorPericia: valorPericiaTeste
+
+        valorPericia:
+        valorPericiaTeste
+
     };
 
 }
@@ -2810,7 +2795,13 @@ function calcularNivelSucesso(
             )
         );
 
-    const extremo = Math.max(1, Math.floor(pericia / 5));
+    const extremo =
+        Math.max(
+            1,
+            Math.floor(
+                pericia / 5
+            )
+        );
     
     if(resultado === 20){
         return "Desastre";
@@ -3350,39 +3341,100 @@ function rolarTesteSoma(){
 }
 
 function mostrarDadosSoma(dados){
-    const area = document.getElementById("dados-rolados");
+
+    const area =
+        document.getElementById(
+            "dados-rolados"
+        );
+
     area.innerHTML = "";
+
+
     dados.forEach(info => {
-        const dado = document.createElement("div");
-        dado.className = "dado-visual dado-d" + info.lados;
+
+        const dado =
+            document.createElement("div");
+
+        dado.className =
+            "dado-visual dado-d" + info.lados;
+
         dado.innerHTML = `
-        <strong>${info.valor}</strong>
-        <small>d${info.lados}</small>`;
+            <strong>${info.valor}</strong>
+            <small>d${info.lados}</small>
+        `;
+
         area.appendChild(dado);
+
     });
+
 }
-document.getElementById("botao-rolar").addEventListener("click",() => {
-    if(tipoTesteAtual === "pericia"){
-        rolarTestePericia();
+
+document
+.getElementById(
+    "botao-rolar"
+)
+.addEventListener(
+    "click",
+    () => {
+
+        if(
+            tipoTesteAtual ===
+            "pericia"
+        ){
+
+            rolarTestePericia();
+
+        }else{
+
+            rolarTesteSoma();
+
+        }
+
     }
-    else{
-        rolarTesteSoma();
-    }
-});
-function registrarHistorico(registro){
-    const ficha = fichaAtual();
+);
+
+function registrarHistorico(
+    registro
+){
+
+    const ficha =
+        fichaAtual();
+
     if(!ficha) return;
-    if(!Array.isArray(ficha.historicoRolagens)){
+
+
+    if(
+        !Array.isArray(
+            ficha.historicoRolagens
+        )
+    ){
+
         ficha.historicoRolagens = [];
+
     }
-    ficha.historicoRolagens.unshift({
+
+
+    ficha.historicoRolagens
+    .unshift({
+
         ...registro,
+
         data: Date.now()
+
     });
-    ficha.historicoRolagens = ficha.historicoRolagens.slice(0, 10);
+
+
+    ficha.historicoRolagens =
+        ficha.historicoRolagens
+        .slice(0, 10);
+
+
     salvarBanco();
+
     mostrarHistoricoRolagens();
+
 }
+
 function mostrarHistoricoRolagens(){
 
     const area =
@@ -3746,36 +3798,148 @@ function usarRolagemSalva(
         "soma"
     ){
 
-        const botaoSoma = document.querySelector('.tipo-teste[data-tipo="soma"]');
+        const botaoSoma =
+            document.querySelector(
+                '.tipo-teste[data-tipo="soma"]'
+            );
+
+
         if(botaoSoma){
+
             botaoSoma.click();
+
         }
-        const area = document.getElementById("grupos-dados");
+
+
+        const area =
+            document.getElementById(
+                "grupos-dados"
+            );
+
+
         area.innerHTML = "";
-        if(Array.isArray(rolagem.grupos)){
-            rolagem.grupos.forEach(grupo => {
-                criarGrupoDado(grupo.quantidade, grupo.lados);
+
+
+        if(
+            Array.isArray(
+                rolagem.grupos
+            )
+        ){
+
+            rolagem.grupos
+            .forEach(grupo => {
+
+                criarGrupoDado(
+                    grupo.quantidade,
+                    grupo.lados
+                );
+
             });
+
         }
-        const campoBonus = document.getElementById("bonus-soma");
-        if(campoBonus){
-            const bonusSalvo = Number(rolagem.bonus);
-            campoBonus.value = Number.isFinite(bonusSalvo) && bonusSalvo > 0 ? Math.floor(bonusSalvo): "";
-        }
-        rolarTesteSoma();
-    }
+        
+        const campoBonus =
+    document.getElementById(
+        "bonus-soma"
+    );
+
+
+if(campoBonus){
+
+    const bonusSalvo =
+        Number(
+            rolagem.bonus
+        );
+
+
+    campoBonus.value =
+        Number.isFinite(
+            bonusSalvo
+        ) &&
+        bonusSalvo > 0
+
+        ? Math.floor(
+            bonusSalvo
+        )
+
+        : "";
+
 }
+        
+        rolarTesteSoma();
+
+    }
+
+}
+
 function ajustarAlturaPainelRolagens(){
-    const painel = document.getElementById("painel-rolagens");
-    const ficha = document.querySelector(".ficha");
-    const pericias = document.querySelector(".pericias");
-    if(!painel || !ficha || !pericias){
+
+    const painel =
+        document.getElementById(
+            "painel-rolagens"
+        );
+
+    const ficha =
+        document.querySelector(
+            ".ficha"
+        );
+
+    const pericias =
+        document.querySelector(
+            ".pericias"
+        );
+
+    if(
+        !painel ||
+        !ficha ||
+        !pericias
+    ){
         return;
     }
-    const topoFicha = ficha.getBoundingClientRect().top;
-    const fimPericias = pericias.getBoundingClientRect().bottom;
-    const altura = fimPericias - topoFicha;
-    painel.style.height = altura + "px";
+
+
+    const topoFicha =
+        ficha
+        .getBoundingClientRect()
+        .top;
+
+
+    const fimPericias =
+        pericias
+        .getBoundingClientRect()
+        .bottom;
+
+
+    const altura =
+        fimPericias -
+        topoFicha;
+
+
+    painel.style.height =
+        altura + "px";
+
 }
+
 ajustarAlturaPainelRolagens();
+
 window.addEventListener("resize", ajustarAlturaPainelRolagens);
+
+console.log(
+    "area-teste-soma:",
+    document.getElementById("area-teste-soma")
+);
+
+console.log(
+    "grupos-dados:",
+    document.getElementById("grupos-dados")
+);
+
+console.log(
+    "adicionar-grupo-dado:",
+    document.getElementById("adicionar-grupo-dado")
+);
+
+console.log(
+    "botao-rolar:",
+    document.getElementById("botao-rolar")
+);
