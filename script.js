@@ -762,8 +762,6 @@ function criarFichaNova(){
             metros:9,
             quadrados:6
         },
-        
-        sorte:0,
 
         status:[
         {atual:12,maximo:12},
@@ -870,21 +868,6 @@ function normalizarFicha(ficha){
         if(!Number.isFinite(v)) v = 1;
         return Math.min(5, Math.max(0, Math.round(v)));
     });
-    
-    let sorte =
-    Number(
-        ficha.sorte
-    );
-
-if(
-    !Number.isFinite(sorte) ||
-    sorte < 0
-){
-    sorte = 0;
-}
-
-ficha.sorte =
-    Math.floor(sorte);
 
     const status = Array.isArray(ficha.status) ? ficha.status : [];
     const statusPadrao = [
@@ -1224,12 +1207,6 @@ function salvarFichaAtual(){
     }
     
     ficha.atributos = [...document.querySelectorAll(".quadrado")].map(x=>Number(x.value));
-
-    const inputSorte = document.getElementById("quadrado-sorte");
-
-if(inputSorte){
-    ficha.sorte = Math.max(0, Math.floor(Number(inputSorte.value) || 0));
-}
     
     ficha.status = [...document.querySelectorAll(".status")].map(s=>({
         atual:Number(s.querySelector(".atual").value),
@@ -1328,13 +1305,6 @@ function carregarFichaAtual(){
     document.querySelectorAll(".quadrado").forEach((q, i) => {
         q.value = ficha.atributos[i] ?? 1;
     });
-    
-    const inputSorte = document.getElementById("quadrado-sorte");
-    
-    if(inputSorte){
-        inputSorte.value =
-        ficha.sorte ?? 0;
-    }
     
     const inputMetros = document.querySelector(".valor-metro");
     
