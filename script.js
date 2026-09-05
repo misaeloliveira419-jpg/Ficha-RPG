@@ -474,7 +474,7 @@ function atualizarVida(){
     const periciaFortitude = buscarPericia("forti");
     const treinoFortitudeInput = periciaFortitude ? periciaFortitude.querySelector(".treinamento") : null;
     const bonus = treinoFortitudeInput ? Number(treinoFortitudeInput.value) || 0 : 0;
-    const maxVida = 10 + fisico + Math.floor(bonus/2);
+    const maxVida = 15 + fisico + Math.floor(bonus/2);
     atualizarStatus(document.querySelectorAll(".status")[0], maxVida);
 }
 
@@ -690,7 +690,7 @@ function criarFichaNova(){
         },
         sorte:0,
         status:[
-        {atual:12,maximo:12},
+        {atual:16,maximo:16},
         {atual:22,maximo:22}
 ],
         pericias: structuredClone(PERICIAS_PADRAO),
@@ -812,11 +812,11 @@ function normalizarFicha(ficha){
     
     const status = Array.isArray(ficha.status) ? ficha.status: [];
     const statusPadrao = ficha.tipo === "criatura" ? [{
-        atual:12,
-        maximo:12
+        atual:16,
+        maximo:16
     }]:[{
-        atual:12,
-        maximo:12
+        atual:16,
+        maximo:16
     },{atual:22,
         maximo:22
     }];
@@ -883,7 +883,7 @@ function normalizarFicha(ficha){
         }));
     ficha.maxAtributos = Number(ficha.maxAtributos) || 5;
     ficha.maxPericias = Number(ficha.maxPericias) || 100;
-    ficha.historicoRolagens = Array.isArray(ficha.historicoRolagens) ? ficha.historicoRolagens: [];
+    ficha.historicoRolagens = Array.isArray(ficha.historicoRolagens) ? ficha.historicoRolagens.slice(0,20): [];
     ficha.rolagensSalvas = Array.isArray(ficha.rolagensSalvas) ? ficha.rolagensSalvas: [];
     return ficha;
 }
@@ -906,10 +906,6 @@ let compartilhamentoEmProcessamento =
 let compartilhamentoJaVerificado =
     false;
 
-
-/*
- * Identifica a coleção da ficha.
- */
 function obterColecaoCompartilhamento(
     tipo
 ){
@@ -1947,6 +1943,7 @@ async function verificarCompartilhamentoPendente(){
 
     }
 }
+
 window.addEventListener("fichas-firestore-prontas", verificarCompartilhamentoPendente);
 window.addEventListener("usuario-autenticado",() => {
         verificarCompartilhamentoPendente();
@@ -2572,35 +2569,68 @@ document.getElementById("deletar-ficha").onclick = async () =>{
 
 let fichaArrastando = null;
 let indiceOriginal = -1;
+let filtroTipoFicha = "jogador";
+
+document.querySelectorAll(".filtro-tipo-ficha").forEach(botao=>{
+    botao.addEventListener("click", ()=>{
+        if(window.papelUsuario !== "mestre") return;
+
+        filtroTipoFicha = botao.dataset.tipo;
+
+        document.querySelectorAll(".filtro-tipo-ficha").forEach(outro=>{
+            outro.classList.toggle("ativo", outro === botao);
+        });
+
+        atualizarListaFichas();
+
+        const scroll = document.getElementById("lista-fichas-scroll");
+        if(scroll) scroll.scrollTop = 0;
+    });
+});
 
 function atualizarListaFichas(){
 
     const lista = document.getElementById("lista-fichas");
-
+    const filtros = document.getElementById("filtros-tipo-ficha");
     lista.innerHTML = "";
-
-    banco.fichas.forEach((ficha)=>{
-
+    if(filtros){
+        filtros.style.display = window.papelUsuario === "mestre" ? "flex" : "none";
+    }
+    const fichasVisiveis = window.papelUsuario === "mestre" ? banco.fichas.filter(ficha => ficha.tipo === filtroTipoFicha): banco.fichas;
+    fichasVisiveis.forEach((ficha)=>{
         const div = document.createElement("div");
-
         div.className = "ficha-lista";
-
         div.dataset.id = ficha.id;
-
         div.style.position = "relative";
-
+        const conteudoFicha = document.createElement("div");
+        conteudoFicha.className = "conteudo-ficha-lista";
+        const areaFoto = document.createElement("div");
+        areaFoto.className = "foto-ficha-lista";
+        if(typeof ficha.foto === "string" && ficha.foto){
+            const imagem = document.createElement("img");
+            imagem.src = ficha.foto;
+            imagem.alt = "Foto de " + (ficha.personagem || "personagem");
+            areaFoto.appendChild(imagem);
+        }
+        else{
+            const semFoto = document.createElement("span");
+            semFoto.textContent = "?";
+            areaFoto.appendChild(semFoto);
+        }
         const nomeFicha = document.createElement("span");
         nomeFicha.className = "nome-ficha";
         nomeFicha.textContent = ficha.personagem || "Sem nome";
+        conteudoFicha.appendChild(areaFoto);
+        conteudoFicha.appendChild(nomeFicha);
         const botaoExcluir = document.createElement("button");
         botaoExcluir.className = "excluir-ficha";
         botaoExcluir.textContent = "🗑";
         if(window.papelUsuario === "jogador"){
             botaoExcluir.style.display = "none";
         }
-        div.appendChild(nomeFicha);
+        div.appendChild(conteudoFicha);
         div.appendChild(botaoExcluir);
-        div.querySelector(".nome-ficha").onclick = ()=>{
+        conteudoFicha.onclick = ()=>{
             banco.atual = ficha.id;
             salvarBanco();
             carregarFichaAtual();
@@ -2641,16 +2671,15 @@ function atualizarListaFichas(){
         div.addEventListener("pointerdown",(e)=>{
             inicioX = e.clientX;
             inicioY = e.clientY;
-            
-            try{
-                div.setPointerCapture(e.pointerId);
-            }
-            catch(erro){}
             timer = setTimeout(()=>{
                 segurando = true;
                 fichaArrastando = div;
                 indiceOriginal = [...lista.children].indexOf(div);
                 div.classList.add("arrastando");
+                try{
+                    div.setPointerCapture(e.pointerId);
+                }
+                catch(erro){}
             },300);
         });
         div.addEventListener("pointermove",(e)=>{
@@ -2684,16 +2713,25 @@ function pararArrastar(){
     segurando = false;
     div.classList.remove("arrastando");
     div.style.transform = "";
-    const novaOrdem = [];
-    document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card => {
+    const novaOrdemVisivel = [];
+    document.querySelectorAll("#lista-fichas .ficha-lista").forEach(card=>{
         const id = Number(card.dataset.id);
-        const ficha = banco.fichas.find(f => f.id === id);
-        if (ficha) {
-            novaOrdem.push(ficha);
-        }
+        const ficha = banco.fichas.find(f=>f.id === id);
+        if(ficha) novaOrdemVisivel.push(ficha);
     });
-    banco.fichas = novaOrdem;
-    banco.fichas.forEach((ficha, indice) => {
+    if(window.papelUsuario === "mestre"){
+        let indiceVisivel = 0;
+        banco.fichas = banco.fichas.map(ficha=>{
+            if(ficha.tipo === filtroTipoFicha){
+                return novaOrdemVisivel[indiceVisivel++] || ficha;
+            }
+            return ficha;
+        });
+    }
+    else{
+        banco.fichas = novaOrdemVisivel;
+    }
+    banco.fichas.forEach((ficha, indice)=>{
         ficha.ordem = indice;
     });
     salvarBanco();
@@ -2714,37 +2752,56 @@ div.addEventListener("pointercancel",pararArrastar);
 
 }
 
-function abrirListaFichas(){
+const abaFichas = document.getElementById("aba-fichas");
+const conteudoFichas = document.getElementById("conteudo-fichas");
 
-    salvarFichaAtual();
-
+function abrirAbaBiblioteca(){
+    if(conteudoFichas){
+        conteudoFichas.style.display = "block";
+    }
+    if(abaFichas){
+        abaFichas.classList.add("ativa");
+    }
     atualizarListaFichas();
+}
 
+if(abaFichas){
+    abaFichas.addEventListener("click", abrirAbaBiblioteca);
+}
+
+function abrirListaFichas(){
+    salvarFichaAtual();
+    if(window.papelUsuario === "mestre"){
+        filtroTipoFicha = "jogador";
+        document.querySelectorAll(".filtro-tipo-ficha").forEach(botao=>{
+            botao.classList.toggle("ativo", botao.dataset.tipo === "jogador");
+        });
+}
+    abrirAbaBiblioteca();
     document.querySelector("header").style.display = "none";
-
-    document.querySelector("main").style.display="none";
-
-    document.querySelector(".historia").style.display="none";
-
-    document.getElementById("tela-fichas").style.display="block";
-    
-    document.getElementById("painel-rolagens").style.display="none";
-
+    document.querySelector("main").style.display = "none";
+    document.querySelector(".historia").style.display = "none";
+    document.getElementById("tela-fichas").style.display = "block";
+    document.getElementById("painel-rolagens").style.display = "none";
 }
 
 function fecharListaFichas(){
-
     document.querySelector("header").style.display = "block";
-
     document.querySelector("main").style.display="grid";
-
     document.querySelector(".historia").style.display="block";
-
     document.getElementById("tela-fichas").style.display="none";
-    
     document.getElementById("painel-rolagens").style.display ="block";
 
 }
+
+window.addEventListener("fichas-firestore-prontas", ()=>{
+    const parametros = new URLSearchParams(window.location.search);
+    if(parametros.has("s")){
+        return;
+    }
+    abrirListaFichas();
+});
+
 
 document.getElementById("abrir-lista").onclick=()=>{
     menuLateral.style.display="none";
@@ -4101,154 +4158,212 @@ document.getElementById("botao-rolar").addEventListener("click",() => {
 function registrarHistorico(registro){
     const ficha = fichaAtual();
     if(!ficha) return;
+
     if(!Array.isArray(ficha.historicoRolagens)){
         ficha.historicoRolagens = [];
     }
-    ficha.historicoRolagens.unshift({
+
+    const registroCompleto = {
         ...registro,
         data: Date.now()
-    });
-    ficha.historicoRolagens = ficha.historicoRolagens.slice(0, 10);
+    };
+
+    ficha.historicoRolagens.unshift(registroCompleto);
+    ficha.historicoRolagens = ficha.historicoRolagens.slice(0, 20);
     salvarBanco();
+
+    if(
+        window.papelUsuario === "mestre"
+        && typeof window.agendarSalvamentoMestreFirestore === "function"
+    ){
+        window.agendarSalvamentoMestreFirestore(ficha);
+    }
+    else if(
+        window.papelUsuario === "jogador"
+        && typeof window.agendarSalvamentoFirestore === "function"
+    ){
+        window.agendarSalvamentoFirestore(ficha);
+    }
+
     mostrarHistoricoRolagens();
+
 }
+function classeNivelHistorico(nivel){
+    const valor=String(nivel||"").trim().toLowerCase();
+    return valor?`nivel-${valor}`:"";
+}
+
+function criarFotoHistorico(ficha){
+    const caixa=document.createElement("div");
+    caixa.className="foto-historico-personagem";
+
+    if(ficha && typeof ficha.foto==="string" && ficha.foto){
+        const imagem=document.createElement("img");
+        imagem.src=ficha.foto;
+        imagem.alt="";
+        caixa.appendChild(imagem);
+    }else{
+        const vazio=document.createElement("span");
+        vazio.textContent="+";
+        vazio.setAttribute("aria-hidden","true");
+        caixa.appendChild(vazio);
+    }
+
+    return caixa;
+}
+
+function adicionarNumeroHistorico(area,valor,nivel,classeExtra=""){
+    const numero=document.createElement("span");
+    numero.className=`historico-numero ${classeNivelHistorico(nivel)} ${classeExtra}`.trim();
+    numero.textContent=String(valor);
+    area.appendChild(numero);
+    return numero;
+}
+
+window.criarRegistroHistoricoElemento=function(registro,ficha,opcoes={}){
+    const r=registro||{};
+    const div=document.createElement("div");
+    div.className="registro-historico registro-historico-visual";
+
+    const cabecalho=document.createElement("div");
+    cabecalho.className="cabecalho-registro-historico";
+    cabecalho.appendChild(criarFotoHistorico(ficha));
+
+    const identidade=document.createElement("div");
+    identidade.className="identidade-historico-personagem";
+
+    const nome=document.createElement("strong");
+    nome.className="nome-historico-personagem";
+    nome.textContent=ficha?.personagem||"Sem nome";
+    identidade.appendChild(nome);
+
+    if(opcoes.rotulo){
+        const rotulo=document.createElement("small");
+        rotulo.className="rotulo-historico-personagem";
+        rotulo.textContent=opcoes.rotulo;
+        identidade.appendChild(rotulo);
+    }
+
+    cabecalho.appendChild(identidade);
+    div.appendChild(cabecalho);
+
+    const corpo=document.createElement("div");
+    corpo.className="corpo-registro-historico";
+
+    const teste=document.createElement("strong");
+    teste.className="teste-historico";
+    teste.textContent=r.tipo==="pericia"?(r.nome||"Perícia"):(r.expressao||"Rolagem de soma");
+    corpo.appendChild(teste);
+
+    if(r.tipo==="pericia"){
+        const linhaDados=document.createElement("div");
+        linhaDados.className="linha-dados-historico";
+
+        const etiqueta=document.createElement("span");
+        etiqueta.className="etiqueta-historico";
+        etiqueta.textContent="Dados:";
+        linhaDados.appendChild(etiqueta);
+
+        const resultados=Array.isArray(r.resultados)?r.resultados:[];
+        resultados.forEach((valor,indice)=>{
+            if(indice>0){
+                const separador=document.createElement("span");
+                separador.className="separador-historico";
+                separador.textContent=", ";
+                linhaDados.appendChild(separador);
+            }
+            const nivel=Number.isFinite(Number(r.valorPericia))
+                ? calcularNivelSucesso(Number(valor),Number(r.valorPericia))
+                : (Number(valor)===Number(r.resultado)?r.sucesso:"");
+            adicionarNumeroHistorico(linhaDados,valor,nivel);
+        });
+        corpo.appendChild(linhaDados);
+
+        const linhaResultado=document.createElement("div");
+        linhaResultado.className="linha-resultado-historico";
+        const etiquetaResultado=document.createElement("span");
+        etiquetaResultado.className="etiqueta-historico";
+        etiquetaResultado.textContent="Resultado:";
+        linhaResultado.appendChild(etiquetaResultado);
+
+        adicionarNumeroHistorico(linhaResultado,r.resultado??"—",r.sucesso,"resultado-final-historico");
+
+        if(r.sucesso){
+            const categoria=document.createElement("strong");
+            categoria.className=`categoria-historico ${classeNivelHistorico(r.sucesso)}`.trim();
+            categoria.textContent=r.sucesso;
+            linhaResultado.appendChild(categoria);
+        }
+        corpo.appendChild(linhaResultado);
+    }else{
+        const linhaDados=document.createElement("div");
+        linhaDados.className="linha-dados-historico";
+        const etiqueta=document.createElement("span");
+        etiqueta.className="etiqueta-historico";
+        etiqueta.textContent="Dados:";
+        linhaDados.appendChild(etiqueta);
+
+        const grupos=Array.isArray(r.grupos)?r.grupos:[];
+        let primeiro=true;
+        grupos.forEach(grupo=>{
+            (Array.isArray(grupo.resultados)?grupo.resultados:[]).forEach(valor=>{
+                if(!primeiro){
+                    const separador=document.createElement("span");
+                    separador.className="separador-historico";
+                    separador.textContent=" + ";
+                    linhaDados.appendChild(separador);
+                }
+                primeiro=false;
+                adicionarNumeroHistorico(
+                    linhaDados,
+                    valor,
+                    "",
+                    `dado-soma-historico dado-d${Number(grupo.lados)||20}`
+                );
+            });
+        });
+
+        if(Number(r.bonus)>0){
+            if(!primeiro){
+                const separador=document.createElement("span");
+                separador.className="separador-historico";
+                separador.textContent=" + ";
+                linhaDados.appendChild(separador);
+            }
+            const bonus=document.createElement("span");
+            bonus.className="bonus-historico";
+            bonus.textContent=`${Number(r.bonus)} bônus`;
+            linhaDados.appendChild(bonus);
+        }
+
+        if(grupos.length) corpo.appendChild(linhaDados);
+
+        const linhaResultado=document.createElement("div");
+        linhaResultado.className="linha-resultado-historico";
+        const etiquetaResultado=document.createElement("span");
+        etiquetaResultado.className="etiqueta-historico";
+        etiquetaResultado.textContent="Soma total:";
+        linhaResultado.appendChild(etiquetaResultado);
+        adicionarNumeroHistorico(linhaResultado,r.resultado??"—","","resultado-total-soma-historico");
+        corpo.appendChild(linhaResultado);
+    }
+
+    div.appendChild(corpo);
+    return div;
+};
+
 function mostrarHistoricoRolagens(){
-
-    const area =
-        document.getElementById(
-            "historico-rolagens"
-        );
-
-    const ficha =
-        fichaAtual();
-
+    const area=document.getElementById("historico-rolagens");
+    const ficha=fichaAtual();
     if(!area || !ficha) return;
 
+    area.innerHTML="";
+    const historico=ficha.historicoRolagens || [];
 
-    area.innerHTML = "";
-
-
-    const historico =
-        ficha.historicoRolagens || [];
-
-
-    historico.forEach(r => {
-
-        const div =
-            document.createElement("div");
-
-        div.className =
-            "registro-historico";
-
-
-        if(r.tipo === "pericia"){
-
-            div.innerHTML = `
-                <strong>${r.nome}</strong>
-
-                <span>
-                    ${r.resultados.join(", ")}
-                </span>
-
-                <b>
-                    ${r.resultado}
-                    — ${r.sucesso}
-                </b>
-            `;
-
-        }else{
-
-            div.innerHTML = `
-                <strong>
-                    ${r.expressao}
-                </strong>
-
-                <b>
-                    = ${r.resultado}
-                </b>
-            `;
-
-        }
-
-
-        area.appendChild(div);
-
+    historico.forEach(r=>{
+        area.appendChild(window.criarRegistroHistoricoElemento(r,ficha));
     });
-
 }
-
-let ultimaRolagem = null;
-
-document
-.getElementById(
-    "salvar-teste"
-)
-.addEventListener(
-    "click",
-    () => {
-
-        if(!ultimaRolagem){
-
-            alert(
-                "Faça uma rolagem primeiro."
-            );
-
-            return;
-
-        }
-
-
-        const ficha =
-            fichaAtual();
-
-        if(!ficha) return;
-
-
-        if(
-            !Array.isArray(
-                ficha.rolagensSalvas
-            )
-        ){
-
-            ficha.rolagensSalvas = [];
-
-        }
-
-
-        const salva = {
-            ...ultimaRolagem
-        };
-
-
-        if(
-            salva.tipo ===
-            "soma"
-        ){
-
-            const nome =
-                prompt(
-                    "Nome do teste:"
-                );
-
-            if(!nome) return;
-
-            salva.nome = nome;
-
-        }
-
-
-        ficha.rolagensSalvas.push(
-            salva
-        );
-
-
-        salvarBanco();
-
-        mostrarRolagensSalvas();
-
-    }
-);
-
 function mostrarRolagensSalvas(){
 
     const area =
